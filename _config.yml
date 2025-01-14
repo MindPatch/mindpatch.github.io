@@ -1,8 +1,8 @@
-title: Hacker-Blog
-description: "A Jekyll Blog Theme For Hackers"
+title: Mind Patch
+description: "I share some security blogs here"
 author:
-  name: "SomeHacker"
-  email: "someone@somewebsite.somedomain"
+  name: "MindPatch"
+  email: "his@mindpatch.net"
   url: "https://mindpatch.github.io"
 
 baseurl: /
@@ -28,5 +28,5 @@ plugins:
   - jekyll-sitemap
 
 # Custom variables
-owner : "SomeHacker"
-year : "2020"
+owner : "Mindpatch"
+year : "2025"
