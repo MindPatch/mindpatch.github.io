@@ -1,6 +1,6 @@
 ---
 title: Solving DoxPit Challenge
-published: true
+published: false
 ---
 
 ## [HTB] Solving DoxPit Challenge
