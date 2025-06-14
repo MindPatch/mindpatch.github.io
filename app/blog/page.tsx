@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Security Blog - Cybersecurity Insights & Writeups',
     description: 'Explore cybersecurity insights, vulnerability research, CTF writeups, and security automation tutorials.',
-    url: 'https://mindpatch.net/blog',
+    url: 'https://www.mindpatch.net/blog',
     siteName: 'MindPatch',
     locale: 'en_US',
     type: 'website',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     creator: '@mindpatch',
   },
   alternates: {
-    canonical: 'https://mindpatch.net/blog',
+    canonical: 'https://www.mindpatch.net/blog',
   },
   robots: {
     index: true,
@@ -47,16 +47,16 @@ export default function BlogPage() {
     '@type': 'Blog',
     name: 'MindPatch Security Blog',
     description: 'Cybersecurity insights, vulnerability research, and security automation tutorials',
-    url: 'https://mindpatch.net/blog',
+    url: 'https://www.mindpatch.net/blog',
     author: {
       '@type': 'Person',
       name: 'MindPatch',
-      url: 'https://mindpatch.net/about',
+      url: 'https://www.mindpatch.net/about',
     },
     publisher: {
       '@type': 'Organization',
       name: 'MindPatch',
-      url: 'https://mindpatch.net',
+      url: 'https://www.mindpatch.net',
     },
     blogPost: blogPosts.map(post => ({
       '@type': 'BlogPosting',
@@ -67,7 +67,7 @@ export default function BlogPage() {
         '@type': 'Person',
         name: post.author,
       },
-      url: `https://mindpatch.net/blog/${post.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')}`,
+      url: `https://www.mindpatch.net/blog/${post.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')}`,
       keywords: post.tags.join(', '),
     })),
     inLanguage: 'en-US',

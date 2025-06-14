@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { blogPosts, BlogPost } from '../lib/blog-posts'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://mindpatch.net'
+  const baseUrl = 'https://www.mindpatch.net'
   
   // Static pages
   const staticPages = [

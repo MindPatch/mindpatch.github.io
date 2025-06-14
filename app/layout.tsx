@@ -10,7 +10,7 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://mindpatch.net'),
+  metadataBase: new URL('https://www.mindpatch.net'),
   title: {
     default: 'MindPatch - Cybersecurity Engineer & Penetration Tester',
     template: '%s | MindPatch'
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     'offensive security',
     'mindpatch'
   ],
-  authors: [{ name: 'MindPatch', url: 'https://mindpatch.net' }],
+  authors: [{ name: 'MindPatch', url: 'https://www.mindpatch.net' }],
   creator: 'MindPatch',
   publisher: 'MindPatch',
   formatDetection: {
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://mindpatch.net',
+    url: 'https://www.mindpatch.net',
     siteName: 'MindPatch',
     title: 'MindPatch - Cybersecurity Engineer & Penetration Tester',
     description: 'Offensive security specialist focusing on penetration testing, bug hunting, and security automation. Expert cybersecurity consulting and vulnerability research.',
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     yahoo: 'your-yahoo-verification-code',
   },
   alternates: {
-    canonical: 'https://mindpatch.net',
+    canonical: 'https://www.mindpatch.net',
   },
   category: 'technology',
 }
@@ -91,8 +91,8 @@ export default function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'MindPatch',
-    url: 'https://mindpatch.net',
-    logo: 'https://mindpatch.net/logo.png',
+    url: 'https://www.mindpatch.net',
+    logo: 'https://www.mindpatch.net/logo.png',
     description: 'Cybersecurity consulting and offensive security services',
     founder: {
       '@type': 'Person',
@@ -120,12 +120,12 @@ export default function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'MindPatch',
-    url: 'https://mindpatch.net',
+    url: 'https://www.mindpatch.net',
     description: 'Cybersecurity engineer specializing in penetration testing and security research',
     inLanguage: 'en-US',
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://mindpatch.net/blog?search={search_term_string}',
+      target: 'https://www.mindpatch.net/blog?search={search_term_string}',
       'query-input': 'required name=search_term_string',
     },
   }

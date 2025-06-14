@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'About MindPatch - Cybersecurity Engineer',
     description: 'Offensive security professional specializing in penetration testing, bug hunting, and security automation.',
-    url: 'https://mindpatch.net/about',
+    url: 'https://www.mindpatch.net/about',
     siteName: 'MindPatch',
     locale: 'en_US',
     type: 'profile',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     creator: '@mindpatch',
   },
   alternates: {
-    canonical: 'https://mindpatch.net/about',
+    canonical: 'https://www.mindpatch.net/about',
   },
   robots: {
     index: true,
@@ -50,7 +50,7 @@ export default function AboutPage() {
     name: 'MindPatch',
     jobTitle: 'Cybersecurity Engineer',
     description: 'Offensive security professional specializing in penetration testing, bug hunting, and security automation.',
-    url: 'https://mindpatch.net',
+    url: 'https://www.mindpatch.net',
     sameAs: [
       'https://github.com/mindPatch',
       'https://www.linkedin.com/in/knassar702',

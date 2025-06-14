@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Contact MindPatch - Security Consulting & Collaboration',
     description: 'Get in touch for cybersecurity consulting, penetration testing, and security automation projects.',
-    url: 'https://mindpatch.net/contact',
+    url: 'https://www.mindpatch.net/contact',
     siteName: 'MindPatch',
     locale: 'en_US',
     type: 'website',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     creator: '@mindpatch',
   },
   alternates: {
-    canonical: 'https://mindpatch.net/contact',
+    canonical: 'https://www.mindpatch.net/contact',
   },
   robots: {
     index: true,

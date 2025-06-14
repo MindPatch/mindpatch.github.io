@@ -76,8 +76,8 @@ export default function Home() {
     name: 'MindPatch',
     jobTitle: 'Cybersecurity Engineer',
     description: 'Offensive security specialist focusing on penetration testing, bug hunting, and security automation',
-    url: 'https://mindpatch.net',
-    image: 'https://mindpatch.net/profile-image.jpg',
+    url: 'https://www.mindpatch.net',
+    image: 'https://www.mindpatch.net/profile-image.jpg',
     sameAs: [
       'https://github.com/mindPatch',
       'https://www.linkedin.com/in/knassar702',
@@ -105,7 +105,7 @@ export default function Home() {
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': 'https://mindpatch.net',
+      '@id': 'https://www.mindpatch.net',
     },
   }
 
@@ -118,7 +118,7 @@ export default function Home() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://mindpatch.net',
+        item: 'https://www.mindpatch.net',
       },
     ],
   }
