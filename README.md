@@ -11,7 +11,7 @@ A modern, visually stunning portfolio website for cybersecurity professionals bu
 - Static site generation for optimal performance
 - Responsive design that works on all devices
 
-## Tech Stack
+## Tech Stack 3
 
 - Next.js 14 with App Router
 - TypeScript
