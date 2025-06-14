@@ -1,7 +1,7 @@
 # MindPatch - Cybersecurity Portfolio
 
 A modern, visually stunning portfolio website for cybersecurity professionals built with Next.js 14, TypeScript, and Tailwind CSS.
-
+#test
 ## Features
 
 - Modern terminal-inspired cybersecurity theme with smooth animations
