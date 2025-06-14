@@ -1,8 +1,44 @@
-'use client'
-
+import { Metadata } from 'next'
 import { motion } from 'framer-motion'
 import { Mail, Github, Linkedin, MessageSquare, Send } from 'lucide-react'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Contact MindPatch - Get In Touch for Security Projects',
+  description: 'Contact MindPatch for cybersecurity consulting, penetration testing, vulnerability research collaboration, and security automation projects.',
+  keywords: ['contact mindpatch', 'cybersecurity consulting', 'penetration testing services', 'security collaboration', 'vulnerability research'],
+  authors: [{ name: 'MindPatch' }],
+  creator: 'MindPatch',
+  publisher: 'MindPatch',
+  openGraph: {
+    title: 'Contact MindPatch - Security Consulting & Collaboration',
+    description: 'Get in touch for cybersecurity consulting, penetration testing, and security automation projects.',
+    url: 'https://mindpatch.net/contact',
+    siteName: 'MindPatch',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact MindPatch - Security Consulting',
+    description: 'Get in touch for cybersecurity consulting, penetration testing, and security automation projects.',
+    creator: '@mindpatch',
+  },
+  alternates: {
+    canonical: 'https://mindpatch.net/contact',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+}
 
 export default function ContactPage() {
   return (
@@ -141,7 +177,7 @@ export default function ContactPage() {
       <footer className="border-t border-cyber-green/20 py-8 px-4">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-400 font-mono">
-            <span className="text-white">MindPatch</span> © 2025 | Built with Next.js & TypeScript
+            <span className="text-white">MindPatch</span> © 2025
           </p>
         </div>
       </footer>

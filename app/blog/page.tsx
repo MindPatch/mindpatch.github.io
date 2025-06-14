@@ -1,5 +1,6 @@
 'use client'
 
+import { Metadata } from 'next'
 import { motion } from 'framer-motion'
 import { Search, Calendar, Clock, Tag, User } from 'lucide-react'
 import Link from 'next/link'
@@ -7,6 +8,43 @@ import { useState, Suspense, useEffect, useRef } from 'react'
 import { createRoot } from 'react-dom/client'
 import { blogPosts, type BlogPost } from '../../lib/blog-posts'
 import ImageZoom from './[slug]/ImageZoom'
+
+export const metadata: Metadata = {
+  title: 'Security Blog - Cybersecurity Insights & Writeups | MindPatch',
+  description: 'Explore cybersecurity insights, vulnerability research, CTF writeups, and security automation tutorials. Stay updated with the latest in offensive security.',
+  keywords: ['cybersecurity blog', 'security writeups', 'vulnerability research', 'CTF writeups', 'penetration testing', 'bug bounty', 'security insights'],
+  authors: [{ name: 'MindPatch' }],
+  creator: 'MindPatch',
+  publisher: 'MindPatch',
+  openGraph: {
+    title: 'Security Blog - Cybersecurity Insights & Writeups',
+    description: 'Explore cybersecurity insights, vulnerability research, CTF writeups, and security automation tutorials.',
+    url: 'https://mindpatch.net/blog',
+    siteName: 'MindPatch',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Security Blog - Cybersecurity Insights & Writeups',
+    description: 'Explore cybersecurity insights, vulnerability research, CTF writeups, and security automation tutorials.',
+    creator: '@mindpatch',
+  },
+  alternates: {
+    canonical: 'https://mindpatch.net/blog',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+}
 
 export default function BlogPage() {
   return (
@@ -69,8 +107,46 @@ function BlogContent() {
     })
   }, [filteredPosts])
 
+  // JSON-LD structured data for blog
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'MindPatch Security Blog',
+    description: 'Cybersecurity insights, vulnerability research, and security automation tutorials',
+    url: 'https://mindpatch.net/blog',
+    author: {
+      '@type': 'Person',
+      name: 'MindPatch',
+      url: 'https://mindpatch.net/about',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'MindPatch',
+      url: 'https://mindpatch.net',
+    },
+    blogPost: blogPosts.map(post => ({
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      datePublished: post.date,
+      author: {
+        '@type': 'Person',
+        name: post.author,
+      },
+      url: `https://mindpatch.net/blog/${post.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')}`,
+      keywords: post.tags.join(', '),
+    })),
+    inLanguage: 'en-US',
+  }
+
   return (
     <main className="min-h-screen bg-black text-cyber-green">
+      {/* JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-sm border-b border-cyber-green/20">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -235,7 +311,7 @@ function BlogContent() {
       <footer className="border-t border-cyber-green/20 py-8 px-4">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-400 font-mono">
-            <span className="text-white">MindPatch</span> © 2025 | Built with Next.js & TypeScript
+            <span className="text-white">MindPatch</span> © 2025
           </p>
         </div>
       </footer>
