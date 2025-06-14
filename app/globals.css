@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --foreground-rgb: 0, 255, 65;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 10, 10, 10;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00ff41;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00cc33;
+}
+
+/* Terminal cursor effect */
+.terminal-cursor::after {
+  content: '|';
+  animation: blink 1s infinite;
+  color: #00ff41;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Code syntax highlighting */
+pre {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #161b22;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 0.875em;
+}
+
+/* Matrix rain effect background */
+.matrix-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.1;
+}
+
+/* Glitch effect */
+.glitch {
+  position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  animation: glitch-1 0.5s infinite;
+  color: #ff0040;
+  z-index: -1;
+}
+
+.glitch::after {
+  animation: glitch-2 0.5s infinite;
+  color: #00ffff;
+  z-index: -2;
+}
+
+@keyframes glitch-1 {
+  0%, 14%, 15%, 49%, 50%, 99%, 100% {
+    transform: translate(0);
+  }
+  15%, 49% {
+    transform: translate(-2px, 2px);
+  }
+}
+
+@keyframes glitch-2 {
+  0%, 20%, 21%, 62%, 63%, 99%, 100% {
+    transform: translate(0);
+  }
+  21%, 62% {
+    transform: translate(2px, -2px);
+  }
+} 
