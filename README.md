@@ -2,7 +2,7 @@
 
 A modern, visually stunning portfolio website for cybersecurity professionals built with Next.js 14, TypeScript, and Tailwind CSS.
 #test
-## Features
+## Features 
 
 - Modern terminal-inspired cybersecurity theme with smooth animations
 - SEO optimized with proper meta tags and structured data
