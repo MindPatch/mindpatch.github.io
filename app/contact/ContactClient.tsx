@@ -56,11 +56,11 @@ export default function ContactClient() {
                 </h2>
                 <div className="space-y-4">
                   <a
-                    href="mailto:knassar702@gmail.com"
+                    href="mailto:hello@mindpatch.net"
                     className="flex items-center gap-3 text-gray-300 hover:text-cyber-green transition-colors font-mono text-lg"
                   >
                     <Mail className="w-5 h-5" />
-                    knassar702@gmail.com
+                    hello@mindpatch.net
                   </a>
                 </div>
               </div>

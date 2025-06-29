@@ -81,7 +81,7 @@ export default function AboutPage() {
     },
     contactPoint: {
       '@type': 'ContactPoint',
-      email: 'knassar702@gmail.com',
+      email: 'hello@mindpatch.net',
       contactType: 'professional',
     },
   }

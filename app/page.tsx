@@ -100,7 +100,7 @@ export default function Home() {
     },
     contactPoint: {
       '@type': 'ContactPoint',
-      email: 'knassar702@gmail.com',
+      email: 'hello@mindpatch.net',
       contactType: 'professional',
     },
     mainEntityOfPage: {
@@ -307,7 +307,7 @@ export default function Home() {
                 <Linkedin className="w-6 h-6" aria-hidden="true" />
               </a>
               <a
-                href="mailto:knassar702@gmail.com"
+                href="mailto:hello@mindpatch.net"
                 className="text-gray-400 hover:text-cyber-green transition-colors"
                 aria-label="Email Contact"
               >

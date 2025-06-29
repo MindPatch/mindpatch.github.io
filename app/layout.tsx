@@ -100,7 +100,7 @@ export default function RootLayout({
     },
     contactPoint: {
       '@type': 'ContactPoint',
-      email: 'knassar702@gmail.com',
+      email: 'hello@mindpatch.net',
       contactType: 'customer service',
     },
     sameAs: [
