@@ -1,19 +1,26 @@
+# Hugo build and deploy to GitHub Pages using GitHub's Pages workflow
 name: Deploy Hugo site to GitHub Pages
 
 on:
   push:
-    branches:
-      - master  # or your content branch
+    branches: ["master"]
+  workflow_dispatch:
 
 permissions:
-  contents: write  # needed to push to gh-pages
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout code
+      - name: 📥 Checkout
         uses: actions/checkout@v4
 
       - name: 🧰 Setup Hugo
@@ -25,10 +32,18 @@ jobs:
       - name: ⚙️ Build site
         run: hugo --minify --baseURL="https://www.mindpatch.net/"
 
-      - name: 🚀 Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: 📦 Upload static site to Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-          publish_branch: gh-pages  # Because you are using root repo (user.github.io)
-          cname: www.mindpatch.net
+          path: ./public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
