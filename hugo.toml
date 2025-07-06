@@ -1,0 +1,39 @@
+baseURL = 'https://www.mindpatch.net/'
+languageCode = 'en-us'
+title = '@MindPatch'
+theme = 'PaperMod'
+
+[pagination]
+  pagerSize = 5
+
+[params]
+  defaultTheme = 'dark'
+  ShowReadingTime = true
+  description = 'MindPatch is an offensive security specialist focusing on penetration testing, bug hunting, vulnerability research, and security automation. Expert in CTF competitions and cybersecurity consulting.'
+  author = 'MindPatch'
+  keywords = ['cybersecurity', 'penetration testing', 'bug bounty', 'security research', 'vulnerability assessment', 'ethical hacking', 'security automation', 'CTF competitions', 'offensive security', 'mindpatch']
+  images = ['/og-image.png']
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[params.social]
+  twitter = "https://twitter.com/mindpatch"
+
+[params.opengraph]
+  enable = true
+
+[params.twitter_cards]
+  enable = true
+  creator = '@mindpatch'
+
+[menu]
+  [[menu.main]]
+    name = "About"
+    url = "/about"
+    weight = 10
+
+   [[menu.main]]
+      name = "Projects"
+      url = "/projects/"
+      weight = 20

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Posts on @MindPatch</title>
+    <link>http://localhost:1313/posts/</link>
+    <description>Recent content in Posts on @MindPatch</description>
+    <image>
+      <title>@MindPatch</title>
+      <url>http://localhost:1313/og-image.png</url>
+      <link>http://localhost:1313/og-image.png</link>
+    </image>
+    <generator>Hugo -- 0.147.9</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 28 Apr 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[CIT CTF 2025] Solving all Web challenges</title>
+      <link>http://localhost:1313/posts/2025-04-28-cit-ctf/</link>
+      <pubDate>Mon, 28 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/2025-04-28-cit-ctf/</guid>
+      <description>&lt;p&gt;Hello, I joined the CTF for fun during the weekend.&lt;/p&gt;
+&lt;p&gt;I focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.&lt;/p&gt;
+&lt;h2 id=&#34;mr-chatbot&#34;&gt;Mr. Chatbot&lt;/h2&gt;
+&lt;p&gt;&lt;img alt=&#34;Mr. Chatbot Challenge&#34; loading=&#34;lazy&#34; src=&#34;https://miro.medium.com/v2/resize:fit:952/1*kvW3lucpnNq6fTtQ9Y_BBA.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn&amp;rsquo;t an LLM attack — responses came from JavaScript files.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Analysis of CVE-2022–30781</title>
+      <link>http://localhost:1313/posts/2024-01-10-analysis-of-cve-202230781/</link>
+      <pubDate>Thu, 10 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/2024-01-10-analysis-of-cve-202230781/</guid>
+      <description>&lt;hr&gt;
+&lt;p&gt;How Git Fetch Resulted in Critical Remote Code Execution in Gitea&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://miro.medium.com/v2/resize:fit:477/0*7XgQCsp0nd9dRoQo.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Good Morning, Everyone!&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In today’s post, I’ll dive into an analysis of  &lt;strong&gt;CVE-2022–30781&lt;/strong&gt;, a critical vulnerability found in the Gitea platform. This CVE allows attackers to execute remote code on the affected server, posing a significant security risk.&lt;/p&gt;
+&lt;p&gt;Here’s what we’ll cover:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Understanding How the CVE Works&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Writing Our Own Exploit&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How the Gitea Team Fixed It&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Let’s jump in and enjoy&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Legacy SDK Flaws Cause Stored XSS and Account Takeover</title>
+      <link>http://localhost:1313/posts/legacy-sdk-xss-account-takeover/</link>
+      <pubDate>Fri, 14 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/legacy-sdk-xss-account-takeover/</guid>
+      <description>&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://miro.medium.com/v2/resize:fit:480/0*wFXpWUgkd4CNm-ov.gif&#34;&gt;&lt;/p&gt;
+&lt;p&gt;—&lt;/p&gt;
+&lt;p&gt;Alright, let me tell you a fun story about how a casual day of hunting bugs turned into a serious jackpot — all thanks to some forgotten open source library!&lt;/p&gt;
+&lt;p&gt;It started like any other day: coffee ready, Burp Suite fired up, and enthusiasm maxed out. I was testing a cool AI-driven reporting/training platform over at example.ai.&lt;/p&gt;
+&lt;p&gt;These folks were pretty solid when it came to securing their main endpoints; my usual payloads and tests didn’t reveal much initially. However, the moment I stumbled onto their  &lt;code&gt;/reports&lt;/code&gt;  page, my curiosity went through the roof. This page was super interactive—it allowed users to create detailed, professional-looking reports with graphs, charts, images, markdown support, etc ..&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Solving DoxPit Challenge</title>
+      <link>http://localhost:1313/posts/solving-doxpit-challenge/</link>
+      <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/solving-doxpit-challenge/</guid>
+      <description>&lt;h1 id=&#34;htb-solving-doxpit-challange&#34;&gt;[HTB] Solving DoxPit Challange&lt;/h1&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://miro.medium.com/v2/resize:fit:700/1*tWUMuT1J0TUSBua9hOmWcg.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;In this write-up, I’ll walk you through the process of solving the HTB DoxPit challenge&lt;/p&gt;
+&lt;p&gt;This challenge features a mix of vulnerabilities in both a Flask app and a NextJS application through a series of methodical steps, I’ll show you how to exploit these vulnerabilities and successfully capture the flag&lt;/p&gt;
+&lt;p&gt;Let’s dive into the details!&lt;/p&gt;
+&lt;h1 id=&#34;getting-started&#34;&gt;Getting Started&lt;/h1&gt;
+&lt;p&gt;The first step in tackling the DoxPit challenge was to download the provided challenge code. This code revealed two distinct folders: one for a NextJS app and the other for a Flask app.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tags on @MindPatch</title>
+    <link>http://localhost:1313/tags/</link>
+    <description>Recent content in Tags on @MindPatch</description>
+    <image>
+      <title>@MindPatch</title>
+      <url>http://localhost:1313/og-image.png</url>
+      <link>http://localhost:1313/og-image.png</link>
+    </image>
+    <generator>Hugo -- 0.147.9</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rust</title>
+      <link>http://localhost:1313/tags/rust/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/rust/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Scanner</title>
+      <link>http://localhost:1313/tags/scanner/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/scanner/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Web Security</title>
+      <link>http://localhost:1313/tags/web-security/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/web-security/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Dependency</title>
+      <link>http://localhost:1313/tags/dependency/</link>
+      <pubDate>Sun, 18 May 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/dependency/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Vulnerability</title>
+      <link>http://localhost:1313/tags/vulnerability/</link>
+      <pubDate>Sun, 18 May 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/vulnerability/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Bug Bounty</title>
+      <link>http://localhost:1313/tags/bug-bounty/</link>
+      <pubDate>Sat, 10 May 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/bug-bounty/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>SSRF</title>
+      <link>http://localhost:1313/tags/ssrf/</link>
+      <pubDate>Sat, 10 May 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/ssrf/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>CTF</title>
+      <link>http://localhost:1313/tags/ctf/</link>
+      <pubDate>Mon, 28 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/ctf/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Flask</title>
+      <link>http://localhost:1313/tags/flask/</link>
+      <pubDate>Mon, 28 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/flask/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Git Enumeration</title>
+      <link>http://localhost:1313/tags/git-enumeration/</link>
+      <pubDate>Mon, 28 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/git-enumeration/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>LFI</title>
+      <link>http://localhost:1313/tags/lfi/</link>
+      <pubDate>Mon, 28 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/lfi/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>SQL Injection</title>
+      <link>http://localhost:1313/tags/sql-injection/</link>
+      <pubDate>Mon, 28 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/sql-injection/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>SSTI</title>
+      <link>http://localhost:1313/tags/ssti/</link>
+      <pubDate>Mon, 28 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/ssti/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Cve</title>
+      <link>http://localhost:1313/tags/cve/</link>
+      <pubDate>Thu, 10 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/cve/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Git</title>
+      <link>http://localhost:1313/tags/git/</link>
+      <pubDate>Thu, 10 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/git/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Gitea</title>
+      <link>http://localhost:1313/tags/gitea/</link>
+      <pubDate>Thu, 10 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/gitea/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>RCE</title>
+      <link>http://localhost:1313/tags/rce/</link>
+      <pubDate>Thu, 10 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/rce/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Research</title>
+      <link>http://localhost:1313/tags/research/</link>
+      <pubDate>Thu, 10 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/research/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Account Takeover</title>
+      <link>http://localhost:1313/tags/account-takeover/</link>
+      <pubDate>Fri, 14 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/account-takeover/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>SDK</title>
+      <link>http://localhost:1313/tags/sdk/</link>
+      <pubDate>Fri, 14 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/sdk/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>XSS</title>
+      <link>http://localhost:1313/tags/xss/</link>
+      <pubDate>Fri, 14 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/xss/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>HTB</title>
+      <link>http://localhost:1313/tags/htb/</link>
+      <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/htb/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>NextJS</title>
+      <link>http://localhost:1313/tags/nextjs/</link>
+      <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/nextjs/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

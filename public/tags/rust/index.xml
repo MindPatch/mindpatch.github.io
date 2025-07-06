@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Rust on @MindPatch</title>
+    <link>http://localhost:1313/tags/rust/</link>
+    <description>Recent content in Rust on @MindPatch</description>
+    <image>
+      <title>@MindPatch</title>
+      <url>http://localhost:1313/og-image.png</url>
+      <link>http://localhost:1313/og-image.png</link>
+    </image>
+    <generator>Hugo -- 0.147.9</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 01 Jun 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/rust/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Lotus</title>
+      <link>http://localhost:1313/projects/lotus/</link>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/lotus/</guid>
+      <description>⚡ Fast Web Security Scanner written in Rust based on Lua Scripts.</description>
+    </item>
+    <item>
+      <title>Vulfy</title>
+      <link>http://localhost:1313/projects/vulfy/</link>
+      <pubDate>Sun, 18 May 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/vulfy/</guid>
+      <description>🐺 Fast Rust-based package version scanner.</description>
+    </item>
+    <item>
+      <title>Lorsrf</title>
+      <link>http://localhost:1313/projects/lorsrf/</link>
+      <pubDate>Sat, 10 May 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/lorsrf/</guid>
+      <description>Fast CLI tool to discover parameters vulnerable to SSRF or out-of-band resource load 🛰️.</description>
+    </item>
+  </channel>
+</rss>

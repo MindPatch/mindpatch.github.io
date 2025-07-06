@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Bug Bounty on @MindPatch</title>
+    <link>http://localhost:1313/tags/bug-bounty/</link>
+    <description>Recent content in Bug Bounty on @MindPatch</description>
+    <image>
+      <title>@MindPatch</title>
+      <url>http://localhost:1313/og-image.png</url>
+      <link>http://localhost:1313/og-image.png</link>
+    </image>
+    <generator>Hugo -- 0.147.9</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 10 May 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/bug-bounty/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Lorsrf</title>
+      <link>http://localhost:1313/projects/lorsrf/</link>
+      <pubDate>Sat, 10 May 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/lorsrf/</guid>
+      <description>Fast CLI tool to discover parameters vulnerable to SSRF or out-of-band resource load 🛰️.</description>
+    </item>
+    <item>
+      <title>Legacy SDK Flaws Cause Stored XSS and Account Takeover</title>
+      <link>http://localhost:1313/posts/legacy-sdk-xss-account-takeover/</link>
+      <pubDate>Fri, 14 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/legacy-sdk-xss-account-takeover/</guid>
+      <description>&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://miro.medium.com/v2/resize:fit:480/0*wFXpWUgkd4CNm-ov.gif&#34;&gt;&lt;/p&gt;
+&lt;p&gt;—&lt;/p&gt;
+&lt;p&gt;Alright, let me tell you a fun story about how a casual day of hunting bugs turned into a serious jackpot — all thanks to some forgotten open source library!&lt;/p&gt;
+&lt;p&gt;It started like any other day: coffee ready, Burp Suite fired up, and enthusiasm maxed out. I was testing a cool AI-driven reporting/training platform over at example.ai.&lt;/p&gt;
+&lt;p&gt;These folks were pretty solid when it came to securing their main endpoints; my usual payloads and tests didn’t reveal much initially. However, the moment I stumbled onto their  &lt;code&gt;/reports&lt;/code&gt;  page, my curiosity went through the roof. This page was super interactive—it allowed users to create detailed, professional-looking reports with graphs, charts, images, markdown support, etc ..&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
