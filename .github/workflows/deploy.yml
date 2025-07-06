@@ -30,5 +30,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
-          publish_branch: main  # Because you are using root repo (user.github.io)
+          publish_branch: gh-pages  # Because you are using root repo (user.github.io)
           cname: www.mindpatch.net
