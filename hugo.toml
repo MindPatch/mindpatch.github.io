@@ -15,7 +15,11 @@ theme = 'PaperMod'
   images = ['/og-image.png']
 
 [outputs]
-  home = ["HTML", "RSS", "JSON"]
+  home = ["HTML"]
+  section = ["HTML"]
+  page = ["HTML"]
+  taxonomy = ["HTML"]
+  term = ["HTML"]
 
 [params.social]
   twitter = "https://twitter.com/mindpatch"
