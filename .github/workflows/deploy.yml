@@ -3,7 +3,7 @@ name: Deploy Hugo site to GitHub Pages
 on:
   push:
     branches:
-      - main  # or your content branch
+      - master  # or your content branch
 
 permissions:
   contents: write  # needed to push to gh-pages
