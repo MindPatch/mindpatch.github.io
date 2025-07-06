@@ -23,7 +23,7 @@ jobs:
           extended: true
 
       - name: ⚙️ Build site
-        run: hugo --minify
+        run: hugo --minify --baseURL="https://www.mindpatch.net/"
 
       - name: 🚀 Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
