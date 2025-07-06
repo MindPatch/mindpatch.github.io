@@ -2,7 +2,7 @@ baseURL = 'https://www.mindpatch.net/'
 languageCode = 'en-us'
 title = '@MindPatch'
 theme = 'PaperMod'
-
+# hello
 [pagination]
   pagerSize = 5
 
