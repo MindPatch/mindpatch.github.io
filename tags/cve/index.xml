@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cve on @MindPatch</title><link>https://www.mindpatch.net/tags/cve/</link><description>Recent content in Cve on @MindPatch</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Thu, 10 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.mindpatch.net/tags/cve/index.xml" rel="self" type="application/rss+xml"/><item><title>Analysis of CVE-2022–30781</title><link>https://www.mindpatch.net/posts/2024-01-10-analysis-of-cve-202230781/</link><pubDate>Thu, 10 Apr 2025 00:00:00 +0000</pubDate><guid>https://www.mindpatch.net/posts/2024-01-10-analysis-of-cve-202230781/</guid><description>&lt;hr>
+&lt;p>How Git Fetch Resulted in Critical Remote Code Execution in Gitea&lt;/p>
+&lt;p>&lt;img src="https://miro.medium.com/v2/resize:fit:477/0*7XgQCsp0nd9dRoQo.png" alt="">&lt;/p>
+&lt;p>&lt;strong>Good Morning, Everyone!&lt;/strong>&lt;/p>
+&lt;p>In today’s post, I’ll dive into an analysis of &lt;strong>CVE-2022–30781&lt;/strong>, a critical vulnerability found in the Gitea platform. This CVE allows attackers to execute remote code on the affected server, posing a significant security risk.&lt;/p>
+&lt;p>Here’s what we’ll cover:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Understanding How the CVE Works&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Writing Our Own Exploit&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>How the Gitea Team Fixed It&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;p>Let’s jump in and enjoy&lt;/p></description></item></channel></rss>

