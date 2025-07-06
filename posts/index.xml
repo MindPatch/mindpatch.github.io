@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on @MindPatch</title><link>https://www.mindpatch.net/posts/</link><description>Recent content in Posts on @MindPatch</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Mon, 28 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.mindpatch.net/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>[CIT CTF 2025] Solving all Web challenges</title><link>https://www.mindpatch.net/posts/2025-04-28-cit-ctf/</link><pubDate>Mon, 28 Apr 2025 00:00:00 +0000</pubDate><guid>https://www.mindpatch.net/posts/2025-04-28-cit-ctf/</guid><description>&lt;p>Hello, I joined the CTF for fun during the weekend.&lt;/p>
+&lt;p>I focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.&lt;/p>
+&lt;h2 id="mr-chatbot">Mr. Chatbot&lt;/h2>
+&lt;p>&lt;img src="https://miro.medium.com/v2/resize:fit:952/1*kvW3lucpnNq6fTtQ9Y_BBA.png" alt="Mr. Chatbot Challenge">&lt;/p>
+&lt;p>The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn&amp;rsquo;t an LLM attack — responses came from JavaScript files.&lt;/p></description></item><item><title>Analysis of CVE-2022–30781</title><link>https://www.mindpatch.net/posts/2024-01-10-analysis-of-cve-202230781/</link><pubDate>Thu, 10 Apr 2025 00:00:00 +0000</pubDate><guid>https://www.mindpatch.net/posts/2024-01-10-analysis-of-cve-202230781/</guid><description>&lt;hr>
+&lt;p>How Git Fetch Resulted in Critical Remote Code Execution in Gitea&lt;/p>
+&lt;p>&lt;img src="https://miro.medium.com/v2/resize:fit:477/0*7XgQCsp0nd9dRoQo.png" alt="">&lt;/p>
+&lt;p>&lt;strong>Good Morning, Everyone!&lt;/strong>&lt;/p>
+&lt;p>In today’s post, I’ll dive into an analysis of &lt;strong>CVE-2022–30781&lt;/strong>, a critical vulnerability found in the Gitea platform. This CVE allows attackers to execute remote code on the affected server, posing a significant security risk.&lt;/p>
+&lt;p>Here’s what we’ll cover:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Understanding How the CVE Works&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Writing Our Own Exploit&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>How the Gitea Team Fixed It&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;p>Let’s jump in and enjoy&lt;/p></description></item><item><title>Legacy SDK Flaws Cause Stored XSS and Account Takeover</title><link>https://www.mindpatch.net/posts/legacy-sdk-xss-account-takeover/</link><pubDate>Fri, 14 Mar 2025 00:00:00 +0000</pubDate><guid>https://www.mindpatch.net/posts/legacy-sdk-xss-account-takeover/</guid><description>&lt;p>&lt;img src="https://miro.medium.com/v2/resize:fit:480/0*wFXpWUgkd4CNm-ov.gif" alt="">&lt;/p>
+&lt;p>—&lt;/p>
+&lt;p>Alright, let me tell you a fun story about how a casual day of hunting bugs turned into a serious jackpot — all thanks to some forgotten open source library!&lt;/p>
+&lt;p>It started like any other day: coffee ready, Burp Suite fired up, and enthusiasm maxed out. I was testing a cool AI-driven reporting/training platform over at example.ai.&lt;/p>
+&lt;p>These folks were pretty solid when it came to securing their main endpoints; my usual payloads and tests didn’t reveal much initially. However, the moment I stumbled onto their &lt;code>/reports&lt;/code> page, my curiosity went through the roof. This page was super interactive—it allowed users to create detailed, professional-looking reports with graphs, charts, images, markdown support, etc ..&lt;/p></description></item><item><title>Solving DoxPit Challenge</title><link>https://www.mindpatch.net/posts/solving-doxpit-challenge/</link><pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate><guid>https://www.mindpatch.net/posts/solving-doxpit-challenge/</guid><description>&lt;h1 id="htb-solving-doxpit-challange">[HTB] Solving DoxPit Challange&lt;/h1>
+&lt;p>&lt;img src="https://miro.medium.com/v2/resize:fit:700/1*tWUMuT1J0TUSBua9hOmWcg.png" alt="">&lt;/p>
+&lt;p>In this write-up, I’ll walk you through the process of solving the HTB DoxPit challenge&lt;/p>
+&lt;p>This challenge features a mix of vulnerabilities in both a Flask app and a NextJS application through a series of methodical steps, I’ll show you how to exploit these vulnerabilities and successfully capture the flag&lt;/p>
+&lt;p>Let’s dive into the details!&lt;/p>
+&lt;h1 id="getting-started">Getting Started&lt;/h1>
+&lt;p>The first step in tackling the DoxPit challenge was to download the provided challenge code. This code revealed two distinct folders: one for a NextJS app and the other for a Flask app.&lt;/p></description></item></channel></rss>
