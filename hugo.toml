@@ -2,7 +2,13 @@ baseURL = 'https://www.mindpatch.net/'
 languageCode = 'en-us'
 title = '@MindPatch'
 theme = 'hello-friend-ng'
-# hello tt
+
+# Asset configuration
+relativeURLs = false
+canonifyURLs = false
+
+# Suppress raw HTML warning
+ignoreLogs = ['warning-goldmark-raw-html']
 [pagination]
   pagerSize = 5
 

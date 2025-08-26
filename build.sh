@@ -8,8 +8,9 @@ if [ -d "public" ]; then
     rm -rf public
 fi
 
-# Build the site
-hugo --gc --minify
+# Build the site for production
+hugo --gc --minify --baseURL "https://www.mindpatch.net/"
 
 echo "Build complete!"
 echo "Files generated in ./public directory"
+echo "Built for production with base URL: https://www.mindpatch.net/"
