@@ -18,7 +18,7 @@ ignoreLogs = ['warning-goldmark-raw-html']
   dateformNum     = "2006-01-02"
   dateformNumTime = "2006-01-02 15:04"
   
-  description = "Hi, I'm Khaled (@MindPatch), a cybersecurity engineer passionate about offensive security, software development, and DevSecOps. I specialize in penetration testing, bug bounty hunting, vulnerability research, and security automation. Through my blog, I share practical security knowledge, CTF writeups, tool development insights, and challenge walkthroughs to help the cybersecurity community learn and grow. When I'm not breaking things, I'm building security tools in Rust and Python, contributing to open source projects, and mentoring aspiring security professionals."
+  description = "Hi, I'm Khaled, a cybersecurity engineer passionate about offensive security, software development, and DevSecOps. I specialize in penetration testing, bug bounty hunting, vulnerability research, and security automation. Through my blog, I share practical security knowledge, CTF writeups, tool development insights, and challenge walkthroughs to help the cybersecurity community learn and grow. When I'm not breaking things, I'm building security tools in Rust and Python, contributing to open source projects, and mentoring aspiring security professionals."
   author = 'Khaled Nassar'
   keywords = ['cybersecurity', 'penetration testing', 'bug bounty', 'security research', 'vulnerability assessment', 'ethical hacking', 'security automation', 'CTF competitions', 'offensive security', 'mindpatch']
   images = ['/og-image.png']
