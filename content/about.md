@@ -5,14 +5,14 @@ draft: false
 layout: "about"
 url: "/about"
 ---
-Hi, I'm **MindPatch**, a cybersecurity engineer and offensive security specialist. I focus on:
+Hi, I'm **Khaled** (MindPatch) - an **Offensive Security Engineer**, **Software Engineer**, and **DevSecOps** specialist.
 
-- Penetration testing
-- Bug bounty hunting
-- Vulnerability research
-- Security automation
-- Capture the Flag (CTF) competitions
+I focus on penetration testing, bug bounty hunting, vulnerability research, security automation, and CTF competitions. With expertise in Python, Rust, and security tooling, I build open-source security tools and share practical knowledge with the cybersecurity community.
 
-With deep experience in offensive tooling, scripting, and red team tactics, I aim to share practical security knowledge and challenge walkthroughs with the community.
+---
 
-You can reach me at: [hello@mindpatch.net](mailto:hello@mindpatch.net)
+**Let's connect:**
+
+📧 **Email**: [hello@mindpatch.net](mailto:hello@mindpatch.net)
+
+💼 **LinkedIn**: [Start a chat with me](https://www.linkedin.com/in/knassar702/)

