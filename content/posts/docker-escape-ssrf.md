@@ -24,9 +24,7 @@ This critical vulnerability was discovered and responsibly disclosed by security
 
 ## Technical Background
 
-To understand the gravity of CVE-2025-9074, we need to explore how Docker Desktop's architecture created the perfect storm for this vulnerability. The issue wasn't a simple coding error or memory corruption bug that security researchers typically discover through fuzzing or reverse engineering. Instead, it was a network configuration issue that stemmed from how Docker Desktop manages container-to-API communication in WSL2 environments.
-
-Docker Desktop was designed to bring the Docker experience to Windows systems that don't natively support Linux containers. On modern Windows installations, Docker Desktop leverages WSL2 (Windows Subsystem for Linux 2), which provides a real Linux kernel running inside a lightweight virtual machine managed by Microsoft's Hyper-V technology. This architecture allows Windows administrators and developers to manage containerized workloads using familiar Docker commands while maintaining near-native Linux performance.
+Docker Desktop's architecture created the conditions for this vulnerability through its WSL2 implementation. WSL2 provides a real Linux kernel running inside a lightweight virtual machine managed by Microsoft's Hyper-V technology, allowing Windows systems to run Linux containers with near-native performance.
 
 The WSL2 integration represents a significant architectural improvement over earlier approaches. Instead of using emulation or translation layers, WSL2 runs a complete Linux kernel that shares the same VM with all WSL2 distributions. This design provides excellent performance and tight integration with Windows, but it also created the network configuration that made CVE-2025-9074 possible. 
 
