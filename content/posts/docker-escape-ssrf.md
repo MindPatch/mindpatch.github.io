@@ -423,17 +423,20 @@ EDUCATIONAL USE ONLY - Test only on systems you own
 import requests
 import json
 
-def test_vulnerability():
-    target_ip = "192.168.65.7"
-    api_port = 2375
-    base_url = f"http://{target_ip}:{api_port}"
-    
-    print(f"[*] Testing for CVE-2025-9074 vulnerability")
-    print(f"[*] Target: {base_url}")
+def test_network_access(target_ip="192.168.65.7", port=2375):
+    """Test if container can reach the Docker daemon network"""
+    try:
+        response = requests.get(f"http://{target_ip}:{port}/_ping", timeout=2)
+        return response.status_code == 200 and response.text.strip() == "OK"
+    except:
+        return False
+
+def test_vulnerability(target_ip="192.168.65.7", port=2375):
+    """Test for CVE-2025-9074 vulnerability"""
+    base_url = f"http://{target_ip}:{port}"
     
     try:
         # Test basic API connectivity
-        print("[*] Step 1: Testing API accessibility...")
         response = requests.get(f"{base_url}/_ping", timeout=3)
         
         if response.status_code == 200 and response.text.strip() == "OK":
@@ -441,32 +444,19 @@ def test_vulnerability():
             print("[+] CVE-2025-9074 vulnerability confirmed")
             
             # Gather system information to prove access
-            print("\n[*] Step 2: Gathering system information...")
             info_response = requests.get(f"{base_url}/info", timeout=5)
-            
             if info_response.status_code == 200:
                 info = info_response.json()
-                print(f"[+] Docker Version: {info.get('ServerVersion')}")
-                print(f"[+] Host OS: {info.get('OperatingSystem')}")
-                print(f"[+] Architecture: {info.get('Architecture')}")
-                print(f"[+] Total Memory: {info.get('MemTotal', 0) // (1024*1024*1024)} GB")
+                print(f"  Docker Version: {info.get('ServerVersion')}")
+                print(f"  Host OS: {info.get('OperatingSystem')}")
             
             # List existing containers
-            print("\n[*] Step 3: Enumerating containers...")
             containers_response = requests.get(f"{base_url}/containers/json?all=1", timeout=5)
-            
             if containers_response.status_code == 200:
                 containers = containers_response.json()
-                print(f"[+] Found {len(containers)} containers on system")
-                for container in containers[:3]:  # Show first 3
-                    print(f"    - {container['Names'][0]} ({container['State']})")
-            
-            print(f"\n[!] CRITICAL: System is vulnerable to CVE-2025-9074")
-            print(f"[!] Containers can access Docker API with full privileges")
-            print(f"[!] Immediate update to Docker Desktop 4.44.3+ required")
+                print(f"  Found {len(containers)} containers on system")
             
             return True
-            
         else:
             print("[-] API endpoint not accessible or returned unexpected response")
             return False
@@ -481,44 +471,26 @@ def test_vulnerability():
         print(f"[-] Error during testing: {str(e)}")
         return False
 
-def test_network_access():
-    """Test if container can reach the Docker daemon network"""
-    target_ip = "192.168.65.7"
-    
-    print(f"\n[*] Testing network connectivity to {target_ip}...")
-    
-    try:
-        # Simple connectivity test
-        response = requests.get(f"http://{target_ip}:2375/_ping", timeout=2)
-        print("[+] Network path to Docker daemon confirmed")
-        return True
-    except:
-        print("[-] Cannot reach Docker daemon network")
-        return False
-
 if __name__ == "__main__":
-    print("=" * 60)
+    print("=" * 50)
     print("CVE-2025-9074 Vulnerability Test")
     print("FOR EDUCATIONAL/TESTING PURPOSES ONLY")
-    print("=" * 60)
+    print("=" * 50)
     
     # Test network connectivity first
     if test_network_access():
-        # Run full vulnerability test
-        vulnerable = test_vulnerability()
+        print("[+] Network path to Docker daemon confirmed")
         
-        if vulnerable:
-            print(f"\n{'='*60}")
-            print("VULNERABILITY CONFIRMED - IMMEDIATE ACTION REQUIRED")
-            print("1. Update Docker Desktop to version 4.44.3 or later")
-            print("2. Review container logs for signs of exploitation")
-            print("3. Audit any containers from untrusted sources")
-            print("='*60}")
+        # Run full vulnerability test
+        if test_vulnerability():
+            print("\n[!] CRITICAL: System is vulnerable to CVE-2025-9074")
+            print("[!] Containers can access Docker API with full privileges")
+            print("[!] Immediate update to Docker Desktop 4.44.3+ required")
         else:
-            print(f"\n[+] System appears to be patched or not vulnerable")
+            print("\n[+] System appears to be patched or not vulnerable")
     else:
-        print(f"\n[+] Container cannot access Docker daemon network")
-        print(f"[+] System may be patched or using secure configuration")
+        print("[-] Cannot reach Docker daemon network")
+        print("[+] System may be patched or using secure configuration")
 ```
 
 ### Running the Test
