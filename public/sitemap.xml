@@ -2,111 +2,129 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://www.mindpatch.net/</loc>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2025-09-01T23:12:34+03:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/docker-escape/</loc>
+    <lastmod>2025-09-01T23:12:34+03:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/</loc>
+    <lastmod>2025-09-01T23:12:34+03:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2025-09-01T23:12:34+03:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/untagged/</loc>
+    <lastmod>2025-09-01T23:12:34+03:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/certification-review/</loc>
+    <lastmod>2025-08-31T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/cwee/</loc>
+    <lastmod>2025-08-31T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/htb/</loc>
+    <lastmod>2025-08-31T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/penetration-testing/</loc>
+    <lastmod>2025-08-31T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/cwee-review/</loc>
+    <lastmod>2025-08-31T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/web-security/</loc>
+    <lastmod>2025-08-31T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/about/</loc>
     <lastmod>2025-07-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/about/</loc>
+    <loc>http://localhost:1313/projects/</loc>
     <lastmod>2025-07-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/projects/</loc>
-    <lastmod>2025-07-06T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/projects/lotus/</loc>
+    <loc>http://localhost:1313/projects/lotus/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/rust/</loc>
+    <loc>http://localhost:1313/tags/rust/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/scanner/</loc>
+    <loc>http://localhost:1313/tags/scanner/</loc>
     <lastmod>2025-06-01T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/</loc>
-    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/tags/web-security/</loc>
-    <lastmod>2025-06-01T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/tags/dependency/</loc>
+    <loc>http://localhost:1313/tags/dependency/</loc>
     <lastmod>2025-05-18T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/projects/vulfy/</loc>
+    <loc>http://localhost:1313/projects/vulfy/</loc>
     <lastmod>2025-05-18T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/vulnerability/</loc>
+    <loc>http://localhost:1313/tags/vulnerability/</loc>
     <lastmod>2025-05-18T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/bug-bounty/</loc>
+    <loc>http://localhost:1313/tags/bug-bounty/</loc>
     <lastmod>2025-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/projects/lorsrf/</loc>
+    <loc>http://localhost:1313/projects/lorsrf/</loc>
     <lastmod>2025-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/ssrf/</loc>
+    <loc>http://localhost:1313/tags/ssrf/</loc>
     <lastmod>2025-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/posts/2025-04-28-cit-ctf/</loc>
+    <loc>http://localhost:1313/posts/2025-04-28-cit-ctf/</loc>
     <lastmod>2025-04-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/ctf/</loc>
+    <loc>http://localhost:1313/tags/ctf/</loc>
     <lastmod>2025-04-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/flask/</loc>
+    <loc>http://localhost:1313/tags/flask/</loc>
     <lastmod>2025-04-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/git-enumeration/</loc>
+    <loc>http://localhost:1313/tags/git-enumeration/</loc>
     <lastmod>2025-04-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/lfi/</loc>
+    <loc>http://localhost:1313/tags/lfi/</loc>
     <lastmod>2025-04-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/posts/</loc>
+    <loc>http://localhost:1313/tags/sql-injection/</loc>
     <lastmod>2025-04-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/sql-injection/</loc>
+    <loc>http://localhost:1313/tags/ssti/</loc>
     <lastmod>2025-04-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/ssti/</loc>
-    <lastmod>2025-04-28T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/posts/2024-01-10-analysis-of-cve-202230781/</loc>
+    <loc>http://localhost:1313/posts/2024-01-10-analysis-of-cve-202230781/</loc>
     <lastmod>2025-04-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/cve/</loc>
+    <loc>http://localhost:1313/tags/cve/</loc>
     <lastmod>2025-04-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/git/</loc>
+    <loc>http://localhost:1313/tags/git/</loc>
     <lastmod>2025-04-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/gitea/</loc>
+    <loc>http://localhost:1313/tags/gitea/</loc>
     <lastmod>2025-04-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/rce/</loc>
+    <loc>http://localhost:1313/tags/rce/</loc>
     <lastmod>2025-04-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/research/</loc>
+    <loc>http://localhost:1313/tags/research/</loc>
     <lastmod>2025-04-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/account-takeover/</loc>
+    <loc>http://localhost:1313/tags/account-takeover/</loc>
     <lastmod>2025-03-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/posts/legacy-sdk-xss-account-takeover/</loc>
+    <loc>http://localhost:1313/posts/legacy-sdk-xss-account-takeover/</loc>
     <lastmod>2025-03-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/sdk/</loc>
+    <loc>http://localhost:1313/tags/sdk/</loc>
     <lastmod>2025-03-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/xss/</loc>
+    <loc>http://localhost:1313/tags/xss/</loc>
     <lastmod>2025-03-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/htb/</loc>
+    <loc>http://localhost:1313/tags/nextjs/</loc>
     <lastmod>2024-08-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/tags/nextjs/</loc>
+    <loc>http://localhost:1313/posts/solving-doxpit-challenge/</loc>
     <lastmod>2024-08-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://www.mindpatch.net/posts/solving-doxpit-challenge/</loc>
-    <lastmod>2024-08-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/categories/</loc>
+    <loc>http://localhost:1313/categories/</loc>
   </url>
 </urlset>
