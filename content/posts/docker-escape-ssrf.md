@@ -69,30 +69,13 @@ When you execute `docker run nginx:latest`, here's the detailed process:
 
 The Docker daemon requires root privileges for several critical operations:
 
-**Namespace Management:**
-```bash
-# Docker daemon needs to create/manage Linux namespaces
-unshare --pid --net --mount --uts --ipc --user
-```
+**Namespace Management:** The daemon must create and manage Linux namespaces (PID, network, mount, UTS, IPC, and user namespaces) which requires administrative privileges to isolate container processes from the host system.
 
-**Control Group (cgroup) Management:**
-```bash
-# Setting resource limits requires root access to cgroup filesystem
-echo "100m" > /sys/fs/cgroup/memory/docker/container_id/memory.limit_in_bytes
-```
+**Control Group Management:** Setting resource limits through cgroups requires root access to write to the cgroup filesystem, controlling memory usage, CPU allocation, and I/O bandwidth for containers.
 
-**Network Configuration:**
-```bash
-# Creating network interfaces and iptables rules
-ip netns add container_namespace
-iptables -t nat -A DOCKER -p tcp --dport 8080 -j DNAT --to-destination 172.17.0.2:80
-```
+**Network Configuration:** The daemon creates virtual network interfaces, configures iptables rules for port forwarding and network isolation, and manages bridge networks that connect containers to each other and the host.
 
-**Filesystem Operations:**
-```bash
-# Mount operations for container filesystems
-mount -t overlay overlay -o lowerdir=layer1:layer2,upperdir=upper,workdir=work /merged
-```
+**Filesystem Operations:** Container filesystems use overlay mounts and bind mounts that require root privileges to create, modify, and manage the layered filesystem structure that makes containers lightweight and efficient.
 
 ### Linux Security Model: The Foundation
 
@@ -116,116 +99,23 @@ srw-rw---- 1 root docker 0 Sep  1 10:30 /var/run/docker.sock
 
 #### 2. Linux Namespaces: Process Isolation
 
-Docker leverages six types of Linux namespaces for isolation:
-
-**Process ID (PID) Namespace:**
-```bash
-# Container sees only its own processes
-unshare --pid --fork --mount-proc
-# Inside container: PID 1 is the container's main process
-# Outside: Same process has different PID on host
-```
-
-**Network Namespace:**
-```bash
-# Isolated network stack per container
-ip netns add container1
-ip netns exec container1 ip addr show
-# Shows only container's network interfaces
-```
-
-**Mount Namespace:**
-```bash
-# Separate filesystem view per container
-unshare --mount
-mount --bind /host/app /container/app
-# Container sees different filesystem hierarchy
-```
-
-**UTS Namespace:**
-```bash
-# Isolated hostname and domain name
-unshare --uts
-hostname container-hostname
-# Hostname change only affects container
-```
-
-**IPC Namespace:**
-```bash
-# Isolated inter-process communication
-unshare --ipc
-ipcs -m  # Shows only container's shared memory segments
-```
-
-**User Namespace:**
-```bash
-# Map container root to unprivileged host user
-unshare --user --map-root-user
-# Container root (UID 0) → Host user (UID 1000)
-```
+Docker leverages six types of Linux namespaces for isolation: PID (process isolation), Network (isolated network stack), Mount (separate filesystem view), UTS (hostname isolation), IPC (inter-process communication isolation), and User (user ID mapping). These namespaces ensure containers cannot see or interact with processes, networks, or resources outside their designated boundaries.
 
 #### 3. Control Groups (cgroups): Resource Limits
 
-Cgroups enforce resource constraints at the kernel level:
-
-```bash
-# Memory limits
-echo "512m" > /sys/fs/cgroup/memory/docker/container/memory.limit_in_bytes
-
-# CPU limits  
-echo "50000" > /sys/fs/cgroup/cpu/docker/container/cpu.cfs_quota_us
-echo "100000" > /sys/fs/cgroup/cpu/docker/container/cpu.cfs_period_us
-
-# I/O limits
-echo "8:0 1048576" > /sys/fs/cgroup/blkio/docker/container/blkio.throttle.read_bps_device
-```
+Cgroups enforce resource constraints at the kernel level, limiting CPU usage, memory consumption, and I/O operations for containers.
 
 #### 4. Linux Security Modules (LSM)
 
-**SELinux Integration:**
-```bash
-# SELinux contexts for containers
-ps -eZ | grep docker
-# Shows SELinux context: system_u:system_r:svirt_lxc_net_t:s0:c123,c456
-
-# Container processes run with restricted SELinux context
-sestatus -b | grep container
-```
-
-**AppArmor Profiles:**
-```bash
-# Docker's default AppArmor profile
-aa-status | grep docker
-# /usr/bin/docker-default (enforce)
-
-# Profile restricts system calls and file access
-cat /etc/apparmor.d/docker-default | head -20
-```
+SELinux and AppArmor provide mandatory access control, restricting what containers can access on the system through security policies and profiles.
 
 #### 5. Capabilities: Fine-grained Privilege Control
 
-Docker drops dangerous capabilities by default:
-
-```bash
-# Default capability set (reduced from full root)
-docker run --rm -it alpine capsh --print
-# Current: cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap+eip
-
-# Dangerous capabilities dropped by default:
-# CAP_SYS_ADMIN, CAP_SYS_TIME, CAP_SYS_MODULE, CAP_SYS_RAWIO
-```
+Docker drops dangerous capabilities by default, removing privileges like CAP_SYS_ADMIN, CAP_SYS_TIME, CAP_SYS_MODULE, and CAP_SYS_RAWIO from container processes.
 
 #### 6. Seccomp: System Call Filtering
 
-Docker applies seccomp profiles to limit system calls:
-
-```bash
-# Default seccomp profile blocks ~44 dangerous syscalls
-docker run --rm -it alpine cat /proc/self/status | grep Seccomp
-# Seccomp: 2 (filtering enabled)
-
-# Blocked calls include: reboot, mount, umount2, kexec_load, etc.
-```
+Docker applies seccomp profiles to limit system calls, blocking approximately 44 dangerous syscalls including reboot, mount, umount2, and kexec_load.
 
 The Docker daemon runs with root privileges and has complete control over:
 - **Container Lifecycle**: Create, start, stop, destroy containers

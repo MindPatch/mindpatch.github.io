@@ -168,8 +168,11 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "1da9c32317d2cd08",
+  "active": "4d60f1116e4b0ed6",
   "lastOpenFiles": [
+    "content/posts/legacy-sdk-xss-account-takeover.md",
+    "content/posts/docker-escape-ssrf.md",
+    "content/posts/docker-escape-ssrf.md.tmp.36956.1756762235146",
     "public/posts/docker-escape-ssrf/index.html",
     "public/posts/docker-escape-ssrf",
     "public/tags/container-escape/index.xml",
@@ -179,9 +182,6 @@
     "public/tags/container-escape/page/1",
     "public/tags/container-escape/page",
     "public/tags/container-escape/index.html",
-    "public/tags/container-escape",
-    "public/tags/security/page/1/index.html",
-    "content/posts/cwee-review.md",
-    "content/posts/docker-escape-ssrf.md"
+    "content/posts/cwee-review.md"
   ]
 }
