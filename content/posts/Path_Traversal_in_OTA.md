@@ -94,10 +94,6 @@ flowchart TD
 
 The key assumption: **files cannot escape the staging directory during extraction**.
 
-This model is documented in OTAHub's official specification (`docs/modules/deployment-api-v3.md`):
-
-> An update module must not install the update in the final location during the Download state, because checksums are not verified until after the streaming stage is over. Failure to do so can lead to the update module being vulnerable to security attacks.
-
 The vulnerability I found breaks this fundamental assumption.
 
 ## The Vulnerability Explained
