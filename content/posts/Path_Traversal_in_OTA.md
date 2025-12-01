@@ -5,13 +5,6 @@ excerpt: "Deep dive into a path traversal vulnerability in an OTA update system 
 tags: ["OTA", "path-traversal", "embedded", "tar-slip","research", "security"]
 author: "MindPatch"
 ---
-# Tar Slip: Path Traversal in OTA Update Client CLI
-
-**Date:** 2025-12-01
-**Tags:** OTA, path-traversal, embedded, tar-slip, research, security
-**Author:** MindPatch
-
----
 
 A deep dive into a path traversal bug found in an OTA update system's artifact extraction process. The vulnerability bypasses the staged validation security model, allowing arbitrary file writes during updates. Due to the vendor's bug bounty rules prohibiting public disclosure, the product is referred to as **OTAHub**.
 
