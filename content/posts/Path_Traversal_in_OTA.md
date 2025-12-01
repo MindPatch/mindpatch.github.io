@@ -6,8 +6,6 @@ tags: ["OTA", "path-traversal", "embedded", "tar-slip","research", "security"]
 author: "MindPatch"
 ---
 
-# Path Traversal in OTA Update Client CLI: Breaking the Staged Security Model
-
 A deep dive into a path traversal bug I found in an OTA update system's artifact extraction process. The vulnerability bypasses the staged validation security model, allowing arbitrary file writes during updates. Due to the vendor's bug bounty program rules prohibiting public disclosure, I'll refer to the product as "OTAHub" throughout this writeup.
 
 ## Table of Contents
