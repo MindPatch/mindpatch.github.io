@@ -11,10 +11,9 @@ A deep dive into a path traversal bug I found in an OTA update system's artifact
 
 ## Table of Contents
 - [Overview](#overview)
-- [Technical Background](#technical-background)
-  - [What is OTAHub?](#what-is-OTAHub)
-  - [The OTAHub Artifact Format](#the-otactl-format)
-  - [OTAHub's Staged Security Model](#OTAHubs-staged-security-model)
+- [What is OTAHub?](#what-is-OTAHub)
+- [The OTAHub Artifact Format](#the-otactl-format)
+- [OTAHub's Staged Security Model](#OTAHubs-staged-security-model)
 - [The Vulnerability Explained](#the-vulnerability-explained)
   - [Root Cause Analysis](#root-cause-analysis)
   - [Code Flow Breakdown](#code-flow-breakdown)
@@ -31,8 +30,6 @@ I discovered a path traversal vulnerability in OTAHub's update module that allow
 
 
 The core issue is that filenames extracted from artifact tar archives are used directly in file path construction without any validation or sanitization. An attacker who can deploy a OTAHub artifact (via compromised server or stolen signing key) can escape the staging directory and write files to arbitrary locations like `/etc/cron.d/`, `/root/.ssh/`, or `/usr/bin/`.
-
-## Technical Background
 
 ### What is OTAHub?
 
@@ -95,11 +92,6 @@ flowchart TD
 ```
 
 The key assumption: **files cannot escape the staging directory during extraction**.
-
-This model is documented in OTAHub's official specification (`docs/modules/deployment-api-v3.md`):
-
-> An update module must not install the update in the final location during the Download state, because checksums are not verified until after the streaming stage is over. Failure to do so can lead to the update module being vulnerable to security attacks.
-
 The vulnerability I found breaks this fundamental assumption.
 
 ## Discovery Process
