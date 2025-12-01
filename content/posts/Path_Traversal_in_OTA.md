@@ -163,6 +163,11 @@ A crafted script builds a malicious OTAHub artifact, ensuring checksums match th
 Installation fails (validation catches checksum mismatch), but the file outside staging is already written:
 
 ```bash
+$ ls /tmp/
+
+$ OTAHub isntall myfile.OTAHub
+Loading Error... Invalid File
+
 $ cat /tmp/OTAHub_pwned.txt
 PWNED - Path Traversal Success!
 ```
