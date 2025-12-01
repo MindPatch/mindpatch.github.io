@@ -1,5 +1,5 @@
 ---
-title: "[Tar Slip] Path Traversal in OTA Update Client CLI: Breaking the Staged Security Model"
+title: "Tar Slip: Path Traversal in OTA Update Client CLI"
 date: "2025-12-01"
 excerpt: "Deep dive into a path traversal vulnerability in an OTA update system that bypasses staged validation, allowing arbitrary file writes during updates."
 tags: ["OTA", "path-traversal", "embedded", "tar-slip","research", "security"]
