@@ -1,4 +1,11 @@
-# Path Traversal in OTA Update Client CLI: Breaking the Staged Security Model
+---
+title: "Path Traversal in OTA Update Client CLI: Breaking the Staged Security Model"
+date: "2025-12-01"
+excerpt: "Deep dive into a path traversal vulnerability in an OTA update system that bypasses staged validation, allowing arbitrary file writes during updates."
+tags: ["OTA", "path-traversal", "embedded", "research", "security"]
+author: "MindPatch"
+---
+
 
 A deep dive into a path traversal bug I found in an OTA update system's artifact extraction process. The vulnerability bypasses the staged validation security model, allowing arbitrary file writes during updates. Due to the vendor's bug bounty program rules prohibiting public disclosure, I'll refer to the product as "OTAHub" throughout this writeup.
 
@@ -22,12 +29,6 @@ A deep dive into a path traversal bug I found in an OTA update system's artifact
 
 I discovered a path traversal vulnerability in OTAHub's update module that allows attackers to write arbitrary files anywhere on the target device's filesystem during artifact extraction. The vulnerability bypasses OTAHub's staged security model, which is designed to validate artifacts before they touch the production filesystem.
 
-**Vulnerability Details:**
-- **CVE**: Pending
-- **CVSS Score**: 7.8 (High)
-- **Affected Component**: `otaclient` client
-- **Vulnerable Code**: `src/daemon/modules/v3/download_manager.cpp:306`
-- **Attack Vector**: Malicious OTAHub artifact with crafted tar entry names
 
 The core issue is that filenames extracted from artifact tar archives are used directly in file path construction without any validation or sanitization. An attacker who can deploy a OTAHub artifact (via compromised server or stolen signing key) can escape the staging directory and write files to arbitrary locations like `/etc/cron.d/`, `/root/.ssh/`, or `/usr/bin/`.
 
