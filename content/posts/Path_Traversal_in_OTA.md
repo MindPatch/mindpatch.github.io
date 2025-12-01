@@ -1,8 +1,8 @@
 ---
-title: "Path Traversal in OTA Update Client CLI: Breaking the Staged Security Model"
+title: "[Tar Slip] Path Traversal in OTA Update Client CLI: Breaking the Staged Security Model"
 date: "2025-12-01"
 excerpt: "Deep dive into a path traversal vulnerability in an OTA update system that bypasses staged validation, allowing arbitrary file writes during updates."
-tags: ["OTA", "path-traversal", "embedded", "research", "security"]
+tags: ["OTA", "path-traversal", "embedded", "tar-slip","research", "security"]
 author: "MindPatch"
 ---
 
@@ -31,6 +31,76 @@ I discovered a path traversal vulnerability in OTAHub's update module that allow
 
 
 The core issue is that filenames extracted from artifact tar archives are used directly in file path construction without any validation or sanitization. An attacker who can deploy a OTAHub artifact (via compromised server or stolen signing key) can escape the staging directory and write files to arbitrary locations like `/etc/cron.d/`, `/root/.ssh/`, or `/usr/bin/`.
+
+## Technical Background
+
+### What is OTAHub?
+
+OTAHub is an open-source over-the-air (OTA) update system for embedded Linux devices and IoT systems. It's used in production by companies deploying thousands of edge devices that need secure, reliable remote updates.
+
+Think of it like apt-get or yum, but for entire system images and application deployments on embedded devices. OTAHub handles:
+
+- **Artifact Management**: Packaging updates with metadata, checksums, and signatures
+- **Deployment**: Pushing updates to fleets of devices
+- **Rollback**: Automatic recovery if updates fail
+- **Security**: Cryptographic verification of update authenticity
+
+### The OTAHub Artifact Format
+
+A `.OTAHub` artifact is essentially a tar archive with a specific structure:
+
+```
+artifact.OTAHub
+├── version                    # Format version
+├── checksums                   # SHA256 checksums of all files
+├── metadata.tar.gz             # Metadata (device type, dependencies, etc.)
+└── data/
+    └── 0000.tar.gz           # Actual payload files
+```
+
+The `checksums` file is critical for security - it contains SHA256 hashes of every file in the artifact:
+
+```
+d3eb539a556352f3f47881d71fb0e5777b2f3e9a4251d283c18c67ce996774b7  pkg/0000/myapp.bin
+1da056538c62dadb411bbe1cb3c5f2b6cec83bc3d03aede2f8894666c0ad356b  metadata.tar.gz
+96bcd965947569404798bcbdb614f103db5a004eb6e364cfc162c146890ea35b  version
+```
+
+### OTAHub's Staged Security Model
+
+OTAHub uses a three-stage process to ensure artifacts are validated before installation:
+
+```mermaid
+flowchart TD
+    A["Stage 1: Download & Extract (Untrusted)"] --> B["Stage 2: Validate (Security Gate)"]
+    B --> C["Stage 3: Install (Trusted)"]
+    
+    A1["Location: /var/lib/otahub/runtime/packages/v3/staging/0000/files/"] --> A
+    A2["- Artifact downloaded and extracted to staging area"] --> A
+    A3["- Files NOT yet on production filesystem"] --> A
+    A4["- This is the 'sandbox' where validation happens"] --> A
+    
+    B1["- Verify SHA256 checksums from checksums"] --> B
+    B2["- Validate artifact signatures (if enabled)"] --> B
+    B3["- Confirm device type compatibility"] --> B
+    B4["- Check dependencies and prerequisites"] --> B
+    
+    C1["- Update module moves files to final destination"] --> C
+    C2["- Example: /opt/myapp/, /usr/bin/, /etc/myapp/"] --> C
+    C3["- Rollback data preserved for recovery"] --> C
+    
+    style A fill:#fff4e6
+    style B fill:#e6f3ff
+    style C fill:#e6ffe6
+```
+
+The key assumption: **files cannot escape the staging directory during extraction**.
+
+This model is documented in OTAHub's official specification (`docs/modules/deployment-api-v3.md`):
+
+> An update module must not install the update in the final location during the Download state, because checksums are not verified until after the streaming stage is over. Failure to do so can lead to the update module being vulnerable to security attacks.
+
+The vulnerability I found breaks this fundamental assumption.
 
 ## Discovery Process
 
@@ -109,76 +179,6 @@ PWNED - Path Traversal Success!
 ```
 
 The file was there. The update failed (as expected), but the damage was done - the file escaped the staging directory during extraction, before validation could stop it.
-
-## Technical Background
-
-### What is OTAHub?
-
-OTAHub is an open-source over-the-air (OTA) update system for embedded Linux devices and IoT systems. It's used in production by companies deploying thousands of edge devices that need secure, reliable remote updates.
-
-Think of it like apt-get or yum, but for entire system images and application deployments on embedded devices. OTAHub handles:
-
-- **Artifact Management**: Packaging updates with metadata, checksums, and signatures
-- **Deployment**: Pushing updates to fleets of devices
-- **Rollback**: Automatic recovery if updates fail
-- **Security**: Cryptographic verification of update authenticity
-
-### The OTAHub Artifact Format
-
-A `.OTAHub` artifact is essentially a tar archive with a specific structure:
-
-```
-artifact.OTAHub
-├── version                    # Format version
-├── checksums                   # SHA256 checksums of all files
-├── metadata.tar.gz             # Metadata (device type, dependencies, etc.)
-└── data/
-    └── 0000.tar.gz           # Actual payload files
-```
-
-The `checksums` file is critical for security - it contains SHA256 hashes of every file in the artifact:
-
-```
-d3eb539a556352f3f47881d71fb0e5777b2f3e9a4251d283c18c67ce996774b7  pkg/0000/myapp.bin
-1da056538c62dadb411bbe1cb3c5f2b6cec83bc3d03aede2f8894666c0ad356b  metadata.tar.gz
-96bcd965947569404798bcbdb614f103db5a004eb6e364cfc162c146890ea35b  version
-```
-
-### OTAHub's Staged Security Model
-
-OTAHub uses a three-stage process to ensure artifacts are validated before installation:
-
-```mermaid
-flowchart TD
-    A["Stage 1: Download & Extract (Untrusted)"] --> B["Stage 2: Validate (Security Gate)"]
-    B --> C["Stage 3: Install (Trusted)"]
-    
-    A1["Location: /var/lib/otahub/runtime/packages/v3/staging/0000/files/"] --> A
-    A2["- Artifact downloaded and extracted to staging area"] --> A
-    A3["- Files NOT yet on production filesystem"] --> A
-    A4["- This is the 'sandbox' where validation happens"] --> A
-    
-    B1["- Verify SHA256 checksums from checksums"] --> B
-    B2["- Validate artifact signatures (if enabled)"] --> B
-    B3["- Confirm device type compatibility"] --> B
-    B4["- Check dependencies and prerequisites"] --> B
-    
-    C1["- Update module moves files to final destination"] --> C
-    C2["- Example: /opt/myapp/, /usr/bin/, /etc/myapp/"] --> C
-    C3["- Rollback data preserved for recovery"] --> C
-    
-    style A fill:#fff4e6
-    style B fill:#e6f3ff
-    style C fill:#e6ffe6
-```
-
-The key assumption: **files cannot escape the staging directory during extraction**.
-
-This model is documented in OTAHub's official specification (`docs/modules/deployment-api-v3.md`):
-
-> An update module must not install the update in the final location during the Download state, because checksums are not verified until after the streaming stage is over. Failure to do so can lead to the update module being vulnerable to security attacks.
-
-The vulnerability I found breaks this fundamental assumption.
 
 ## The Vulnerability Explained
 
@@ -264,26 +264,19 @@ The file is written to the traversed path. This happens **during extraction**, b
 
 Here's the complete attack chain:
 
-```
-1. Artifact Download
-   ↓
-2. Tar Extraction Begins
-   ↓
-3. Read tar entry name: "../../tmp/evil.txt"
-   ↓  (payload.cpp:51)
-4. Store filename without validation
-   ↓  (update_module_download.cpp:297)
-5. Construct path: /var/lib/OTAHub/.../files/ + ../../tmp/evil.txt
-   ↓  (update_module_download.cpp:306)
-6. Path resolves to: /tmp/evil.txt
-   ↓
-7. Open file for writing
-   ↓  (update_module_download.cpp:310)
-8. Write file contents to /tmp/evil.txt
-   ↓
-9. Checksum validation FAILS (file not where expected)
-   ↓
-10. Update rolls back, but /tmp/evil.txt persists
+```mermaid
+flowchart TD
+  A[Artifact Download] --> B[Tar Extraction Begins]
+  B --> C[Read tar entry name: evil.txt outside expected dir]
+  C --> D[Store filename without validation]
+  D --> E[Construct target path under OTAHub files directory]
+  E --> F[Path resolves outside expected dir → temporary location]
+  F --> G[Open file for writing]
+  G --> H[Write file contents]
+  H --> I[Checksum validation fails]
+  I --> J[Update abort, but temp file persists]
+
+
 ```
 
 The critical point: **Step 8 happens before Step 9**. The file is written before validation occurs.
@@ -506,23 +499,5 @@ This defense-in-depth approach:
 1. Rejects obvious `..` sequences
 2. Canonicalizes the path (resolves symlinks, removes redundant separators)
 3. Verifies the result is still within the staging directory
-
-## Conclusion
-
-This vulnerability demonstrates how critical it is to validate all external input, even when it comes from "trusted" sources like signed artifacts. The staged security model is only as strong as its weakest link - in this case, the assumption that files couldn't escape the staging directory during extraction.
-
-Key takeaways:
-
-- **Never trust filenames from archives** - Always validate and sanitize before using them in filesystem operations
-- **Defense in depth matters** - Multiple validation layers (string checks + canonicalization + boundary verification) provide better security than any single check
-- **Security models must be enforced in code** - Documentation stating "don't do X" isn't enough; the code must actively prevent X
-
-Organizations using OTAHub should:
-- Update to the patched version immediately
-- Enable and enforce artifact signature verification
-- Audit devices for signs of compromise (unexpected files in `/tmp/`, `/etc/cron.d/`, etc.)
-- Review artifact deployment logs for failed installations (which may indicate exploitation attempts)
-
-The vulnerability has been responsibly disclosed to the OTAHub security team.
 
 
