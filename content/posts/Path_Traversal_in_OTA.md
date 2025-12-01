@@ -181,11 +181,6 @@ Arbitrary file write as root allows:
 * **Persistent backdoors** through SSH keys
 * **Device bricking** by corrupting bootloader files
 
-Attack requires:
-
-* Compromised OTAHub server, or
-* Stolen signing key, or
-* Disabled signature verification
 
 ## The Fix
 
