@@ -1,136 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-        <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<html lang="en-us">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="🐺 Fast Rust-based package version scanner.">
+    <meta name="keywords" content="cybersecurity, penetration testing, bug bounty, security research, vulnerability assessment, ethical hacking, security automation, CTF competitions, offensive security, mindpatch">
+    <meta name="author" content="Khaled Nassar">
 
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="author" content="">
-<meta name="description" content="🐺 Fast Rust-based package version scanner." />
-<meta name="keywords" content="[cybersecurity penetration testing bug bounty security research vulnerability assessment ethical hacking security automation CTF competitions offensive security mindpatch], Rust, vulnerability, dependency" />
-<meta name="robots" content="noodp" />
-<meta name="theme-color" content="" />
-<link rel="canonical" href="http://localhost:1313/projects/vulfy/" />
+    <title>Vulfy - @MindPatch</title>
 
+    <link rel="stylesheet" href="/css/style.css">
 
-    <title>
-        
-            Vulfy :: @MindPatch 
-        
-    </title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.css">
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.7.0/dist/bundle/asciinema-player.min.css">
 
+    
 
-
-  <link rel="stylesheet" href="/main.min.07ea7ac7da67e2e153a7dfa2457bc6a19cca824288d175e223fadc579041bc51.css" integrity="sha256-B&#43;p6x9pn4uFTp9&#43;iRXvGoZzKgkKI0XXiI/rcV5BBvFE=" crossorigin="anonymous">
-
-
-
-
-
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
-    <link rel="shortcut icon" href="/favicon.ico">
-    <meta name="msapplication-TileColor" content="">
-
-
-
-  <meta itemprop="name" content="Vulfy">
-  <meta itemprop="description" content="🐺 Fast Rust-based package version scanner.">
-  <meta itemprop="datePublished" content="2025-05-18T00:00:00+00:00">
-  <meta itemprop="dateModified" content="2025-05-18T00:00:00+00:00">
-  <meta itemprop="wordCount" content="597">
-  <meta itemprop="image" content="http://localhost:1313/og-image.png">
-  <meta itemprop="keywords" content="Rust,Vulnerability,Dependency">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="http://localhost:1313/og-image.png">
-  <meta name="twitter:title" content="Vulfy">
-  <meta name="twitter:description" content="🐺 Fast Rust-based package version scanner.">
-
-
-
-
-
-
-
-    <meta property="article:published_time" content="2025-05-18 00:00:00 &#43;0000 UTC" />
-
-
-
-
-
-
-
-
-
-
-
-
-    </head>
 
     
-        <body>
-    
-    
-        <div class="container">
-            <header class="header">
-    <span class="header__inner">
-        <a href="/" style="text-decoration: none;">
-    <div class="logo">
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark',
+            themeVariables: {
+                darkMode: true,
+                background: '#1a1a1a',
+                primaryColor: '#555',
+                primaryTextColor: '#e0e0e0',
+                primaryBorderColor: '#666',
+                lineColor: '#999',
+                secondaryColor: '#444',
+                tertiaryColor: '#333',
+                primaryBorderColor: '#666',
+                fontSize: '16px',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+            }
+        });
+
         
-            <span class="logo__mark">&gt;</span>
-            <span class="logo__text ">
-                @MindPatch</span>
-            <span class="logo__cursor" style=
-                  "
-                   
-                   ">
-            </span>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            document.querySelectorAll('pre code, pre.mermaid').forEach((element) => {
+                const code = element.textContent.trim();
+
+                
+                const isMermaid = code.match(/^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|journey|gantt|pie|gitGraph|mindmap|timeline|quadrantChart|requirementDiagram|C4Context)/);
+
+                if (isMermaid || element.classList.contains('language-mermaid') || element.getAttribute('data-lang') === 'mermaid') {
+                    const pre = element.tagName === 'PRE' ? element : element.parentElement;
+
+                    
+                    const div = document.createElement('div');
+                    div.className = 'mermaid';
+                    div.textContent = code;
+
+                    
+                    if (pre.parentElement) {
+                        pre.parentElement.replaceChild(div, pre);
+                    }
+                }
+            });
+
+            
+            mermaid.run();
+        });
+    </script>
+</head>
+<body>
+    <header>
+    <a href="/" class="site-logo">@MindPatch</a>
+    <nav>
         
-    </div>
-</a>
-
-
-        <span class="header__right">
-                <nav class="menu">
-    <ul class="menu__inner"><li><a href="/about">About</a></li><li><a href="/posts">Blog</a></li><li><a href="/projects/">Projects</a></li>
-    </ul>
-</nav>
-
-                <span class="menu-trigger">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-                    </svg>
-                </span>
-        </span>
-    </span>
+        <a href="/about">about</a>
+        
+        <a href="/posts">blog</a>
+        
+        <a href="/projects/">projects</a>
+        
+        <a href="/index.xml">rss</a>
+    </nav>
 </header>
 
 
-            <div class="content">
-                
-    <main class="post">
-
-        <div class="post-info">
-            
-            </p>
-        </div>
-
-        <article>
-            <h2 class="post-title"><a href="http://localhost:1313/projects/vulfy/">Vulfy</a></h2>
-
-            
-            
-            
-
-            <div class="post-content">
-                <h1 id="vulfy-">Vulfy 🐺</h1>
+    <main>
+        
+<article>
+    <h1>Vulfy</h1>
+    <div class="post-content">
+        <h1 id="vulfy-">Vulfy 🐺</h1>
 <p><strong>Vulfy</strong> is a fast, cross-language vulnerability scanner that checks your project dependencies for known security issues across 9 programming languages. Built with Rust for maximum performance and reliability.</p>
 <h2 id="overview">Overview</h2>
 <p>Vulfy is designed to be the fastest and most comprehensive dependency vulnerability scanner available. It integrates with the OSV.dev vulnerability database to provide up-to-date security information about your project dependencies. With zero configuration required, Vulfy is ready to scan your projects right out of the box.</p>
@@ -187,35 +156,39 @@
 </ol>
 <h2 id="installation">Installation</h2>
 <h3 id="pre-built-binaries-recommended">Pre-built Binaries (Recommended)</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Download latest release for your platform</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Available for Linux, macOS, and Windows</span>
-</span></span><span style="display:flex;"><span>wget https://github.com/mindpatch/vulfy/releases/latest/download/vulfy-linux
-</span></span><span style="display:flex;"><span>chmod +x vulfy-linux
-</span></span></code></pre></div><h3 id="via-cargo">Via Cargo</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cargo install vulfy
-</span></span></code></pre></div><h3 id="from-source">From Source</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git clone https://github.com/mindpatch/vulfy
-</span></span><span style="display:flex;"><span>cd vulfy
-</span></span><span style="display:flex;"><span>cargo build --release
-</span></span></code></pre></div><h2 id="usage-examples">Usage Examples</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Basic scan of current directory</span>
-</span></span><span style="display:flex;"><span>vulfy scan packages
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Scan specific directory</span>
-</span></span><span style="display:flex;"><span>vulfy scan packages --path /path/to/project
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Show only high-severity vulnerabilities</span>
-</span></span><span style="display:flex;"><span>vulfy scan packages --high-only
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Output as JSON</span>
-</span></span><span style="display:flex;"><span>vulfy scan packages --format json --output report.json
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Export as CSV for analysis</span>
-</span></span><span style="display:flex;"><span>vulfy scan packages --format csv --output vulnerabilities.csv
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Generate SARIF report for CI/CD</span>
-</span></span><span style="display:flex;"><span>vulfy scan packages --format sarif --output results.sarif
-</span></span></code></pre></div><h2 id="vulnerability-data-source">Vulnerability Data Source</h2>
+<pre><code class="language-bash"># Download latest release for your platform
+# Available for Linux, macOS, and Windows
+wget https://github.com/mindpatch/vulfy/releases/latest/download/vulfy-linux
+chmod +x vulfy-linux
+</code></pre>
+<h3 id="via-cargo">Via Cargo</h3>
+<pre><code class="language-bash">cargo install vulfy
+</code></pre>
+<h3 id="from-source">From Source</h3>
+<pre><code class="language-bash">git clone https://github.com/mindpatch/vulfy
+cd vulfy
+cargo build --release
+</code></pre>
+<h2 id="usage-examples">Usage Examples</h2>
+<pre><code class="language-bash"># Basic scan of current directory
+vulfy scan packages
+
+# Scan specific directory
+vulfy scan packages --path /path/to/project
+
+# Show only high-severity vulnerabilities
+vulfy scan packages --high-only
+
+# Output as JSON
+vulfy scan packages --format json --output report.json
+
+# Export as CSV for analysis
+vulfy scan packages --format csv --output vulnerabilities.csv
+
+# Generate SARIF report for CI/CD
+vulfy scan packages --format sarif --output results.sarif
+</code></pre>
+<h2 id="vulnerability-data-source">Vulnerability Data Source</h2>
 <p>Vulfy integrates with <strong>OSV.dev</strong> (Open Source Vulnerabilities), which aggregates vulnerability data from multiple sources:</p>
 <ul>
 <li>Google OSV Database</li>
@@ -248,18 +221,20 @@
 <h2 id="cicd-integration">CI/CD Integration</h2>
 <p>Simple integration examples:</p>
 <h3 id="github-actions">GitHub Actions</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Scan Dependencies</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">run</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    curl -L https://github.com/mindpatch/vulfy/releases/latest/download/vulfy-linux -o vulfy
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    chmod +x vulfy
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    ./vulfy scan packages --high-only</span>
-</span></span></code></pre></div><h3 id="gitlab-ci">GitLab CI</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">scan</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">script</span>:
-</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">curl -L https://github.com/mindpatch/vulfy/releases/latest/download/vulfy-linux -o vulfy</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">chmod +x vulfy</span>
-</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">./vulfy scan packages</span>
-</span></span></code></pre></div><h2 id="use-cases">Use Cases</h2>
+<pre><code class="language-yaml">- name: Scan Dependencies
+  run: |
+    curl -L https://github.com/mindpatch/vulfy/releases/latest/download/vulfy-linux -o vulfy
+    chmod +x vulfy
+    ./vulfy scan packages --high-only
+</code></pre>
+<h3 id="gitlab-ci">GitLab CI</h3>
+<pre><code class="language-yaml">scan:
+  script:
+    - curl -L https://github.com/mindpatch/vulfy/releases/latest/download/vulfy-linux -o vulfy
+    - chmod +x vulfy
+    - ./vulfy scan packages
+</code></pre>
+<h2 id="use-cases">Use Cases</h2>
 <ul>
 <li>Check dependencies before releases</li>
 <li>Find vulnerable packages in existing projects</li>
@@ -285,45 +260,111 @@
 </ul>
 <p>Vulfy is a straightforward tool for checking if your project dependencies have known security vulnerabilities. It&rsquo;s designed to be fast, easy to use, and integrate well with existing development workflows.</p>
 
-            </div>
-        </article>
+    </div>
+</article>
 
-        <hr />
-
-        <div class="post-info">
-            
-    <p>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
-
-        <span class="tag"><a href="http://localhost:1313/tags/rust/">Rust</a></span>
-        <span class="tag"><a href="http://localhost:1313/tags/vulnerability/">vulnerability</a></span>
-        <span class="tag"><a href="http://localhost:1313/tags/dependency/">dependency</a></span>
-        
-    </p>
-
-            
-  		</div>
     </main>
 
-            </div>
-
-            
-                <footer class="footer">
-    
-    
+    <footer>
+    <p>&copy; 2025 Khaled Nassar</p>
 </footer>
 
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/tocbot@4.25.0/dist/tocbot.min.js"></script>
+
+    
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.7.0/dist/bundle/asciinema-player.min.js"></script>
+
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
             
-        </div>
+            Prism.highlightAll();
 
-        
+            
+            mediumZoom('article img, .post-content img', {
+                margin: 24,
+                background: 'rgba(0, 0, 0, 0.9)',
+                scrollOffset: 0
+            });
 
+            
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                throwOnError: false
+            });
 
+            
+            if (document.querySelector('.toc')) {
+                tocbot.init({
+                    tocSelector: '.toc',
+                    contentSelector: '.post-content',
+                    headingSelector: 'h2, h3, h4',
+                    hasInnerContainers: true,
+                    collapseDepth: 6,
+                    scrollSmooth: true,
+                    scrollSmoothDuration: 420,
+                    headingsOffset: 40,
+                    scrollSmoothOffset: -40,
+                    positionFixedSelector: '.toc',
+                    fixedSidebarOffset: 'auto',
+                    throttleTimeout: 50,
+                    includeHtml: false,
+                    onClick: function(e) {
+                        e.preventDefault();
+                        const targetId = e.target.getAttribute('href');
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }
+                });
+            }
 
-<script type="text/javascript" src="/bundle.min.ad54ad97364f77ede35def9096b162bb1f0b3973aa50b080f5e82fa147f6882e2a7200d7535adbf9b51bebf939f1c1ca9bbe6be87530092aca720eac4a226fda.js" integrity="sha512-rVStlzZPd&#43;3jXe&#43;QlrFiux8LOXOqULCA9egvoUf2iC4qcgDXU1rb&#43;bUb6/k58cHKm75r6HUwCSrKcg6sSiJv2g=="></script>
+            
+            tippy('[data-tippy-content]', {
+                theme: 'custom',
+                placement: 'top',
+                arrow: true,
+                animation: 'scale'
+            });
 
-
-
-
-    </body>
+            
+            document.querySelectorAll('pre[class*="language-"]').forEach(function(pre) {
+                pre.classList.add('line-numbers');
+            });
+        });
+    </script>
+</body>
 </html>

@@ -1,0 +1,26 @@
+{{ define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end }}
+
+{{ define "main" }}
+<div>
+    <h1>{{ .Title }}</h1>
+
+    {{ if .Content }}
+    <div>
+        {{ .Content }}
+    </div>
+    {{ end }}
+
+    {{ $posts := .Pages }}
+    {{ $totalPosts := len $posts }}
+
+    <ul class="post-list">
+        {{ range $index, $post := $posts }}
+        {{ $hexNum := sub $totalPosts (add $index 1) }}
+        <li class="post-item">
+            <span class="post-number">0x{{ printf "%x" $hexNum }}</span>
+            <span class="post-content"><a href="{{ .RelPermalink }}">{{ .Title }}</a></span>
+        </li>
+        {{ end }}
+    </ul>
+</div>
+{{ end }}
