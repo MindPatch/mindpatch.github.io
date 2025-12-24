@@ -70,26 +70,26 @@ OTAHub uses a three-stage process to ensure artifacts are validated before insta
 
 ```mermaid
 flowchart TD
-    A["Stage 1: Download & Extract (Untrusted)"] --> B["Stage 2: Validate (Security Gate)"]
-    B --> C["Stage 3: Install (Trusted)"]
-    
+    A["Stage 1: Download & Extract<br/>(Untrusted)"] --> B["Stage 2: Validate<br/>(Security Gate)"]
+    B --> C["Stage 3: Install<br/>(Trusted)"]
+
     A1["Location: /var/lib/otahub/runtime/packages/v3/staging/0000/files/"] --> A
-    A2["- Artifact downloaded and extracted to staging area"] --> A
-    A3["- Files NOT yet on production filesystem"] --> A
-    A4["- This is the 'sandbox' where validation happens"] --> A
-    
-    B1["- Verify SHA256 checksums from checksums"] --> B
-    B2["- Validate artifact signatures (if enabled)"] --> B
-    B3["- Confirm device type compatibility"] --> B
-    B4["- Check dependencies and prerequisites"] --> B
-    
-    C1["- Update module moves files to final destination"] --> C
-    C2["- Example: /opt/myapp/, /usr/bin/, /etc/myapp/"] --> C
-    C3["- Rollback data preserved for recovery"] --> C
-    
-    style A fill:#fff4e6
-    style B fill:#e6f3ff
-    style C fill:#e6ffe6
+    A2["Artifact downloaded and extracted to staging area"] --> A
+    A3["Files NOT yet on production filesystem"] --> A
+    A4["This is the 'sandbox' where validation happens"] --> A
+
+    B1["Verify SHA256 checksums from checksums"] --> B
+    B2["Validate artifact signatures if enabled"] --> B
+    B3["Confirm device type compatibility"] --> B
+    B4["Check dependencies and prerequisites"] --> B
+
+    C1["Update module moves files to final destination"] --> C
+    C2["Example: /opt/myapp/, /usr/bin/, /etc/myapp/"] --> C
+    C3["Rollback data preserved for recovery"] --> C
+
+    style A fill:#4a3520,stroke:#d4a574,color:#e0e0e0
+    style B fill:#1e3a5f,stroke:#5b9bd5,color:#e0e0e0
+    style C fill:#2d4a2f,stroke:#7cb97c,color:#e0e0e0
 ```
 
 The key assumption: **files cannot escape the staging directory during extraction**.

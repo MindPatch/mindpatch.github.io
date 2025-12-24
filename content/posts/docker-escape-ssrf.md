@@ -140,47 +140,73 @@ This combination created a perfect storm where any malicious code running inside
 
 The fundamental security issue with Docker Desktop stems from its cross-platform architecture requirements:
 
-#### Native Linux Docker (Secure)
+#### Native Linux Docker (Secure Architecture)
 ```mermaid
-graph TD
-    A[Docker CLI] --> B[Unix Socket<br/>/var/run/docker.sock]
-    B --> C[Docker Daemon<br/>Root Process]
-    C --> D[Container Runtime<br/>runc]
-    D --> E[Linux Kernel]
-    
-    F[Container Network<br/>172.17.0.0/16] -.->|Cannot Access| B
-    
-    style B fill:#90EE90
-    style F fill:#FFB6C1
+flowchart TB
+    subgraph "Secure Linux Docker"
+        A["Docker CLI<br/>Command Line Interface"] --> B["Unix Domain Socket<br/>/var/run/docker.sock<br/>Permissions: root:docker"]
+        B --> C["Docker Daemon<br/>Runs as Root<br/>Full System Control"]
+        C --> D["containerd<br/>High-level Runtime"]
+        D --> E["runc<br/>Low-level Container Runtime"]
+        E --> F["Linux Kernel<br/>Namespaces + cgroups"]
+    end
+
+    subgraph "Container Isolation"
+        G["Container Network<br/>172.17.0.0/16<br/>Isolated Bridge"]
+        H["Container Processes<br/>PID Namespace"]
+    end
+
+    G -.->|"❌ CANNOT Access<br/>Filesystem Permissions"| B
+    H -.->|"❌ BLOCKED<br/>No Network Route"| B
+
+    style B fill:#2d4a2f,stroke:#7cb97c,color:#e0e0e0
+    style G fill:#4a3520,stroke:#d4a574,color:#e0e0e0
+    style H fill:#4a3520,stroke:#d4a574,color:#e0e0e0
 ```
 
 **Security Features:**
-- Unix socket with filesystem permissions (`root:docker`)
-- Local communication only (no network exposure)
-- Kernel credential passing
-- Direct namespace integration
+- **Unix socket** with filesystem permissions (`root:docker`)
+- **Local only** - no network exposure
+- **Kernel credential passing** - process authentication
+- **Direct namespace integration** - true isolation
 
-#### Docker Desktop (Vulnerable)
+#### Docker Desktop (Vulnerable Architecture)
 ```mermaid
-graph TD
-    A[Docker CLI<br/>Host OS] --> B[TCP Socket<br/>192.168.65.7:2375]
-    B --> C[Docker Daemon<br/>Linux VM]
-    C --> D[Container Runtime]
-    
-    E[Container Network<br/>172.17.0.0/16] --> B
-    F[Malicious Container<br/>172.17.0.4] --> B
-    G[Web App Container<br/>172.17.0.2] --> B
-    
-    style B fill:#FF6B6B
-    style E fill:#FF6B6B
-    style F fill:#FF6B6B
+flowchart TB
+    subgraph "Windows/macOS Host"
+        A["Docker CLI<br/>User Commands"]
+    end
+
+    subgraph "WSL2 Linux VM - 192.168.65.7"
+        B["🔴 TCP Socket :2375<br/>Bound to 0.0.0.0<br/>NO AUTHENTICATION"]
+        C["Docker Daemon<br/>Root Privileges<br/>Full API Access"]
+        D["containerd Runtime"]
+        E["Container Execution"]
+    end
+
+    subgraph "Container Network - 172.17.0.0/16"
+        F["Web Container<br/>172.17.0.2"]
+        G["Database Container<br/>172.17.0.3"]
+        H["🔴 Malicious Container<br/>172.17.0.4"]
+    end
+
+    A -->|"✅ Legitimate API Calls"| B
+    B --> C --> D --> E
+
+    F -.->|"⚠️ CAN ACCESS"| B
+    G -.->|"⚠️ CAN ACCESS"| B
+    H ==>|"🔴 EXPLOIT PATH<br/>Full Docker API Access"| B
+
+    style B fill:#4a1520,stroke:#d45574,color:#e0e0e0
+    style H fill:#4a1520,stroke:#d45574,color:#e0e0e0
+    style C fill:#4a3520,stroke:#d4a574,color:#e0e0e0
 ```
 
-**Vulnerability Points:**
-- TCP socket exposed to all interfaces (`0.0.0.0:2375`)
-- No authentication mechanism
-- Network accessible from container bridge
-- Cross-platform abstraction breaks security model
+**Critical Vulnerability Points:**
+- **TCP socket** exposed on ALL interfaces (`0.0.0.0:2375`)
+- **Zero authentication** - no API keys, no certificates
+- **Network accessible** from container bridge network
+- **Any container** can become root on host
 
 ## Vulnerable Architecture Deep Dive
 
