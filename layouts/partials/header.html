@@ -1,5 +1,7 @@
 <header>
-    <a href="/" class="site-logo">▲</a>
+    <a href="/" class="site-logo">
+        <img src="/logo.jpg" alt="MindPatch Logo">
+    </a>
     <nav>
         {{ range .Site.Menus.main }}
         <a href="{{ .URL }}">{{ lower .Name }}</a>

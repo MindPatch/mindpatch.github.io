@@ -3,34 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://www.mindpatch.net/</loc>
-    <lastmod>2025-12-24T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/posts/features-demo/</loc>
-    <lastmod>2025-12-24T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/tags/demo/</loc>
-    <lastmod>2025-12-24T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/tags/features/</loc>
-    <lastmod>2025-12-24T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/tags/mermaid/</loc>
-    <lastmod>2025-12-24T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/posts/mermaid-test/</loc>
-    <lastmod>2025-12-24T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/posts/</loc>
-    <lastmod>2025-12-24T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/tags/</loc>
-    <lastmod>2025-12-24T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/tags/test/</loc>
-    <lastmod>2025-12-24T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www.mindpatch.net/tags/tutorial/</loc>
-    <lastmod>2025-12-24T00:00:00+00:00</lastmod>
+    <lastmod>2025-12-01T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://www.mindpatch.net/tags/embedded/</loc>
     <lastmod>2025-12-01T00:00:00+00:00</lastmod>
@@ -41,10 +14,16 @@
     <loc>https://www.mindpatch.net/tags/path-traversal/</loc>
     <lastmod>2025-12-01T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://www.mindpatch.net/posts/</loc>
+    <lastmod>2025-12-01T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://www.mindpatch.net/tags/research/</loc>
     <lastmod>2025-12-01T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://www.mindpatch.net/tags/security/</loc>
+    <lastmod>2025-12-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://www.mindpatch.net/tags/</loc>
     <lastmod>2025-12-01T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://www.mindpatch.net/posts/path_traversal_in_ota/</loc>
