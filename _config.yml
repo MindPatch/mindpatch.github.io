@@ -53,12 +53,15 @@ assets:
 paginate: 10
 
 kramdown:
-  input: GFM
+  footnote_backlink: "&#8617;&#xfe0e;"
   syntax_highlighter: rouge
   syntax_highlighter_opts:
     css_class: highlight
-    block:
+    span:
       line_numbers: false
+    block:
+      line_numbers: true
+      start_line: 1
 
 collections:
   tabs:
@@ -83,15 +86,6 @@ defaults:
 
 sass:
   style: compressed
-
-compress_html:
-  clippings: all
-  comments: all
-  endings: all
-  profile: false
-  blanklines: false
-  ignore:
-    envs: [development]
 
 exclude:
   - "*.gem"
