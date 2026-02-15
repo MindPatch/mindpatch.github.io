@@ -1,6 +1,13 @@
-# Generated files
-public/
-resources/_gen/
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+.bundle/
+vendor/
+Gemfile.lock
+
+# Misc
+assets/js/dist
 
 # OS generated files
 .DS_Store
@@ -11,13 +18,6 @@ resources/_gen/
 ehthumbs.db
 Thumbs.db
 
-# Hugo
-.hugo_build.lock
-
-# Node.js (if using)
-node_modules/
-npm-debug.log*
-
 # IDE files
 .vscode/
 .idea/
@@ -27,3 +27,6 @@ npm-debug.log*
 # Temporary files
 *~
 .tmp
+
+# Node.js
+node_modules/

@@ -1,0 +1,113 @@
+theme: jekyll-theme-chirpy
+
+lang: en
+
+timezone: Asia/Riyadh
+
+title: "@MindPatch"
+
+tagline: "Offensive Security Engineer | Software Engineer | DevSecOps"
+
+description: >-
+  Hi, I'm Khaled, a cybersecurity engineer passionate about offensive security,
+  software development, and DevSecOps. I specialize in penetration testing, bug
+  bounty hunting, vulnerability research, and security automation. Through my blog,
+  I share practical security knowledge, CTF writeups, tool development insights,
+  and challenge walkthroughs to help the cybersecurity community learn and grow.
+
+url: "https://www.mindpatch.net"
+
+github:
+  username: mindpatch
+
+twitter:
+  username: mindpatchsec
+
+social:
+  name: Khaled Nassar
+  email: hello@mindpatch.net
+  links:
+    - https://twitter.com/mindpatchsec
+    - https://github.com/mindpatch
+    - https://www.linkedin.com/in/knassar702/
+
+avatar: /assets/img/logo.jpg
+
+# Self-hosted static assets, keep this empty
+google_analytics:
+  id:
+
+theme_mode:
+
+img_cdn:
+
+toc: true
+
+comments:
+  provider:
+
+assets:
+  self_host:
+    enabled:
+
+paginate: 10
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: highlight
+    block:
+      line_numbers: false
+
+collections:
+  tabs:
+    output: true
+    sort_by: order
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      comments: true
+      toc: true
+      permalink: /posts/:title/
+  - scope:
+      path: _tabs
+      type: tabs
+    values:
+      layout: page
+      permalink: /:title/
+
+sass:
+  style: compressed
+
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  profile: false
+  blanklines: false
+  ignore:
+    envs: [development]
+
+exclude:
+  - "*.gem"
+  - "*.gemspec"
+  - docs
+  - tools
+  - README.md
+  - LICENSE
+  - "*.config.js"
+  - package*.json
+
+jekyll-archives:
+  enabled: [categories, tags]
+  layouts:
+    category: category
+    tag: tag
+  permalinks:
+    tag: /tags/:name/
+    category: /categories/:name/
