@@ -4,6 +4,7 @@ date: "2025-09-01"
 description: "Deep dive analysis of CVE-2025-9074, a critical Docker Desktop vulnerability that allowed container escape through unauthenticated API access"
 tags: [docker, container-escape, cve, vulnerability, research, security]
 categories: [Research]
+image: https://www.recyclageunifer.fr/public/img/medium/conteneurcassjpg_646dd27429621.jpg
 toc: true
 mermaid: true
 ---
