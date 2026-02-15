@@ -5,7 +5,7 @@ description: "An in-depth review of Hack The Box's most challenging web security
 tags: [CWEE, HTB, Web Security, Certification Review, Penetration Testing]
 ---
 
-![CWEE_CERT](https://media.licdn.com/dms/image/v2/D4D22AQFxZWFBne4EDA/feedshare-shrink_2048_1536/B4DZikeGCGHsAo-/0/1755106010643?e=1759363200&v=beta&t=vO3eOnemDmvVxrZV6uEbj5_D2Axzd_qeQmEC1xjfyr4)
+![CWEE_CERT](/assets/img/cwee.jpeg)
 
 ---
 
