@@ -3,6 +3,8 @@ title: "Review of HTB's Most Challenging Web Security Certification (CWEE)"
 date: "2025-08-31"
 description: "An in-depth review of Hack The Box's most challenging web security certification. Learn about the training quality, exam structure, and what it takes to master advanced web exploitation techniques."
 tags: [CWEE, HTB, Web Security, Certification Review, Penetration Testing]
+categories: [Certification]
+image: /assets/img/cwee.jpeg
 ---
 
 ![CWEE_CERT](/assets/img/cwee.jpeg)

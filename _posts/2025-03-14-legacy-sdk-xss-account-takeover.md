@@ -3,6 +3,7 @@ title: "Legacy SDK Flaws Cause Stored XSS and Account Takeover"
 date: "2025-03-14"
 description: "A casual day of hunting bugs turned into a serious jackpot thanks to some forgotten open source library. This vulnerability allowed for complete account takeover through stored XSS."
 tags: [XSS, Account Takeover, SDK, Bug Bounty]
+categories: [Bug Bounty]
 ---
 
 ![](https://miro.medium.com/v2/resize:fit:480/0*wFXpWUgkd4CNm-ov.gif)

@@ -3,6 +3,8 @@ title: "Solving DoxPit Challenge"
 date: "2024-08-05"
 description: "HTB DoxPit challenge walkthrough featuring a mix of vulnerabilities in Flask and NextJS applications. A methodical approach to exploiting web application flaws."
 tags: [HTB, CTF, Flask, NextJS, Web Security]
+categories: [CTF]
+image: https://miro.medium.com/v2/resize:fit:700/1*tWUMuT1J0TUSBua9hOmWcg.png
 ---
 
 # [HTB] Solving DoxPit Challange

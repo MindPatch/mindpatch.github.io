@@ -3,6 +3,7 @@ title: "Docker Escape: Breaking Out of Containers"
 date: "2026-01-17"
 description: "A practical guide to Docker container escape techniques, covering misconfigurations, privileged containers, capability abuse, and kernel exploits. Understanding these attacks is essential for building secure containerized infrastructure."
 tags: [Docker, Container Security, Privilege Escalation, Linux, Research]
+categories: [Research]
 mermaid: true
 ---
 
