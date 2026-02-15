@@ -4,6 +4,7 @@ date: "2025-12-01"
 description: "Deep dive into a path traversal vulnerability in an OTA update system that bypasses staged validation, allowing arbitrary file writes during updates."
 tags: [OTA, path-traversal, embedded, tar-slip, research, security]
 categories: [Research]
+image: https://images.openai.com/static-rsc-3/A-ZS73vvnnj6Cz1G0bdLE9VJaO2uX8GKdB7SvJCwe0OCBnZ9dpt2pJq11nzgjnPy5SZGxqddOYf9dC9XiSGvAK2GjVBoDJ4tDgN1Q2OQqos?purpose=fullsize&v=1
 mermaid: true
 ---
 
