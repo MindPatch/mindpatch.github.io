@@ -31,7 +31,7 @@ social:
     - https://github.com/mindpatch
     - https://www.linkedin.com/in/knassar702/
 
-avatar: /assets/img/logo.jpg
+avatar: "https://github.com/mindpatch.png"
 
 # Self-hosted static assets, keep this empty
 google_analytics:
