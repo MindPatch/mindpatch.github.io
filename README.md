@@ -40,6 +40,13 @@ Both `body` and `full` are plain HTML, so they support:
   ```
   They render on load and re-theme automatically for light/dark mode.
 
+- **Code blocks** — use `<pre><code>`, optionally tagging the language:
+  ```html
+  <pre><code class="language-bash">docker run --rm -it ubuntu</code></pre>
+  ```
+  highlight.js colors the tokens, adds a language label, and a Copy button.
+  Only posts with `full` get diagrams, highlighting, and copy buttons.
+
 ## Deploy to GitHub Pages
 
 1. Push these files to a GitHub repo.
