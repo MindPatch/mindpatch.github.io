@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MindPatch</title>
+<meta name="description" content="Khaled Nassar (MindPatch) — security engineer. Vulnerability research, bug bounty writeups, CVEs, and open-source security tooling in Rust.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="page">
+  <!-- ===== INDEX ===== -->
+  <div id="home">
+    <div class="hd">
+      <img class="avatar" src="assets/avatar.jpg" alt="Khaled Nassar" width="64" height="64">
+      <div>
+        <h1>Khaled Nassar</h1>
+        <p class="sub">MindPatch · security engineer, Egypt</p>
+      </div>
+    </div>
+    <ul class="top-links">
+      <li><a href="https://mindpatch.medium.com/">Medium</a></li>
+      <li><a href="https://github.com/MindPatch">GitHub</a></li>
+      <li><a href="https://twitter.com/mindpatchsec">Twitter</a></li>
+      <li><a href="https://www.linkedin.com/in/knassar702/">LinkedIn</a></li>
+      <li><a href="#contact">Email</a></li>
+    </ul>
+    <p>Security engineer. I find bugs in some applications, write up how they worked, and sometimes get a CVE out of it. On the side I build open-source security scanners in Rust.</p>
+
+    <h2 id="writeups">Writeups</h2>
+    <ul class="plain writeups" id="list"></ul>
+
+    <h2 id="tools">Tools</h2>
+    <ul class="plain tools">
+      <li><a href="https://github.com/MindPatch/scant3r">scant3r</a> <span>— module-based bug bounty automation. Rust.</span></li>
+      <li><a href="https://github.com/MindPatch/Vulfy">vulfy</a> <span>— package version scanner for known-vulnerable dependencies. Rust.</span></li>
+    </ul>
+
+    <h2 id="contact">Contact</h2>
+    <p>hello@mindpatch.net</p>
+    <footer>Khaled Nassar, 2026</footer>
+  </div>
+
+  <!-- ===== POST ===== -->
+  <div id="post" class="post" hidden>
+    <a class="back" href="#">← All writeups</a>
+    <h1 id="p-title"></h1>
+    <div class="meta" id="p-meta"></div>
+    <div id="p-body"></div>
+    <a class="readmore" id="p-link" target="_blank" rel="noopener">Read the full writeup ↗</a>
+    <p class="note" id="p-note">Summary written for this page. Full technical detail, code and screenshots are in the original post.</p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.1/mermaid.min.js"></script>
+<script src="assets/posts.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
