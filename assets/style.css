@@ -33,6 +33,11 @@ footer{margin-top:48px;padding-top:12px;border-top:1px solid var(--line);color:v
 .post pre{background:var(--codebg);border:1px solid var(--line);border-radius:6px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.5;margin:0 0 16px}
 .post pre code{background:none;padding:0;border-radius:0;font-size:13.5px;white-space:pre}
 .post pre.mermaid{text-align:center;line-height:1.4}
+/* images & figures inside a writeup */
+.post img{max-width:100%;height:auto;display:block;margin:16px auto;border:1px solid var(--line);border-radius:6px}
+.post figure{margin:20px 0}
+.post figure img{margin:0 auto 8px}
+.post figcaption{color:var(--muted);font-size:13px;text-align:center}
 .post small{color:var(--muted)}
 .readmore{display:inline-block;margin-top:14px;padding:9px 16px;border:1px solid var(--line);border-radius:6px;text-decoration:none;font-size:15px}
 .readmore:hover{border-color:var(--muted)}

@@ -49,7 +49,7 @@ function render() {
     $("#post").hidden = false;
     window.scrollTo(0, 0);
     document.title = "MindPatch · " + p.title;
-    if (full) runMermaid();
+    runMermaid(); // works for both `body` and `full` posts
   } else {
     $("#post").hidden = true;
     $("#home").hidden = false;
@@ -58,5 +58,9 @@ function render() {
 }
 
 addEventListener("hashchange", render);
+// Re-render any open diagram when the OS light/dark preference flips.
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+  if (!$("#post").hidden) render();
+});
 if (document.readyState !== "loading") render();
 else addEventListener("DOMContentLoaded", render);

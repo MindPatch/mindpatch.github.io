@@ -16,8 +16,29 @@ writeups, CVEs, and open-source tooling. Static, no build step.
 Add an entry to the `POSTS` array in `assets/posts.js`:
 
 - Give it a `body` for a short summary + link to the original post, **or**
-- Give it a `full` HTML string to render the whole article on this site
-  (supports Mermaid diagrams via `<pre class="mermaid">…</pre>`).
+- Give it a `full` HTML string to render the whole article on this site.
+
+Both `body` and `full` are plain HTML, so they support:
+
+- **Images** — drop the file in `assets/img/` and reference it:
+  ```html
+  <img src="assets/img/screenshot.png" alt="What it shows">
+  ```
+  or with a caption:
+  ```html
+  <figure>
+    <img src="assets/img/diagram.png" alt="Request flow">
+    <figcaption>The request flow, end to end.</figcaption>
+  </figure>
+  ```
+  Images are auto-sized, centered, and bordered.
+
+- **Mermaid diagrams** — wrap the definition in `<pre class="mermaid">`:
+  ```html
+  <pre class="mermaid">flowchart LR
+    A[Request] --> B[Server] --> C[Response]</pre>
+  ```
+  They render on load and re-theme automatically for light/dark mode.
 
 ## Deploy to GitHub Pages
 
