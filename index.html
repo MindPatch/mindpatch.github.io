@@ -68,13 +68,16 @@
 
 <main>
   <button type="button" class="sprite" id="sprite" aria-label="Change avatar colours">
+    <!-- original 16x16 pixel robot: rounded helmet, wide visor, LED strip, jacket -->
     <svg viewBox="0 0 16 16" aria-hidden="true">
-      <g id="hair" fill="#2B1D14"><path d="M4 2h8v1H4zM3 3h10v2H3zM3 5h2v2H3zM11 5h2v2h-2z"/></g>
-      <path fill="#F0B98A" d="M5 5h6v6H5zM4 7h1v3H4zM11 7h1v3h-1z"/>
-      <path fill="#1A1A1A" d="M6 7h1v1H6zM9 7h1v1H9z"/>
-      <path fill="#B05A3C" d="M7 9h2v1H7z"/>
-      <g id="shirt" fill="#FF5D3A"><path d="M4 11h8v3H4zM3 12h1v3H3zM12 12h1v3h-1zM4 14h8v1H4z"/></g>
-      <path fill="#E8F0E0" d="M7 11h2v1H7z"/>
+      <g id="helmet" fill="#C9CED8"><path d="M5 1h6v1H5zM4 2h8v1H4zM3 3h10v8H3zM4 11h8v1H4z"/></g>
+      <path fill="#8A94A6" d="M3 3h1v8H3zM12 3h1v8h-1zM4 11h8v1H4z" opacity=".6"/>
+      <path fill="#0B0E14" d="M4 5h8v4H4z"/>
+      <g id="visor" fill="#FF5D3A"><path d="M5 6h6v2H5z"/></g>
+      <path fill="#E8F0E0" d="M5 6h1v1H5z" opacity=".8"/>
+      <g id="led" fill="#5CFF7A"><path d="M6 10h1v1H6zM8 10h1v1H8zM10 10h1v1h-1z"/></g>
+      <g id="jacket" fill="#1A1A1A"><path d="M4 12h8v3H4zM3 13h1v2H3zM12 13h1v2h-1z"/></g>
+      <path fill="#C9CED8" d="M7 12h2v3H7z" opacity=".9"/>
     </svg>
   </button>
 
@@ -101,12 +104,14 @@
   })();
   // role cycles every few seconds, typed out character by character
   var roles = ['SECURITY ENGINEER', 'BUG HUNTER', 'VULN RESEARCHER', 'RUST ENJOYER', 'CVE COLLECTOR', 'CTF PLAYER'],
-      pal = [['#2B1D14','#FF5D3A'],['#4DA3FF','#5CFF7A'],['#FFD23F','#4DA3FF'],['#E8F0E0','#9B5DE5'],['#FF5D3A','#FFD23F'],['#5CFF7A','#2C3546']],
+      // [helmet, visor, led] per role
+      pal = [['#C9CED8','#FF5D3A','#5CFF7A'],['#FFD23F','#1A1A1A','#FF5D3A'],['#2C3546','#4DA3FF','#4DA3FF'],['#B05A3C','#FFD23F','#FFD23F'],['#9B5DE5','#5CFF7A','#E8F0E0'],['#E8F0E0','#FF3FA0','#FF3FA0']],
       role = document.getElementById('role'), r = 0, timer, typing;
   function show(i) {
     r = i % roles.length;
-    document.getElementById('hair').setAttribute('fill', pal[r][0]);
-    document.getElementById('shirt').setAttribute('fill', pal[r][1]);
+    document.getElementById('helmet').setAttribute('fill', pal[r][0]);
+    document.getElementById('visor').setAttribute('fill', pal[r][1]);
+    document.getElementById('led').setAttribute('fill', pal[r][2]);
     clearTimeout(typing);
     var s = roles[r], k = 0; role.textContent = '';
     (function type() { if (k <= s.length) { role.textContent = s.slice(0, k++); typing = setTimeout(type, 45); } })();
