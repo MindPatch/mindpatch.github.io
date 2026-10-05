@@ -1,0 +1,26 @@
+---
+import Seo from '../components/Seo.astro';
+import '@fontsource/press-start-2p/400.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource-variable/inter/wght-italic.css';
+import '@fontsource-variable/space-grotesk/wght.css';
+import '../styles/global.css';
+
+type Props = Parameters<typeof Seo>[0] & { bodyClass?: string };
+const { bodyClass, ...seo } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B0E14">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<Seo {...seo} />
+<slot name="head" />
+</head>
+<body class={bodyClass}>
+<slot />
+</body>
+</html>

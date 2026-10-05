@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PostMeta from '../../components/PostMeta.astro';
+import { SITE } from '../../consts';
+import { getPosts, readingTime } from '../../lib/posts';
+
+const posts = await getPosts();
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: SITE.blogTitle,
+  description: SITE.blogDescription,
+  url: new URL('/blog/', SITE.url).href,
+  author: { '@type': 'Person', name: SITE.author, url: SITE.url, sameAs: SITE.sameAs },
+  blogPost: posts.map((p) => ({
+    '@type': 'BlogPosting',
+    headline: p.data.title,
+    url: new URL(`/blog/${p.id}/`, SITE.url).href,
+    datePublished: p.data.pubDate.toISOString(),
+  })),
+};
+---
+<Base title={`Blog — ${SITE.title}`} description={SITE.blogDescription} bodyClass="blog" jsonLd={jsonLd}>
+  <Header />
+  <main class="wrap">
+    <section class="intro">
+      <h1>The <span>blog</span></h1>
+      <p class="prompt cursor">{posts.length} {posts.length === 1 ? 'ENTRY' : 'ENTRIES'} FOUND</p>
+      <p>Security research, bug hunting write-ups and whatever else is on my mind.</p>
+    </section>
+    {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
+    <ul class="posts">
+      {posts.map((p) => (
+        <li>
+          <a class="card" href={`/blog/${p.id}/`}>
+            <PostMeta pubDate={p.data.pubDate} minutes={readingTime(p.body)} />
+            <h2>{p.data.title}</h2>
+            <p>{p.data.description}</p>
+            {p.data.tags.length > 0 && <ul class="tags">{p.data.tags.map((t) => <li>#{t}</li>)}</ul>}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </main>
+  <Footer />
+</Base>

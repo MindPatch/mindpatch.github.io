@@ -1,0 +1,47 @@
+---
+import { SITE } from '../consts';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: 'website' | 'article';
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  tags?: string[];
+  jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
+}
+
+const { title, description, image = SITE.ogImage, type = 'website', publishedTime, modifiedTime, tags = [], jsonLd, noindex } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const imageUrl = new URL(image, Astro.site);
+---
+<title>{title}</title>
+<meta name="description" content={description}>
+<link rel="canonical" href={canonical}>
+{noindex && <meta name="robots" content="noindex">}
+<meta name="author" content={SITE.author}>
+<link rel="alternate" type="application/rss+xml" title={SITE.blogTitle} href="/rss.xml">
+<link rel="sitemap" href="/sitemap-index.xml">
+
+<meta property="og:site_name" content="MindPatch">
+<meta property="og:type" content={type}>
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={canonical}>
+<meta property="og:image" content={imageUrl}>
+<meta property="og:locale" content="en_US">
+{publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()}>}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()}>}
+{type === 'article' && <meta property="article:author" content={SITE.author}>}
+{tags.map((t) => <meta property="article:tag" content={t}>)}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content={SITE.twitter}>
+<meta name="twitter:creator" content={SITE.twitter}>
+<meta name="twitter:title" content={title}>
+<meta name="twitter:description" content={description}>
+<meta name="twitter:image" content={imageUrl}>
+
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
