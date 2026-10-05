@@ -87,5 +87,45 @@ const jsonLd = {
 
 <script>
   import mediumZoom from 'medium-zoom';
-  mediumZoom('.prose img, .cover img', { margin: 24, background: 'rgba(11, 14, 20, .96)' });
+
+  async function renderMermaid() {
+    const blocks = document.querySelectorAll('pre.mermaid');
+    if (!blocks.length) return;
+    const { default: mermaid } = await import('mermaid');
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'strict',
+      theme: 'base',
+      fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+      themeVariables: {
+        darkMode: true,
+        background: '#11151E',
+        primaryColor: '#161B26',
+        primaryBorderColor: '#2C3546',
+        primaryTextColor: '#E8F0E0',
+        lineColor: '#7F8A9C',
+        secondaryColor: '#1A2030',
+        tertiaryColor: '#11151E',
+        mainBkg: '#161B26',
+        nodeBorder: '#FF5D3A',
+        clusterBkg: '#11151E',
+        clusterBorder: '#2C3546',
+        titleColor: '#E8F0E0',
+        edgeLabelBackground: '#0B0E14',
+        actorBkg: '#161B26',
+        actorBorder: '#FF5D3A',
+        actorTextColor: '#E8F0E0',
+        signalColor: '#7F8A9C',
+        signalTextColor: '#C7D0C0',
+        noteBkgColor: '#2A1F3D',
+        noteTextColor: '#E8F0E0',
+        noteBorderColor: '#9B5DE5',
+      },
+    });
+    await mermaid.run({ nodes: blocks });
+  }
+
+  renderMermaid().finally(() => {
+    mediumZoom('.prose img, .cover img', { margin: 24, background: 'rgba(11, 14, 20, .96)' });
+  });
 </script>
