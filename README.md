@@ -10,7 +10,7 @@ Add a markdown file to `src/content/blog/`. The file name becomes the URL, so `s
 ---
 title: "My first CVE"
 description: "One or two sentences. Used for search results, social cards and RSS."
-pubDate: 2026-10-05
+pubDate: 2026-10-05 
 tags: [web, xss]
 # optional:
 # updatedDate: 2026-10-10
