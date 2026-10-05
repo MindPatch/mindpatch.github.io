@@ -115,3 +115,12 @@ main.wrap { flex: 1; padding: 40px 0 64px; }
 /* medium-zoom */
 .medium-zoom-overlay { background: rgba(11, 14, 20, .96) !important; z-index: 20; }
 .medium-zoom-image--opened { z-index: 21; box-shadow: none !important; cursor: zoom-out; }
+
+/* mermaid diagrams */
+.prose pre.mermaid {
+  background: var(--panel); box-shadow: 0 0 0 4px var(--line);
+  padding: 20px; margin: 0 0 1.4em; overflow-x: auto; text-align: center;
+  font-family: var(--mono); color: var(--dim); line-height: 1.4;
+}
+.prose pre.mermaid[data-processed] { color: transparent; font-size: 0; }
+.prose pre.mermaid svg { max-width: 100%; height: auto; }
