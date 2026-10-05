@@ -5,7 +5,7 @@ const path = Astro.url.pathname;
 <header class="top">
   <a class="brand" href="/" aria-label="MindPatch home"><Sprite size={28} /><span>MINDPATCH</span></a>
   <nav aria-label="Main">
-    <a href="/blog/" aria-current={path.startsWith('/blog') ? 'page' : undefined}>BLOG</a>
+    <a href="/" aria-current={path === '/' || path.startsWith('/blog') ? 'page' : undefined}>BLOG</a>
     <a href="/rss.xml">RSS</a>
   </nav>
 </header>
