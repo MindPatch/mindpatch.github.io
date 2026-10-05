@@ -59,7 +59,7 @@ const jsonLd = {
   <main class="wrap">
     <article>
       <header class="post-head">
-        <a class="back" href="/blog/">ALL POSTS</a>
+        <a class="back" href="/">ALL POSTS</a>
         <h1>{data.title}</h1>
         <PostMeta pubDate={data.pubDate} updatedDate={data.updatedDate} minutes={readingTime(post.body)} />
         {data.tags.length > 0 && <ul class="tags">{data.tags.map((t) => <li>#{t}</li>)}</ul>}
