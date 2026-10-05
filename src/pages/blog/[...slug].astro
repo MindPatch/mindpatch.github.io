@@ -1,0 +1,91 @@
+---
+import { render } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PostMeta from '../../components/PostMeta.astro';
+import { SITE } from '../../consts';
+import { getPosts, readingTime, type Post } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
+}
+
+interface Props { post: Post; newer?: Post; older?: Post }
+const { post, newer, older } = Astro.props;
+const { data } = post;
+const { Content } = await render(post);
+const url = new URL(`/blog/${post.id}/`, SITE.url).href;
+
+// Social cards want a JPG/PNG around 1200px wide, not the inline webp.
+const ogImage = data.cover
+  ? (await getImage({ src: data.cover, width: 1200, format: 'jpg' })).src
+  : SITE.ogImage;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: data.title,
+  description: data.description,
+  datePublished: data.pubDate.toISOString(),
+  dateModified: (data.updatedDate ?? data.pubDate).toISOString(),
+  image: new URL(ogImage, SITE.url).href,
+  url,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  keywords: data.tags.join(', ') || undefined,
+  wordCount: post.body?.split(/\s+/).filter(Boolean).length,
+  author: { '@type': 'Person', name: SITE.author, alternateName: 'MindPatch', url: SITE.url, sameAs: SITE.sameAs },
+  publisher: { '@type': 'Person', name: SITE.author, url: SITE.url },
+};
+---
+<Base
+  title={`${data.title} — MindPatch`}
+  description={data.description}
+  type="article"
+  image={ogImage}
+  publishedTime={data.pubDate}
+  modifiedTime={data.updatedDate}
+  tags={data.tags}
+  jsonLd={jsonLd}
+  noindex={data.draft}
+  bodyClass="blog"
+>
+  <Header />
+  <main class="wrap">
+    <article>
+      <header class="post-head">
+        <a class="back" href="/blog/">ALL POSTS</a>
+        <h1>{data.title}</h1>
+        <PostMeta pubDate={data.pubDate} updatedDate={data.updatedDate} minutes={readingTime(post.body)} />
+        {data.tags.length > 0 && <ul class="tags">{data.tags.map((t) => <li>#{t}</li>)}</ul>}
+      </header>
+      {data.cover && (
+        <figure class="cover">
+          <Image src={data.cover} alt={data.coverAlt ?? ''} loading="eager" fetchpriority="high" />
+        </figure>
+      )}
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+    {(newer || older) && (
+      <nav class="post-foot" aria-label="More posts">
+        <div class="pager">
+          {older && <a class="prev" href={`/blog/${older.id}/`}><small>&lt; OLDER</small>{older.data.title}</a>}
+          {newer && <a class="next" href={`/blog/${newer.id}/`}><small>NEWER &gt;</small>{newer.data.title}</a>}
+        </div>
+      </nav>
+    )}
+  </main>
+  <Footer />
+</Base>
+
+<script>
+  import mediumZoom from 'medium-zoom';
+  mediumZoom('.prose img, .cover img', { margin: 24, background: 'rgba(11, 14, 20, .96)' });
+</script>

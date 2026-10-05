@@ -1,0 +1,10 @@
+---
+import { formatDate } from '../lib/posts';
+interface Props { pubDate: Date; updatedDate?: Date; minutes: number }
+const { pubDate, updatedDate, minutes } = Astro.props;
+---
+<div class="meta">
+  <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+  <span>{minutes} MIN READ</span>
+  {updatedDate && <span>UPDATED <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time></span>}
+</div>
