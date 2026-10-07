@@ -7,6 +7,19 @@ tags: [npm, Supply Chain, Malware, Linux, Detection, YARA]
 
 This campaign starts with a typo in `npm install`.
 
+<div style="display:flex;flex-wrap:wrap;gap:16px;margin:0 0 2.2em;">
+  <div style="flex:1 1 260px;min-width:0;padding:22px 24px;background:#11151E;border:1px solid #2C3546;border-radius:14px;">
+    <div style="color:#7F8A9C;font-size:14px;margin-bottom:12px;">The real package</div>
+    <div style="font-size:26px;font-weight:700;letter-spacing:-.01em;margin-bottom:18px;word-break:break-word;">@an<span style="color:#5CFF7A;">gu</span>lar/core</div>
+    <div style="color:#C7D0C0;font-size:15px;line-height:1.85;">Scope owned by the Angular team<br>Version 22.2.1<br>Angular - the core framework</div>
+  </div>
+  <div style="flex:1 1 260px;min-width:0;padding:22px 24px;background:#11151E;border:1px solid #FF5D3A;border-radius:14px;">
+    <div style="color:#7F8A9C;font-size:14px;margin-bottom:12px;">The typosquat</div>
+    <div style="font-size:26px;font-weight:700;letter-spacing:-.01em;margin-bottom:18px;word-break:break-word;">@an<span style="color:#FF5D3A;">ug</span>lar/core</div>
+    <div style="color:#C7D0C0;font-size:15px;line-height:1.85;">Scope anyone can register<br>Version 22.2.1<br>Angular - the core framework<br><strong style="color:#fff;">Postinstall hook downloads the dropper</strong></div>
+  </div>
+</div>
+
 An npm account named `anfular` published 25-plus lookalikes of `@angular/core` and `@angular/cli`, every live one versioned `22.2.1` to match the real Angular release and carrying the real package descriptions.
 
 Install one by accident and this happens:
