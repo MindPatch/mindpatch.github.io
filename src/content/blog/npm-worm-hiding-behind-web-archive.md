@@ -118,13 +118,35 @@ Decoded, with the token elided:
 }
 ```
 
-The binary is stripped, but Go keeps `.gopclntab`, so the config load is recoverable from `main.main`:
+The binary is stripped of its DWARF debug info, but Go can't strip the runtime's `.gopclntab` function table; parsing it recovers 7,850 function names and their call graph. That's enough to walk `main.main` and watch exactly how the config is loaded:
 
 ```asm
-; main.main
-call utils.ReadConfigFile    ; base64-decode + JSON unmarshal a 356-byte .data blob
-call ui.ShowMenu             ; menu title "CHAOS (%s)"
-call environment.Load        ; ServerAddress, ServerPort, mode
+; main.main @ 0x6fb300
+0x6fb30e: mov rax, qword ptr [rip + 0x43309b]   ; config slice .ptr
+0x6fb315: mov rbx, qword ptr [rip + 0x43309c]   ; config slice .len
+0x6fb31c: mov rcx, qword ptr [rip + 0x43309d]   ; config slice .cap
+0x6fb323: call utils.ReadConfigFile             ; base64-decode + JSON unmarshal
+0x6fb34d: call ui.ShowMenu                      ; menu title "CHAOS (%s)"
+0x6fb36e: call environment.Load                 ; (ServerAddress, ServerPort, Mode)
+```
+
+The three `mov`s load a byte slice out of `.data` at `0xb2e3b0`; it points at the 356-byte config blob at `0xaee506`. `utils.ReadConfigFile` base64-decodes that blob and unmarshals it as JSON. In Go terms:
+
+```go
+cfg := utils.ReadConfigFile(configBlob) // .data slice @ 0xb2e3b0 -> 356 bytes @ 0xaee506
+ui.ShowMenu("dev", ...)
+env := environment.Load(cfg.ServerAddress, cfg.ServerPort, cfg.Mode)
+app.New(env).Run()
+```
+
+Because the JSON keys are randomized per build, you can't tell a value's meaning from its key. I recovered the mapping (port, address, token) from the argument order into `environment.Load` instead, which is fixed by the struct layout and survives a rebuild. That is the whole reason to read the disassembly rather than the strings: the register and call order is stable where the config contents are not.
+
+The command channel on the C2 side is plain HTTP and WebSocket, so a sensor that can see the decrypted stream has something to match:
+
+```text
+GET  http://<c2>/<endpoint>/   availability poll (handler.ServerIsAvailable)
+POST http://<c2>/<endpoint>/   device specs: hostname, username, mac_address, local IP
+WS   ws://<c2>/<endpoint>/    command channel, auto-reconnect
 ```
 
 The implant never talks to that onion directly. It dials through a Tor SOCKS5 proxy at `127.0.0.1:9050` that the worm installs alongside it, so the host's clearnet traffic never touches the C2. If you're writing network detection for this, destination IOCs won't help. What's observable is a Tor process where nobody installed Tor, and the units that set the proxy up.
@@ -293,7 +315,7 @@ For scanning samples, these are the two rules I run, both validated against the 
 rule CHAOS_RAT_Linux_Client {
     meta:
         family      = "CHAOS RAT (Go client)"
-        author      = "static analysis, gVisor lab"
+        author      = "MindPatch"
         date        = "2026-10-05"
         reference   = "github.com/tiagorlampert/CHAOS client (devel), Go 1.27.1 linux/amd64"
         note        = "matches unmodified builds regardless of baked C2 config"
@@ -327,6 +349,7 @@ The second rule matches the worm, and it's the one I'd point at npm tarballs and
 rule CHAOS_Dropper_Linux_Worm {
     meta:
         family      = "CHAOS RAT dropper - fontrenderd worm (bash)"
+        author      = "MindPatch"
         note        = "AUR/npm supply-chain + SSH worm + Tor persistence"
 
     strings:
