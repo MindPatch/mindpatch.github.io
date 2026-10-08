@@ -14,6 +14,19 @@ This is a writeup for people who hunt Linux endpoints, review package manifests,
 
 Typosquatting is registering a name one edit away from something popular and waiting for fat fingers. The `anfular` account covered the plausible misspellings: `@anuglar/core`, `@angulr/core`, `@anguar/core`, `@anfular/core`. Ten of them for core, ten for cli.
 
+<div style="display:flex;flex-wrap:wrap;gap:16px;margin:0 0 2.2em;">
+  <div style="flex:1 1 260px;min-width:0;padding:22px 24px;background:#11151E;border:1px solid #2C3546;border-radius:14px;">
+    <div style="color:#7F8A9C;font-size:14px;margin-bottom:12px;">The real package</div>
+    <div style="font-size:26px;font-weight:700;letter-spacing:-.01em;margin-bottom:18px;word-break:break-word;">@an<span style="color:#5CFF7A;">gu</span>lar/core</div>
+    <div style="color:#C7D0C0;font-size:15px;line-height:1.85;">Scope owned by the Angular team<br>Version 22.2.1<br>Angular - the core framework</div>
+  </div>
+  <div style="flex:1 1 260px;min-width:0;padding:22px 24px;background:#11151E;border:1px solid #FF5D3A;border-radius:14px;">
+    <div style="color:#7F8A9C;font-size:14px;margin-bottom:12px;">The typosquat</div>
+    <div style="font-size:26px;font-weight:700;letter-spacing:-.01em;margin-bottom:18px;word-break:break-word;">@an<span style="color:#FF5D3A;">ug</span>lar/core</div>
+    <div style="color:#C7D0C0;font-size:15px;line-height:1.85;">Scope anyone can register<br>Version 22.2.1<br>Angular - the core framework<br><strong style="color:#fff;">Postinstall hook downloads the dropper</strong></div>
+  </div>
+</div>
+
 The mechanic that makes this work on npm is scopes. In `@angular/core`, `angular` is a namespace owned by the Angular team, and only they can publish into it. `@anuglar/core` lives in a different namespace that anyone can register, and to the registry it's an unrelated package that happens to look nearly identical on screen. The fakes even reuse the genuine descriptions, "Angular - the core framework" and "CLI tool for Angular", so a rushed manifest review passes.
 
 Version choice is the detail I'd aim detection at. Every live fake was published at `22.2.1`, matching the genuine release at the time, so a lockfile diff (the file npm writes to pin the exact versions of everything you install) reads like a routine upgrade instead of a new package appearing. And the placeholders tell you this isn't a one-shot: five more namespaces, `@ahgular`, `@angilar`, `@angullar`, `@angulqr`, and `@anular`, hold core packages at `0.0.0-stage` with the description "Temporary package placeholder for staged publishing". I read those as reserved seats for the next wave, and that placeholder string is a decent registry-wide hunt query on its own.
