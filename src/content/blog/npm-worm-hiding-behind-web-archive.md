@@ -1,5 +1,5 @@
 ---
-title: "An npm worm that hides behind web.archive.org"
+title: "An Angular typosquat worm that hides behind web.archive.org"
 description: "A typosquatted @angular/core clone chains a postinstall hook through the Internet Archive to a CHAOS RAT, then worms across SSH, the AUR and npm. The full chain, the host artifacts to alert on, and two YARA rules."
 pubDate: 2026-10-07
 updatedDate: 2026-10-08
