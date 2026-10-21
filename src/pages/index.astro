@@ -1,17 +1,29 @@
 ---
 import Base from '../layouts/Base.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import PostMeta from '../components/PostMeta.astro';
+import Sprite from '../components/Sprite.astro';
 import { SITE } from '../consts';
-import { getPosts, readingTime } from '../lib/posts';
+import { getPosts, formatDate } from '../lib/posts';
 
 const posts = await getPosts();
-const links = [
-  { label: 'GitHub', href: 'https://github.com/MindPatch' },
-  { label: 'Medium', href: 'https://mindpatch.medium.com/' },
-  { label: 'Twitter', href: 'https://twitter.com/mindpatchsec' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/knassar702/' },
+const latest = posts.slice(0, 3);
+
+// Stroke icons (24x24) for the link rows.
+const icons = {
+  writings: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M10 13h6M10 17h6"/>',
+  post: '<path d="M4 6h16M4 12h16M4 18h10"/>',
+  rss: '<path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>',
+  github: '<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/>',
+  medium: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  twitter: '<path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>',
+  linkedin: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>',
+  email: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+};
+
+const elsewhere = [
+  { label: 'GitHub', href: 'https://github.com/MindPatch', handle: '@MindPatch', icon: icons.github },
+  { label: 'Medium', href: 'https://mindpatch.medium.com/', handle: '@mindpatch', icon: icons.medium },
+  { label: 'Twitter', href: 'https://twitter.com/mindpatchsec', handle: SITE.twitter, icon: icons.twitter },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/knassar702/', handle: 'knassar702', icon: icons.linkedin },
 ];
 
 const person = {
@@ -38,119 +50,108 @@ const jsonLd = {
   })),
 };
 ---
-<Base title={SITE.title} description={SITE.blogDescription} bodyClass="blog" jsonLd={jsonLd}>
-  <Header />
-  <main class="wrap">
-    <section class="hero">
-      <button type="button" class="sprite" id="sprite" aria-label="Change avatar colours">
-        <!-- original 16x16 pixel robot: rounded helmet, wide visor, LED strip, jacket -->
-        <svg viewBox="0 0 16 16" aria-hidden="true">
-          <g id="helmet" fill="#C9CED8"><path d="M5 1h6v1H5zM4 2h8v1H4zM3 3h10v8H3zM4 11h8v1H4z"/></g>
-          <path fill="#8A94A6" d="M3 3h1v8H3zM12 3h1v8h-1zM4 11h8v1H4z" opacity=".6"/>
-          <path fill="#0B0E14" d="M4 5h8v4H4z"/>
-          <g id="visor" fill="#FF5D3A"><path d="M5 6h6v2H5z"/></g>
-          <path fill="#E8F0E0" d="M5 6h1v1H5z" opacity=".8"/>
-          <g id="led" fill="#5CFF7A"><path d="M6 10h1v1H6zM8 10h1v1H8zM10 10h1v1h-1z"/></g>
-          <g id="jacket" fill="#1A1A1A"><path d="M4 12h8v3H4zM3 13h1v2H3zM12 13h1v2h-1z"/></g>
-          <path fill="#C9CED8" d="M7 12h2v3H7z" opacity=".9"/>
-        </svg>
-      </button>
-      <div>
-        <p class="hi">Hi, I'm</p>
-        <h1>Khaled Nassar <span>aka MindPatch</span></h1>
-        <p class="prompt cursor" id="role" aria-live="polite">SECURITY ENGINEER</p>
-        <p class="bio">
-          I hunt bugs, dig into vulnerabilities, play CTFs and write Rust.
-          This is where I write up what I find.
-        </p>
-        <div class="actions">
-          <a class="btn primary" href={`mailto:${SITE.email}`}>{SITE.email}</a>
-        </div>
-        <ul class="social" aria-label="Elsewhere">
-          {links.map((l) => <li><a href={l.href} rel="me noopener">{l.label}</a></li>)}
-        </ul>
+<Base title={SITE.title} description={SITE.blogDescription} jsonLd={jsonLd}>
+  <main class="page">
+    <section class="intro">
+      <div class="avatar"><Sprite size={56} /></div>
+      <h1 class="name">{SITE.author}</h1>
+      <p class="handle">MindPatch · security engineer</p>
+    </section>
+
+    <section class="letter">
+      <p class="letter-label">A brief note from the author</p>
+      <div class="letter-body">
+        <p>dear reader (and, perhaps, the curious observer),</p>
+        <p>I'm a security engineer. I hunt bugs, dig into vulnerabilities, play CTFs and write Rust.</p>
+        <p>This is where I write up what I find.</p>
+        <p>with care,<br />MindPatch (Khaled Nassar)</p>
       </div>
     </section>
 
-    <section class="latest" aria-labelledby="posts-title">
-      <div class="section-head">
-        <h2 id="posts-title">Posts</h2>
-        <a class="more" href="/rss.xml">RSS &gt;</a>
-      </div>
-      {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
-      <ul class="posts">
-        {posts.map((p) => (
-          <li>
-            <a class="card" href={`/blog/${p.id}/`}>
-              <PostMeta pubDate={p.data.pubDate} minutes={readingTime(p.body)} />
-              <h3>{p.data.title}</h3>
-              <p>{p.data.description}</p>
-              {p.data.tags.length > 0 && <ul class="tags">{p.data.tags.map((t) => <li>#{t}</li>)}</ul>}
-            </a>
-          </li>
-        ))}
-      </ul>
+    <section class="group">
+      <h2 class="glabel">Archive</h2>
+      <a class="row" href="/blog/">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.writings} />
+        <span class="lbl">Writings</span><span class="meta-r">{posts.length}</span>
+      </a>
+      <a class="row" href="/rss.xml">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.rss} />
+        <span class="lbl">RSS feed</span><span class="meta-r">/rss.xml</span>
+      </a>
     </section>
+
+    {latest.length > 0 && (
+      <section class="group">
+        <h2 class="glabel">Latest</h2>
+        {latest.map((p) => (
+          <a class="row" href={`/blog/${p.id}/`}>
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.post} />
+            <span class="lbl">{p.data.title}</span>
+            <time class="meta-r" datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>
+          </a>
+        ))}
+      </section>
+    )}
+
+    <section class="group">
+      <h2 class="glabel">Elsewhere</h2>
+      {elsewhere.map((l) => (
+        <a class="row" href={l.href} rel="me noopener" target="_blank">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={l.icon} />
+          <span class="lbl">{l.label}</span><span class="meta-r">{l.handle}</span>
+        </a>
+      ))}
+      <a class="row" href={`mailto:${SITE.email}`}>
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.email} />
+        <span class="lbl">Email</span><span class="meta-r">{SITE.email}</span>
+      </a>
+    </section>
+
+    <p class="foot">© {new Date().getFullYear()} {SITE.author}</p>
   </main>
-  <Footer />
 </Base>
 
 <style>
-  .hero { display: grid; grid-template-columns: auto 1fr; gap: 36px; align-items: start; padding: 8px 0 40px; }
-  .sprite {
-    display: block; width: 112px; height: 112px; padding: 14px; border: 0; cursor: pointer;
-    background: var(--panel); box-shadow: 0 0 0 4px var(--line), 0 0 0 8px var(--bg), 0 0 0 12px var(--accent);
-    margin: 12px;
+  .page {
+    width: 100%; max-width: 460px; margin: 0 auto;
+    min-height: 100dvh; display: flex; flex-direction: column; justify-content: center;
+    gap: 1.8rem; padding: 3rem 1.5rem;
   }
-  .sprite svg { width: 100%; height: 100%; shape-rendering: crispEdges; }
-  .sprite:active { transform: translateY(3px); }
-  .hi { margin: 0; color: var(--dim); font-family: var(--mono); font-size: 15px; }
-  h1 { font-family: var(--display); font-size: clamp(34px, 6vw, 50px); font-weight: 700; line-height: 1.05; letter-spacing: -.03em; margin: 6px 0 14px; text-shadow: 4px 4px 0 #2A1F3D; }
-  h1 span { display: block; color: var(--accent); font-size: .55em; letter-spacing: -.01em; margin-top: 8px; text-shadow: none; }
-  #role { min-height: 1.8em; margin: 0 0 18px; }
-  .bio { margin: 0 0 22px; color: #C7D0C0; max-width: 34em; }
-  .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 24px; }
-  .btn { font-family: var(--display); font-weight: 600; font-size: 16px; padding: 10px 18px; box-shadow: 0 0 0 3px var(--line); transition: transform .1s steps(2), box-shadow .1s steps(2); }
-  .btn:hover { color: var(--yellow); box-shadow: 0 0 0 3px var(--yellow); transform: translate(-2px, -2px); }
-  .btn.primary { background: var(--accent); color: var(--bg); box-shadow: 4px 4px 0 #2A1F3D; }
-  .btn.primary:hover { background: var(--yellow); color: var(--bg); box-shadow: 6px 6px 0 #2A1F3D; }
-  .social { display: flex; flex-wrap: wrap; gap: 8px 22px; list-style: none; margin: 0; padding: 0; font-family: var(--mono); font-size: 14px; }
-  .social a { color: var(--dim); }
-  .social a::before { content: "> "; color: var(--accent); }
-  .social a:hover { color: var(--yellow); }
+  .intro { text-align: center; }
+  .avatar {
+    width: 92px; height: 92px; margin: 0 auto; border-radius: 50%;
+    display: grid; place-items: center; background: var(--bg-soft);
+    border: 1px solid var(--border); box-shadow: 0 8px 24px -12px rgba(0, 0, 0, .8);
+  }
+  .name { margin: 1rem 0 0; font-size: 1.8rem; font-weight: 700; letter-spacing: -.02em; }
+  .handle { margin: .3rem 0 0; color: var(--fg-muted); font-size: .9rem; font-family: var(--mono); }
 
-  .latest { padding-top: 40px; border-top: 4px dashed var(--line); }
-  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
-  .section-head h2 { font-family: var(--display); font-size: 26px; font-weight: 700; margin: 0; }
-  .section-head h2::before { content: "## "; color: var(--accent); font-family: var(--mono); font-size: .75em; font-weight: 400; }
-  .more { font-family: var(--mono); font-size: 14px; color: var(--green); }
-  .card h3 { font-family: var(--display); font-size: 22px; font-weight: 700; line-height: 1.3; margin: 6px 0 8px; }
-  .card:hover h3 { color: var(--yellow); }
+  .letter { border: 1px solid var(--border); border-radius: 12px; padding: 1.6rem 1.4rem; background: var(--bg-soft); }
+  .letter-label {
+    margin: 0; text-align: center; font-family: var(--mono);
+    font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; color: var(--fg-muted);
+  }
+  .letter-body { margin: 1.2rem 0 0; font-family: var(--serif); color: var(--fg); line-height: 1.75; font-size: .98rem; }
+  .letter-body p { margin: 0 0 .9rem; }
+  .letter-body p:last-child { margin-bottom: 0; }
 
-  @media (max-width: 640px) {
-    .hero { grid-template-columns: 1fr; gap: 24px; padding-top: 8px; }
-    .sprite { width: 104px; height: 104px; padding: 12px; }
+  .group { display: flex; flex-direction: column; gap: .5rem; }
+  .glabel { margin: 0 0 .1rem; font-size: .72rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; color: var(--fg-muted); }
+  .row {
+    display: flex; align-items: center; gap: .8rem;
+    padding: .72rem .9rem; border: 1px solid var(--border); border-radius: 10px;
+    background: var(--bg-soft); color: var(--fg); font-size: .95rem; line-height: 1.45;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .row:hover { background: var(--bg-hover); border-color: color-mix(in oklab, var(--accent) 40%, var(--border)); color: var(--fg); }
+  .ic { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent); }
+  .lbl { flex: 1; min-width: 0; font-weight: 500; }
+  .meta-r { color: var(--fg-muted); font-size: .85rem; font-family: var(--mono); white-space: nowrap; }
+
+  .foot { text-align: center; margin: .4rem 0 0; color: var(--fg-muted); font-size: .8rem; font-family: var(--mono); }
+
+  @media (max-width: 420px) {
+    .name { font-size: 1.6rem; }
+    .meta-r { font-size: .78rem; }
   }
 </style>
-
-<script is:inline>
-(function () {
-  // role cycles every few seconds, typed out character by character; clicking the robot skips ahead
-  var roles = ['SECURITY ENGINEER', 'BUG HUNTER', 'VULN RESEARCHER', 'RUST ENJOYER', 'CVE COLLECTOR', 'CTF PLAYER'],
-      // [helmet, visor, led] per role
-      pal = [['#C9CED8','#FF5D3A','#5CFF7A'],['#FFD23F','#1A1A1A','#FF5D3A'],['#2C3546','#4DA3FF','#4DA3FF'],['#B05A3C','#FFD23F','#FFD23F'],['#9B5DE5','#5CFF7A','#E8F0E0'],['#E8F0E0','#FF3FA0','#FF3FA0']],
-      role = document.getElementById('role'), r = 0, timer, typing;
-  function show(i) {
-    r = i % roles.length;
-    document.getElementById('helmet').setAttribute('fill', pal[r][0]);
-    document.getElementById('visor').setAttribute('fill', pal[r][1]);
-    document.getElementById('led').setAttribute('fill', pal[r][2]);
-    clearTimeout(typing);
-    var s = roles[r], k = 0; role.textContent = '';
-    (function type() { if (k <= s.length) { role.textContent = s.slice(0, k++); typing = setTimeout(type, 45); } })();
-    clearTimeout(timer); timer = setTimeout(function () { show(r + 1); }, 3200);
-  }
-  show(0);
-  document.getElementById('sprite').onclick = function () { show(r + 1); };
-})();
-</script>

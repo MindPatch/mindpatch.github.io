@@ -3,12 +3,12 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
-<Base title="404 — MindPatch" description="Page not found." noindex bodyClass="blog">
+<Base title="404 — MindPatch" description="Page not found." noindex>
   <Header />
-  <main class="wrap intro">
-    <h1>Error <span>404</span></h1>
-    <p class="prompt cursor">SEGFAULT: PAGE NOT FOUND</p>
-    <p><a href="/">&gt; Back to the blog</a></p>
+  <main class="wrap">
+    <h1 class="section-title">404</h1>
+    <p class="section-lede">This page doesn't exist.</p>
+    <p><a class="back" href="/">← back home</a></p>
   </main>
   <Footer />
 </Base>

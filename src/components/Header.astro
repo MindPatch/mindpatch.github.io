@@ -1,11 +1,14 @@
 ---
-import Sprite from './Sprite.astro';
 const path = Astro.url.pathname;
+const on = (p: string) => (p === '/' ? path === '/' : path.startsWith(p)) ? 'page' : undefined;
 ---
-<header class="top">
-  <a class="brand" href="/" aria-label="MindPatch home"><Sprite size={28} /><span>MINDPATCH</span></a>
-  <nav aria-label="Main">
-    <a href="/" aria-current={path === '/' || path.startsWith('/blog') ? 'page' : undefined}>BLOG</a>
-    <a href="/rss.xml">RSS</a>
-  </nav>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">MindPatch</a>
+    <nav class="nav" aria-label="Main">
+      <a href="/" aria-current={on('/')}>Home</a>
+      <a href="/blog/" aria-current={on('/blog')}>Writings</a>
+      <a href="/rss.xml">RSS</a>
+    </nav>
+  </div>
 </header>

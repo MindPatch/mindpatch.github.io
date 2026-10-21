@@ -1,11 +1,13 @@
 ---
 import { SITE } from '../consts';
 ---
-<footer class="bottom">
-  <span>© {new Date().getFullYear()} KHALED NASSAR</span>
-  <span class="links">
-    <a href="https://github.com/MindPatch" rel="noopener">GITHUB</a>
-    <a href="https://twitter.com/mindpatchsec" rel="noopener">TWITTER</a>
-    <a href={`mailto:${SITE.email}`}>EMAIL</a>
-  </span>
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© {new Date().getFullYear()} {SITE.author}</span>
+    <span class="links">
+      <a href="https://github.com/MindPatch" rel="noopener">GitHub</a>
+      <a href="https://twitter.com/mindpatchsec" rel="noopener">Twitter</a>
+      <a href={`mailto:${SITE.email}`}>Email</a>
+    </span>
+  </div>
 </footer>

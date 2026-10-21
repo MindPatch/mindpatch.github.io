@@ -45,8 +45,9 @@ Put images in `src/content/blog/images/` and link them with a relative path as a
 - Markdown posts with syntax highlighting, tables, quotes and lists
 - Click-to-zoom images ([medium-zoom](https://github.com/francoischalifour/medium-zoom))
 - SEO: canonical URLs, meta descriptions, Open Graph and Twitter cards, JSON-LD (`BlogPosting`, `Blog`, `Person`), `sitemap-index.xml`, `robots.txt`, RSS at `/rss.xml`
-- Readable fonts (Inter, Space Grotesk, JetBrains Mono for code); the pixel font is kept for the logo only
-- Self-hosted fonts, no client-side framework, zero JS on the page except the homepage animation and image zoom
+- A calm, minimal true-black theme: Inter for text, JetBrains Mono for code and small labels
+- Self-hosted fonts, no client-side framework, zero JS on the page except image zoom and mermaid diagrams
+- `/` is a short profile page with the latest posts; the full list lives at `/blog/`
 
 ## Local development
 
