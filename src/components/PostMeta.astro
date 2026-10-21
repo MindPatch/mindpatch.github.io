@@ -5,6 +5,6 @@ const { pubDate, updatedDate, minutes } = Astro.props;
 ---
 <div class="meta">
   <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
-  <span>{minutes} MIN READ</span>
-  {updatedDate && <span>UPDATED <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time></span>}
+  <span>{minutes} min read</span>
+  {updatedDate && <span>updated <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time></span>}
 </div>

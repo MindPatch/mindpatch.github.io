@@ -53,16 +53,15 @@ const jsonLd = {
   tags={data.tags}
   jsonLd={jsonLd}
   noindex={data.draft}
-  bodyClass="blog"
 >
   <Header />
   <main class="wrap">
     <article>
       <header class="post-head">
-        <a class="back" href="/">ALL POSTS</a>
+        <a class="back" href="/blog/">← all writings</a>
         <h1>{data.title}</h1>
         <PostMeta pubDate={data.pubDate} updatedDate={data.updatedDate} minutes={readingTime(post.body)} />
-        {data.tags.length > 0 && <ul class="tags">{data.tags.map((t) => <li>#{t}</li>)}</ul>}
+        {data.tags.length > 0 && <ul class="tags">{data.tags.map((t) => <li>{t}</li>)}</ul>}
       </header>
       {data.cover && (
         <figure class="cover">
@@ -76,8 +75,8 @@ const jsonLd = {
     {(newer || older) && (
       <nav class="post-foot" aria-label="More posts">
         <div class="pager">
-          {older && <a class="prev" href={`/blog/${older.id}/`}><small>&lt; OLDER</small>{older.data.title}</a>}
-          {newer && <a class="next" href={`/blog/${newer.id}/`}><small>NEWER &gt;</small>{newer.data.title}</a>}
+          {older && <a class="prev" href={`/blog/${older.id}/`}><small>← Older</small>{older.data.title}</a>}
+          {newer && <a class="next" href={`/blog/${newer.id}/`}><small>Newer →</small>{newer.data.title}</a>}
         </div>
       </nav>
     )}
@@ -99,33 +98,33 @@ const jsonLd = {
       fontFamily: "'JetBrains Mono', ui-monospace, monospace",
       themeVariables: {
         darkMode: true,
-        background: '#11151E',
-        primaryColor: '#161B26',
-        primaryBorderColor: '#2C3546',
-        primaryTextColor: '#E8F0E0',
-        lineColor: '#7F8A9C',
-        secondaryColor: '#1A2030',
-        tertiaryColor: '#11151E',
-        mainBkg: '#161B26',
-        nodeBorder: '#FF5D3A',
-        clusterBkg: '#11151E',
-        clusterBorder: '#2C3546',
-        titleColor: '#E8F0E0',
-        edgeLabelBackground: '#0B0E14',
-        actorBkg: '#161B26',
-        actorBorder: '#FF5D3A',
-        actorTextColor: '#E8F0E0',
-        signalColor: '#7F8A9C',
-        signalTextColor: '#C7D0C0',
-        noteBkgColor: '#2A1F3D',
-        noteTextColor: '#E8F0E0',
-        noteBorderColor: '#9B5DE5',
+        background: '#0c0c0d',
+        primaryColor: '#141416',
+        primaryBorderColor: '#3a3a3d',
+        primaryTextColor: '#f3f3f0',
+        lineColor: '#777772',
+        secondaryColor: '#1a1a1c',
+        tertiaryColor: '#0c0c0d',
+        mainBkg: '#141416',
+        nodeBorder: '#cfcec9',
+        clusterBkg: '#0c0c0d',
+        clusterBorder: '#1f1f21',
+        titleColor: '#f3f3f0',
+        edgeLabelBackground: '#000000',
+        actorBkg: '#141416',
+        actorBorder: '#cfcec9',
+        actorTextColor: '#f3f3f0',
+        signalColor: '#777772',
+        signalTextColor: '#bdbdb8',
+        noteBkgColor: '#1a1a1c',
+        noteTextColor: '#f3f3f0',
+        noteBorderColor: '#3a3a3d',
       },
     });
     await mermaid.run({ nodes: blocks });
   }
 
   renderMermaid().finally(() => {
-    mediumZoom('.prose img, .cover img', { margin: 24, background: 'rgba(11, 14, 20, .96)' });
+    mediumZoom('.prose img, .cover img', { margin: 24, background: 'rgba(0, 0, 0, .92)' });
   });
 </script>

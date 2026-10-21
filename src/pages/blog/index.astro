@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE } from '../../consts';
+import { getPosts, formatDate } from '../../lib/posts';
+
+const posts = await getPosts();
+---
+<Base title={`Writings — MindPatch`} description={SITE.blogDescription}>
+  <Header />
+  <main class="wrap">
+    <h1 class="section-title">Writings</h1>
+    <p class="section-lede">Security research, bug hunting notes and vulnerability writeups.</p>
+    {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
+    <ul class="post-list">
+      {posts.map((p) => (
+        <li>
+          <a href={`/blog/${p.id}/`}>
+            <span class="post-title">{p.data.title}</span>
+            <time class="post-date" datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>
+            <p class="post-desc">{p.data.description}</p>
+            {p.data.tags.length > 0 && <ul class="tags">{p.data.tags.map((t) => <li>{t}</li>)}</ul>}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </main>
+  <Footer />
+</Base>
