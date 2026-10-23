@@ -58,14 +58,8 @@ const jsonLd = {
       <p class="handle">MindPatch · security engineer</p>
     </section>
 
-    <section class="letter">
-      <p class="letter-label">A brief note from the author</p>
-      <div class="letter-body">
-        <p>dear reader (and, perhaps, the curious observer),</p>
-        <p>I'm a security engineer. I hunt bugs, dig into vulnerabilities, play CTFs and write Rust.</p>
-        <p>This is where I write up what I find.</p>
-        <p>with care,<br />MindPatch (Khaled Nassar)</p>
-      </div>
+    <section class="about">
+      <p>I'm a security engineer. I hunt bugs, dig into vulnerabilities, play CTFs and write Rust. This is where I write up what I find.</p>
     </section>
 
     <section class="group">
@@ -126,14 +120,8 @@ const jsonLd = {
   .name { margin: 1rem 0 0; font-size: 1.8rem; font-weight: 700; letter-spacing: -.02em; }
   .handle { margin: .3rem 0 0; color: var(--fg-muted); font-size: .9rem; font-family: var(--mono); }
 
-  .letter { border: 1px solid var(--border); border-radius: 12px; padding: 1.6rem 1.4rem; background: var(--bg-soft); }
-  .letter-label {
-    margin: 0; text-align: center; font-family: var(--mono);
-    font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; color: var(--fg-muted);
-  }
-  .letter-body { margin: 1.2rem 0 0; font-family: var(--serif); color: var(--fg); line-height: 1.75; font-size: .98rem; }
-  .letter-body p { margin: 0 0 .9rem; }
-  .letter-body p:last-child { margin-bottom: 0; }
+  .about { border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.3rem; background: var(--bg-soft); }
+  .about p { margin: 0; color: var(--fg); font-size: .95rem; line-height: 1.7; }
 
   .group { display: flex; flex-direction: column; gap: .5rem; }
   .glabel { margin: 0 0 .1rem; font-size: .72rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; color: var(--fg-muted); }
