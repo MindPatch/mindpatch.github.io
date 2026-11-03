@@ -15,7 +15,7 @@ const posts = await getPosts();
       <p>Security research, bug hunting notes and vulnerability writeups.</p>
     </header>
     {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
-    <ul class="entries">
+    <ul class="entries spaced">
       {posts.map((p) => (
         <li>
           <a href={`/blog/${p.id}/`}>
