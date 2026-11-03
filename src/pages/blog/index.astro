@@ -7,19 +7,21 @@ import { getPosts, formatDate } from '../../lib/posts';
 
 const posts = await getPosts();
 ---
-<Base title={`Writings — MindPatch`} description={SITE.blogDescription}>
+<Base title={`Writing — MindPatch`} description={SITE.blogDescription}>
   <Header />
   <main class="wrap">
-    <h1 class="section-title">Writings</h1>
-    <p class="section-lede">Security research, bug hunting notes and vulnerability writeups.</p>
+    <header class="page-head">
+      <h1>Writing</h1>
+      <p>Security research, bug hunting notes and vulnerability writeups.</p>
+    </header>
     {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
-    <ul class="post-list">
+    <ul class="entries">
       {posts.map((p) => (
         <li>
           <a href={`/blog/${p.id}/`}>
-            <span class="post-title">{p.data.title}</span>
-            <time class="post-date" datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>
-            <p class="post-desc">{p.data.description}</p>
+            <time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>
+            <span class="title">{p.data.title}</span>
+            <p class="desc">{p.data.description}</p>
             {p.data.tags.length > 0 && <ul class="tags">{p.data.tags.map((t) => <li>{t}</li>)}</ul>}
           </a>
         </li>

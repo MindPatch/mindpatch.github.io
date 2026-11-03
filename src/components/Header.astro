@@ -4,10 +4,10 @@ const on = (p: string) => (p === '/' ? path === '/' : path.startsWith(p)) ? 'pag
 ---
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="/">MindPatch</a>
+    <a class="brand" href="/"><img src="/images/avatar.jpg" alt="" width="28" height="28" />MindPatch</a>
     <nav class="nav" aria-label="Main">
       <a href="/" aria-current={on('/')}>Home</a>
-      <a href="/blog/" aria-current={on('/blog')}>Writings</a>
+      <a href="/blog/" aria-current={on('/blog')}>Writing</a>
       <a href="/rss.xml">RSS</a>
     </nav>
   </div>
