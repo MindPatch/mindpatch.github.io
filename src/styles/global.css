@@ -143,3 +143,59 @@ main.wrap { flex: 1; padding-top: 4rem; padding-bottom: 6rem; }
 .prose pre.mermaid { padding: 20px; margin: 1.6rem 0; text-align: center; color: var(--fg-muted); line-height: 1.4; }
 .prose pre.mermaid[data-processed] { color: transparent; font-size: 0; }
 .prose pre.mermaid svg { max-width: 100%; height: auto; }
+
+/* ---------- homepage: sticky profile column + scrolling posts ---------- */
+.split { width: 100%; max-width: 68rem; margin: 0 auto; padding: 0 1.5rem; display: grid; grid-template-columns: 19rem 1fr; gap: 5rem; flex: 1; }
+.split-side .side-inner { position: sticky; top: 0; padding: 5.5rem 0 3rem; display: flex; flex-direction: column; min-height: 100dvh; }
+.portrait { width: 96px; height: 96px; border-radius: 12px; object-fit: cover; margin-bottom: 1.75rem; filter: grayscale(.25); }
+.side-name { font-size: 1.6rem; letter-spacing: -.02em; margin: 0; }
+.side-role { margin: .25rem 0 0; color: var(--fg-strong); font-size: .95rem; }
+.side-intro { margin: 1rem 0 0; color: var(--fg-muted); font-size: .95rem; line-height: 1.65; max-width: 17rem; }
+.side-nav { display: flex; flex-direction: column; gap: .7rem; margin-top: 3rem; }
+.side-nav a { display: flex; align-items: center; gap: .9rem; color: var(--fg-muted); font-size: .78rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; }
+.side-nav a::before { content: ''; width: 2rem; height: 1px; background: currentColor; transition: width .2s ease; }
+.side-nav a:hover, .side-nav a[aria-current='page'] { color: var(--fg-strong); }
+.side-nav a:hover::before, .side-nav a[aria-current='page']::before { width: 4rem; }
+.side-links { list-style: none; padding: 0; margin: auto 0 0; display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; padding-top: 3rem; }
+.side-links a { color: var(--fg-muted); font-family: var(--mono); font-size: .76rem; }
+.side-links a:hover { color: var(--fg-strong); }
+
+.split-main { padding: 5.5rem 0 4rem; min-width: 0; }
+.block { margin-bottom: 4rem; }
+.block-label { margin: 0 0 1.25rem; font-size: .78rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-muted); }
+.cards { list-style: none; margin: 0 0 0 -1.25rem; padding: 0; display: grid; gap: .5rem; }
+.cards a { display: block; padding: 1.25rem; border-radius: 10px; color: var(--fg); transition: background .2s ease; }
+.cards a:hover { background: var(--bg-soft); }
+.cards time { display: block; font-family: var(--mono); font-size: .74rem; color: var(--fg-muted); margin-bottom: .4rem; }
+.cards .title { color: var(--fg-strong); font-weight: 500; font-size: 1.08rem; line-height: 1.45; transition: color .15s ease; }
+.cards a:hover .title { color: var(--accent); }
+.cards .desc { margin: .45rem 0 0; color: var(--fg-muted); font-size: .93rem; line-height: 1.65; }
+.more { display: inline-block; margin-top: 1rem; color: var(--fg-strong); font-size: .92rem; }
+.more:hover { color: var(--accent); }
+.split-foot { color: var(--fg-muted); font-size: .8rem; }
+
+/* ---------- writing archive: posts grouped by year ---------- */
+.year { display: grid; grid-template-columns: 5rem 1fr; gap: 1.5rem; padding: 1.75rem 0; border-top: 1px solid var(--border); }
+.year:first-of-type { border-top: none; padding-top: 0; }
+.year-label { margin: 0; font-family: var(--mono); font-size: .85rem; font-weight: 500; color: var(--fg-muted); line-height: 1.6; }
+.year-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.6rem; }
+.year-list a { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.year-list .title { color: var(--fg-strong); font-weight: 500; transition: color .15s ease; }
+.year-list a:hover .title { color: var(--accent); }
+.year-list time { font-family: var(--mono); font-size: .74rem; color: var(--fg-muted); white-space: nowrap; }
+.year-list .desc { margin: .3rem 0 0; color: var(--fg-muted); font-size: .92rem; line-height: 1.65; }
+
+@media (max-width: 860px) {
+  .split { grid-template-columns: 1fr; gap: 0; }
+  .split-side .side-inner { position: static; min-height: 0; padding: 3.5rem 0 0; }
+  .side-nav { display: none; }
+  .side-links { margin-top: 0; padding-top: 1.5rem; }
+  .split-main { padding-top: 3rem; }
+  .cards { margin-left: 0; }
+  .cards a { padding: 1rem 0; }
+  .cards a:hover { background: none; }
+}
+@media (max-width: 560px) {
+  .year { grid-template-columns: 1fr; gap: .75rem; }
+  .portrait { width: 72px; height: 72px; }
+}

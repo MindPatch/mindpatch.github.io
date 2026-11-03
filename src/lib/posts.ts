@@ -16,3 +16,16 @@ export function readingTime(body = ''): number {
 export function formatDate(d: Date): string {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
 }
+
+export function byYear(posts: Post[]): [number, Post[]][] {
+  const groups = new Map<number, Post[]>();
+  for (const p of posts) {
+    const y = p.data.pubDate.getUTCFullYear();
+    groups.set(y, [...(groups.get(y) ?? []), p]);
+  }
+  return [...groups.entries()];
+}
+
+export function formatShort(d: Date): string {
+  return d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', timeZone: 'UTC' });
+}
