@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { SITE } from '../../consts';
-import { getPosts, formatDate } from '../../lib/posts';
+import { getPosts, byYear, formatShort } from '../../lib/posts';
 
 const posts = await getPosts();
 ---
@@ -15,18 +15,22 @@ const posts = await getPosts();
       <p>Security research, bug hunting notes and vulnerability writeups.</p>
     </header>
     {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
-    <ul class="entries spaced">
-      {posts.map((p) => (
-        <li>
-          <a href={`/blog/${p.id}/`}>
-            <time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>
-            <span class="title">{p.data.title}</span>
-            <p class="desc">{p.data.description}</p>
-            {p.data.tags.length > 0 && <ul class="tags">{p.data.tags.map((t) => <li>{t}</li>)}</ul>}
-          </a>
-        </li>
-      ))}
-    </ul>
+    {byYear(posts).map(([year, list]) => (
+      <section class="year">
+        <h2 class="year-label">{year}</h2>
+        <ul class="year-list">
+          {list.map((p) => (
+            <li>
+              <a href={`/blog/${p.id}/`}>
+                <span class="title">{p.data.title}</span>
+                <time datetime={p.data.pubDate.toISOString()}>{formatShort(p.data.pubDate)}</time>
+              </a>
+              <p class="desc">{p.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
   </main>
   <Footer />
 </Base>

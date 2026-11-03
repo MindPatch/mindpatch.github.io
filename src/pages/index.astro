@@ -1,12 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
 import { SITE } from '../consts';
 import { getPosts, formatDate } from '../lib/posts';
 
 const posts = await getPosts();
-const latest = posts.slice(0, 3);
+const latest = posts.slice(0, 5);
 
 const elsewhere = [
   { label: 'github', href: 'https://github.com/MindPatch', handle: 'MindPatch' },
@@ -41,42 +39,46 @@ const jsonLd = {
 };
 ---
 <Base title={SITE.title} description={SITE.blogDescription} jsonLd={jsonLd}>
-  <Header />
-  <main class="wrap">
-    <header class="page-head with-avatar">
-      <img class="avatar" src="/images/avatar.jpg" alt="" width="64" height="64" />
-      <div>
-        <h1>{SITE.author}</h1>
-        <p>Security engineer. Notes from vulnerability research, malware analysis and whatever I'm building.</p>
+  <div class="split">
+    <aside class="split-side">
+      <div class="side-inner">
+        <img class="portrait" src="/images/avatar.jpg" alt="" width="96" height="96" />
+        <h1 class="side-name">{SITE.author}</h1>
+        <p class="side-role">Security engineer</p>
+        <p class="side-intro">Notes from vulnerability research, malware analysis and whatever I'm building.</p>
+        <nav class="side-nav" aria-label="Sections">
+          <a href="#writing" aria-current="page">Latest</a>
+          <a href="/blog/">Archive</a>
+          <a href="/rss.xml">RSS</a>
+        </nav>
+        <ul class="side-links">
+          {elsewhere.map((l) => (
+            <li><a href={l.href} rel={l.label === 'email' ? undefined : 'me noopener'}>{l.label}</a></li>
+          ))}
+        </ul>
       </div>
-    </header>
+    </aside>
 
-    <section class="section">
-      <div class="section-head">
-        <h2 class="section-label">Latest writing</h2>
-        <span class="links"><a href="/blog/">all {posts.length} →</a><a href="/rss.xml">rss</a></span>
-      </div>
-      {latest.length === 0 && <p class="empty">Nothing here yet.</p>}
-      <ul class="entries">
-        {latest.map((p) => (
-          <li>
-            <a href={`/blog/${p.id}/`}>
-              <time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>
-              <span class="title">{p.data.title}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
+    <main class="split-main">
+      <section id="writing" class="block">
+        <h2 class="block-label">Latest writing</h2>
+        {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
+        <ul class="cards">
+          {latest.map((p) => (
+            <li>
+              <a href={`/blog/${p.id}/`}>
+                <time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>
+                <span class="title">{p.data.title}</span>
+                <p class="desc">{p.data.description}</p>
+                {p.data.tags.length > 0 && <ul class="tags">{p.data.tags.map((t) => <li>{t}</li>)}</ul>}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a class="more" href="/blog/">All writing →</a>
+      </section>
 
-    <section class="section">
-      <div class="section-head"><h2 class="section-label">Elsewhere</h2></div>
-      <ul class="rows">
-        {elsewhere.map((l) => (
-          <li><span class="label">{l.label}</span><a href={l.href} rel={l.label === 'email' ? undefined : 'me noopener'}>{l.handle}</a></li>
-        ))}
-      </ul>
-    </section>
-  </main>
-  <Footer />
+      <footer class="split-foot">© {new Date().getFullYear()} {SITE.author}</footer>
+    </main>
+  </div>
 </Base>
