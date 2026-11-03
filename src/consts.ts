@@ -5,9 +5,18 @@ export const SITE = {
   description: 'Khaled Nassar (MindPatch) — security engineer.',
   blogDescription: 'Notes on security research, bug hunting, vulnerabilities and Rust by Khaled Nassar (MindPatch).',
   author: 'Khaled Nassar',
+  role: 'Security Engineer',
+  tagline: 'Sharing his thoughts and stuff.',
   twitter: '@mindpatchsec',
   email: 'hello@mindpatch.net',
   ogImage: '/og.png',
+  links: [
+    { label: 'github', href: 'https://github.com/MindPatch', handle: 'MindPatch' },
+    { label: 'medium', href: 'https://mindpatch.medium.com/', handle: 'mindpatch' },
+    { label: 'twitter', href: 'https://twitter.com/mindpatchsec', handle: '@mindpatchsec' },
+    { label: 'linkedin', href: 'https://www.linkedin.com/in/knassar702/', handle: 'knassar702' },
+    { label: 'email', href: 'mailto:hello@mindpatch.net', handle: 'hello@mindpatch.net' },
+  ],
   sameAs: [
     'https://github.com/MindPatch',
     'https://mindpatch.medium.com/',

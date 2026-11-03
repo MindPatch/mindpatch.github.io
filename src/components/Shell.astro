@@ -1,0 +1,18 @@
+---
+import Side from './Side.astro';
+import { SITE } from '../consts';
+---
+<div class="split">
+  <Side />
+  <main class="split-main">
+    <slot />
+    <footer class="split-foot">
+      <span>© {new Date().getFullYear()} {SITE.author}</span>
+      <span class="foot-links">
+        {SITE.links.map((l) => (
+          <a href={l.href} rel={l.label === 'email' ? undefined : 'me noopener'}>{l.label}</a>
+        ))}
+      </span>
+    </footer>
+  </main>
+</div>

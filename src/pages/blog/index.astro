@@ -1,15 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
+import Shell from '../../components/Shell.astro';
 import { SITE } from '../../consts';
 import { getPosts, byYear, formatShort } from '../../lib/posts';
 
 const posts = await getPosts();
 ---
 <Base title={`Writing — MindPatch`} description={SITE.blogDescription}>
-  <Header />
-  <main class="wrap">
+  <Shell>
     <header class="page-head">
       <h1>Writing</h1>
       <p>Security research, bug hunting notes and vulnerability writeups.</p>
@@ -31,6 +29,5 @@ const posts = await getPosts();
         </ul>
       </section>
     ))}
-  </main>
-  <Footer />
+  </Shell>
 </Base>
