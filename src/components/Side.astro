@@ -1,0 +1,26 @@
+---
+import { SITE } from '../consts';
+
+const path = Astro.url.pathname;
+const on = (p: string) => (p === '/' ? path === '/' : path.startsWith(p)) ? 'page' : undefined;
+---
+<aside class="split-side">
+  <div class="side-inner">
+    <a class="side-id" href="/">
+      <img class="portrait" src="/images/avatar.jpg" alt="" width="96" height="96" />
+      <span class="side-name">{SITE.author}</span>
+    </a>
+    <p class="side-role">{SITE.role}</p>
+    <p class="side-intro">{SITE.tagline}</p>
+    <nav class="side-nav" aria-label="Main">
+      <a href="/" aria-current={on('/')}>Home</a>
+      <a href="/blog/" aria-current={on('/blog')}>Writing</a>
+      <a href="/rss.xml">RSS</a>
+    </nav>
+    <ul class="side-links">
+      {SITE.links.map((l) => (
+        <li><a href={l.href} rel={l.label === 'email' ? undefined : 'me noopener'}>{l.label}</a></li>
+      ))}
+    </ul>
+  </div>
+</aside>
