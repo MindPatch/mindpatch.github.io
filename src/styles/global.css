@@ -1,15 +1,17 @@
-/* Calm, minimal, editorial dark. Recolor via the variables below. */
+/* Nightcore dark: blue-black night, cold whites, violet glow, film grain.
+   Recolor via the variables below. */
 :root {
-  --bg: #0a0a0b;        /* page background, near black */
-  --bg-soft: #111113;   /* cards, code, callouts */
-  --bg-hover: #18181b;  /* hover surfaces */
-  --border: #232326;    /* hairlines */
-  --fg: #bdbdb8;        /* body text */
-  --fg-strong: #f3f3f0; /* headings, emphasis */
-  --fg-muted: #777772;  /* secondary text */
-  --accent: #ff7a59;    /* links, highlights (MindPatch orange) */
-  --accent-dim: #ffa48c;
-  --selection: rgba(255, 122, 89, .28);
+  --bg: #06071a;        /* page background, blue-black night */
+  --bg-soft: #0c0e26;   /* cards, code, callouts */
+  --bg-hover: #13163a;  /* hover surfaces */
+  --border: #1d2150;    /* hairlines */
+  --fg: #b8bcd8;        /* body text, cold grey */
+  --fg-strong: #eef0ff; /* headings, emphasis, washed-out white */
+  --fg-muted: #6b7099;  /* secondary text */
+  --accent: #8f8cff;    /* links, highlights (headphone violet) */
+  --accent-dim: #bdbbff;
+  --glow: rgba(110, 100, 255, .35);
+  --selection: rgba(143, 140, 255, .3);
   --sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --serif: Georgia, 'Times New Roman', serif;
@@ -22,26 +24,33 @@ body {
   font-family: var(--sans); font-size: 17px; line-height: 1.75;
   -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
   min-height: 100dvh; display: flex; flex-direction: column;
+  background-image: radial-gradient(1100px 520px at 50% -180px, rgba(98, 88, 255, .16), transparent 70%);
+  background-repeat: no-repeat;
+}
+/* film grain over everything */
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: .09; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 ::selection { background: var(--selection); }
 a { color: var(--accent); text-decoration: none; transition: color .15s ease; }
 a:hover { color: var(--accent-dim); }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-h1, h2, h3, h4 { color: var(--fg-strong); font-weight: 600; line-height: 1.3; letter-spacing: -.01em; }
+h1, h2, h3, h4 { color: var(--fg-strong); text-shadow: 0 0 22px rgba(143, 140, 255, .18); font-weight: 600; line-height: 1.3; letter-spacing: -.01em; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 
 .wrap { width: 100%; max-width: 45rem; margin: 0 auto; padding: 0 1.5rem; }
 main.wrap { flex: 1; padding-top: 3.5rem; padding-bottom: 6rem; }
 
 /* ---------- header / footer ---------- */
-.site-header { border-bottom: 1px solid var(--border); }
+.site-header { border-bottom: 1px solid var(--border); background: rgba(6, 7, 26, .6); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 1.4rem; padding-bottom: 1.4rem; }
 .brand { color: var(--fg-strong); font-weight: 600; font-size: 1.1rem; letter-spacing: -.01em; }
 .brand:hover { color: var(--accent); }
 .nav { display: flex; gap: 1.6rem; flex-wrap: wrap; }
 .nav a { color: var(--fg-muted); font-size: .95rem; }
 .nav a:hover { color: var(--fg-strong); }
-.nav a[aria-current='page'] { color: var(--fg-strong); box-shadow: inset 0 -2px 0 var(--accent); }
+.nav a[aria-current='page'] { color: var(--fg-strong); box-shadow: inset 0 -2px 0 var(--accent), 0 6px 14px -8px var(--glow); }
 .site-footer { border-top: 1px solid var(--border); color: var(--fg-muted); font-size: .85rem; padding: 2rem 0; }
 .site-footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1.25rem; }
 .site-footer .links { display: flex; gap: 1.25rem; }
@@ -118,7 +127,7 @@ main.wrap { flex: 1; padding-top: 3.5rem; padding-bottom: 6rem; }
 }
 
 /* medium-zoom */
-.medium-zoom-overlay { background: rgba(0, 0, 0, .92) !important; z-index: 20; }
+.medium-zoom-overlay { background: rgba(6, 7, 26, .94) !important; z-index: 20; }
 .medium-zoom-image--opened { z-index: 21; cursor: zoom-out; }
 
 /* mermaid diagrams */

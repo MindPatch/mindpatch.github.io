@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Sprite from '../components/Sprite.astro';
 import { SITE } from '../consts';
 import { getPosts, formatDate } from '../lib/posts';
 
@@ -48,9 +47,10 @@ const jsonLd = {
 };
 ---
 <Base title={SITE.title} description={SITE.blogDescription} jsonLd={jsonLd}>
+  <div class="banner" aria-hidden="true"></div>
   <main class="page">
     <section class="intro">
-      <div class="avatar"><Sprite size={44} /></div>
+      <img class="avatar" src="/images/avatar.jpg" alt="" width="72" height="72" />
       <div>
         <h1 class="name">{SITE.author}</h1>
         <p class="about">Security engineer. Notes from vulnerability research, malware analysis and whatever I'm building.</p>
@@ -97,14 +97,21 @@ const jsonLd = {
 
 <style>
   .page {
+    position: relative; z-index: 1;
     width: 100%; max-width: 640px; margin: 0 auto;
     display: flex; flex-direction: column; gap: 3rem; padding: 5rem 1.5rem 3rem;
   }
   .intro { display: flex; align-items: center; gap: 1.25rem; }
+  .banner {
+    position: absolute; inset: 0 0 auto 0; height: 420px; z-index: 0; pointer-events: none;
+    background: url('/images/banner.jpg') center 35% / cover no-repeat;
+    opacity: .22; filter: saturate(.7) contrast(1.05);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+  }
   .avatar {
-    width: 72px; height: 72px; flex-shrink: 0; border-radius: 16px;
-    display: grid; place-items: center; background: var(--bg-soft);
-    border: 1px solid var(--border); box-shadow: inset 0 -2px 0 var(--accent);
+    width: 72px; height: 72px; flex-shrink: 0; border-radius: 16px; object-fit: cover;
+    border: 1px solid var(--border); box-shadow: 0 0 0 1px rgba(143, 140, 255, .25), 0 0 28px -4px var(--glow);
   }
   .name { margin: 0; font-size: 1.9rem; font-weight: 700; letter-spacing: -.025em; }
   .about { margin: .3rem 0 0; color: var(--fg-muted); font-size: .98rem; line-height: 1.6; }
@@ -130,7 +137,7 @@ const jsonLd = {
     border: 1px solid var(--border); border-radius: 10px; background: var(--bg-soft); color: var(--fg-strong);
     transition: border-color .15s ease, transform .15s ease;
   }
-  .tile:hover { border-color: color-mix(in oklab, var(--accent) 55%, var(--border)); color: var(--fg-strong); transform: translateY(-1px); }
+  .tile:hover { border-color: color-mix(in oklab, var(--accent) 55%, var(--border)); color: var(--fg-strong); transform: translateY(-1px); box-shadow: 0 0 22px -8px var(--glow); }
   .ic { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent); }
   .lbl { display: flex; flex-direction: column; min-width: 0; font-weight: 500; font-size: .92rem; line-height: 1.35; }
   .lbl small { font-family: var(--mono); font-weight: 400; font-size: .74rem; color: var(--fg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
