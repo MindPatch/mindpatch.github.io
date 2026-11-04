@@ -11,11 +11,11 @@ export const SITE = {
   email: 'hello@mindpatch.net',
   ogImage: '/og.png',
   links: [
-    { label: 'github', href: 'https://github.com/MindPatch', handle: 'MindPatch' },
-    { label: 'medium', href: 'https://mindpatch.medium.com/', handle: 'mindpatch' },
-    { label: 'twitter', href: 'https://twitter.com/mindpatchsec', handle: '@mindpatchsec' },
-    { label: 'linkedin', href: 'https://www.linkedin.com/in/knassar702/', handle: 'knassar702' },
-    { label: 'email', href: 'mailto:hello@mindpatch.net', handle: 'hello@mindpatch.net' },
+    { label: 'github', name: 'GitHub', href: 'https://github.com/MindPatch', handle: 'MindPatch' },
+    { label: 'medium', name: 'Medium', href: 'https://mindpatch.medium.com/', handle: 'mindpatch' },
+    { label: 'twitter', name: 'Twitter', href: 'https://twitter.com/mindpatchsec', handle: '@mindpatchsec' },
+    { label: 'linkedin', name: 'LinkedIn', href: 'https://www.linkedin.com/in/knassar702/', handle: 'knassar702' },
+    { label: 'email', name: 'Email', href: 'mailto:hello@mindpatch.net', handle: 'hello@mindpatch.net' },
   ],
   sameAs: [
     'https://github.com/MindPatch',

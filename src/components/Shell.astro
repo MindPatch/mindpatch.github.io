@@ -6,13 +6,6 @@ import { SITE } from '../consts';
   <Side />
   <main class="split-main">
     <slot />
-    <footer class="split-foot">
-      <span>© {new Date().getFullYear()} {SITE.author}</span>
-      <span class="foot-links">
-        {SITE.links.map((l) => (
-          <a href={l.href} rel={l.label === 'email' ? undefined : 'me noopener'}>{l.label}</a>
-        ))}
-      </span>
-    </footer>
+    <footer class="split-foot">© {new Date().getFullYear()} {SITE.author}</footer>
   </main>
 </div>

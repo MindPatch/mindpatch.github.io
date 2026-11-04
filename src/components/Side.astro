@@ -12,15 +12,15 @@ const on = (p: string) => (p === '/' ? path === '/' : path.startsWith(p)) ? 'pag
     </a>
     <p class="side-role">{SITE.role}</p>
     <p class="side-intro">{SITE.tagline}</p>
+    <ul class="side-links" aria-label="Elsewhere">
+      {SITE.links.map((l) => (
+        <li><a href={l.href} rel={l.label === 'email' ? undefined : 'me noopener'}>{l.name}</a></li>
+      ))}
+    </ul>
     <nav class="side-nav" aria-label="Main">
       <a href="/" aria-current={on('/')}>Home</a>
       <a href="/blog/" aria-current={on('/blog')}>Writing</a>
       <a href="/rss.xml">RSS</a>
     </nav>
-    <ul class="side-links">
-      {SITE.links.map((l) => (
-        <li><a href={l.href} rel={l.label === 'email' ? undefined : 'me noopener'}>{l.label}</a></li>
-      ))}
-    </ul>
   </div>
 </aside>
