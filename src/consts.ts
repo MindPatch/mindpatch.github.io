@@ -7,14 +7,18 @@ export const SITE = {
   author: 'Khaled Nassar',
   role: 'Security Engineer',
   tagline: 'Sharing his thoughts and stuff.',
-  // Homepage headline. The last line is split so one word is outlined and
-  // the other gets the yellow underline.
+  // Homepage. The name is the headline; `bio` is one plain sentence and
+  // `facts` fill the ID card next to it (post count and last post date are
+  // added automatically).
   hero: {
-    lines: ['Notes on'],
-    outline: 'security',
-    underline: 'research',
-    bio: 'Write-ups on <strong>vulnerability research</strong>, <strong>malware analysis</strong> and <strong>container security</strong>.',
-    topics: ['Supply chain', 'Malware', 'Containers', 'Detection'],
+    label: 'Security research',
+    bio: 'Write-ups on malware, supply-chain attacks and container escapes, with the detection rules that come out of them.',
+    facts: [
+      { k: 'Handle', v: 'MindPatch' },
+      { k: 'Role', v: 'Security engineer' },
+      { k: 'Focus', v: 'Malware · Supply chain · Containers' },
+      { k: 'Detections', v: '2 YARA rules' },
+    ],
   },
   twitter: '@mindpatchsec',
   email: 'hello@mindpatch.net',

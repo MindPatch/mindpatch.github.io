@@ -8,8 +8,8 @@ import '@fontsource/ibm-plex-mono/500.css';
 import '@fontsource/ibm-plex-mono/600.css';
 import '../styles/global.css';
 
-type Props = Parameters<typeof Seo>[0] & { bodyClass?: string; wordmark?: boolean };
-const { bodyClass, wordmark = true, ...seo } = Astro.props;
+type Props = Parameters<typeof Seo>[0] & { bodyClass?: string };
+const { bodyClass, ...seo } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
@@ -27,6 +27,6 @@ const { bodyClass, wordmark = true, ...seo } = Astro.props;
 <main id="main" class="wrap">
 <slot />
 </main>
-<Footer wordmark={wordmark} />
+<Footer />
 </body>
 </html>

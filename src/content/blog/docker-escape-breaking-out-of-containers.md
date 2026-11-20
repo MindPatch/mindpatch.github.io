@@ -1,6 +1,6 @@
 ---
-title: "Docker Escape: Breaking Out of Containers"
-description: "A practical guide to Docker container escape techniques, covering misconfigurations, privileged containers, capability abuse, and kernel exploits. Understanding these attacks is essential for building secure containerized infrastructure."
+title: "Docker escape: breaking out of containers"
+description: "A container is a process on the host's kernel. Six ways out of it: a mounted docker.sock, sensitive host mounts, uevent_helper, --privileged, SYS_PTRACE injection and kernel exploits."
 pubDate: 2026-01-17
 tags: [Docker, Container Security, Privilege Escalation, Linux, Research]
 category: Containers · Research

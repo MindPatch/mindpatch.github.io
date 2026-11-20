@@ -25,6 +25,9 @@ const blog = defineCollection({
         .default([]),
       // Optional one-liner for what the post hands you, e.g. "2 YARA rules".
       ships: z.string().optional(),
+      // Optional real snippet from the post (a payload line, a command, a log
+      // excerpt), shown as the post's preview when it is the featured post.
+      artifact: z.object({ label: z.string(), code: z.string() }).optional(),
     }),
 });
 
