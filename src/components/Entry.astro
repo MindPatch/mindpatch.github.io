@@ -1,0 +1,20 @@
+---
+import Chain from './Chain.astro';
+import { category, formatDot, pad, type Post } from '../lib/posts';
+interface Props { post: Post; n: number }
+const { post, n } = Astro.props;
+const { data } = post;
+---
+<li class="entry rise d5">
+  <a href={`/blog/${post.id}/`}>
+    <div class="date"><span class="num" aria-hidden="true">{pad(n)}</span><time datetime={data.pubDate.toISOString()}>{formatDot(data.pubDate)}</time></div>
+    <div>
+      {category(post) && <div class="cat">{category(post)}</div>}
+      <h3>{data.title}</h3>
+      <p>{data.description}</p>
+      <Chain chain={data.chain} />
+      {data.tags.length > 0 && <div class="tags">{data.tags.map((t) => <span>{t.toLowerCase().replace(/\s+/g, '-')}</span>)}</div>}
+    </div>
+    <span class="go" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8h12M9 3l5 5-5 5"/></svg></span>
+  </a>
+</li>

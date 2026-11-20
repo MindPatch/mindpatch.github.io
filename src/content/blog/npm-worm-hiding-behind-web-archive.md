@@ -4,6 +4,14 @@ description: "A typosquatted @angular/core clone chains a postinstall hook throu
 pubDate: 2026-10-07
 updatedDate: 2026-10-08
 tags: [npm, Supply Chain, Malware, Linux, Detection, YARA]
+category: Malware · Supply chain
+chain:
+  - { step: "npm install", note: "A typosquat of @angular/core" }
+  - { step: "postinstall", note: "Install hook runs on your machine" }
+  - { step: "web.archive.org", note: "Payload hidden behind the Internet Archive" }
+  - { step: "CHAOS RAT", note: "Remote access on the host", hot: true }
+  - { step: "SSH · AUR · npm", note: "Worms onward to the next victim" }
+ships: 2 YARA rules
 ---
 
 This campaign starts with a typo in `npm install`.

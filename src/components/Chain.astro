@@ -1,0 +1,15 @@
+---
+// Inline attack-chain strip: step → step → step.
+interface Props { chain: { step: string; hot?: boolean }[] }
+const { chain } = Astro.props;
+---
+{chain.length > 0 && (
+  <div class="chain" aria-label="Attack chain">
+    {chain.map((c, i) => (
+      <>
+        {i > 0 && <em aria-hidden="true">→</em>}
+        <span class:list={{ hot: c.hot }}>{c.step}</span>
+      </>
+    ))}
+  </div>
+)}

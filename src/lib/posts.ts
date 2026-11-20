@@ -29,3 +29,26 @@ export function byYear(posts: Post[]): [number, Post[]][] {
 export function formatShort(d: Date): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', timeZone: 'UTC' });
 }
+
+// 2026.10.07, the date format used on listings.
+export function formatDot(d: Date): string {
+  return d.toISOString().slice(0, 10).replace(/-/g, '.');
+}
+
+// "Oct 2026"
+export function formatMonth(d: Date): string {
+  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+}
+
+export function category(p: Post): string {
+  return p.data.category ?? p.data.tags.slice(0, 2).join(' · ');
+}
+
+export const pad = (n: number) => String(n).padStart(2, '0');
+
+// Posts are numbered oldest-first, so a post keeps its number as new ones land.
+export function postNumber(p: Post, all: Post[]): number {
+  return all.length - all.findIndex((x) => x.id === p.id);
+}
+
+export const slugTag = (t: string) => t.toLowerCase().replace(/\s+/g, '-');

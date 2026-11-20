@@ -1,11 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
-import Shell from '../components/Shell.astro';
+import Entry from '../components/Entry.astro';
+import Trace from '../components/Trace.astro';
 import { SITE } from '../consts';
-import { getPosts, formatDate } from '../lib/posts';
+import { getPosts, pad, postNumber } from '../lib/posts';
 
 const posts = await getPosts();
 const latest = posts.slice(0, 5);
+// The hero shows the newest post that has an attack chain in its front matter.
+const traced = posts.find((p) => p.data.chain.length > 0);
+const { hero } = SITE;
 
 const person = {
   '@type': 'Person',
@@ -32,23 +36,31 @@ const jsonLd = {
 };
 ---
 <Base title={SITE.title} description={SITE.blogDescription} jsonLd={jsonLd}>
-  <Shell>
-    <section id="writing" class="block">
-      <h2 class="block-label">Latest writing</h2>
-      {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
-      <ul class="cards">
-        {latest.map((p) => (
-          <li>
-            <a href={`/blog/${p.id}/`}>
-              <time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>
-              <span class="title">{p.data.title}</span>
-              <p class="desc">{p.data.description}</p>
-              {p.data.tags.length > 0 && <ul class="tags">{p.data.tags.map((t) => <li>{t}</li>)}</ul>}
-            </a>
-          </li>
-        ))}
-      </ul>
-      <a class="more" href="/blog/">All writing →</a>
-    </section>
-  </Shell>
+  <section class="hero">
+    <div class="lbl rise d1"><b></b>{SITE.author} · {SITE.role}</div>
+    <h1 class="rise d2">
+      {hero.lines.map((l) => <span class="l">{l}</span>)}
+      <span class="l"><span class="o">{hero.outline}</span> <span class="y">{hero.underline}</span></span>
+    </h1>
+    <div class:list={['hero-b', { solo: !traced }]}>
+      <div>
+        <p class="bio rise d3" set:html={hero.bio} />
+        <ul class="topics rise d4">{hero.topics.map((t) => <li>{t}</li>)}</ul>
+        <ul class="find rise d5" id="about" aria-label="Elsewhere">
+          {SITE.links.map((l) => (
+            <li><a href={l.href} rel={l.label === 'email' ? undefined : 'me noopener'}><span class="lbl">{l.name}</span><b>{l.handle}</b><i aria-hidden="true">↗</i></a></li>
+          ))}
+        </ul>
+      </div>
+      {traced && <div class="rise d4"><Trace post={traced} /></div>}
+    </div>
+  </section>
+
+  <section id="writing">
+    <div class="sh rise d5"><h2>Writing<span>{pad(posts.length)} {posts.length === 1 ? 'entry' : 'entries'}</span></h2><a class="lbl" href="/blog/">Archive →</a></div>
+    {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
+    <ul class="entries">
+      {latest.map((p) => <Entry post={p} n={postNumber(p, posts)} />)}
+    </ul>
+  </section>
 </Base>
