@@ -1,17 +1,38 @@
 ---
-import Side from './Side.astro';
 import { SITE } from '../consts';
 
 // Long pages (posts) get a way back up from the footer.
-const post = /^\/blog\/[^/]+\/?$/.test(Astro.url.pathname);
+const path = Astro.url.pathname;
+const post = /^\/blog\/[^/]+\/?$/.test(path);
+// The home intro already shows the portrait, so the bar skips it there.
+const home = path === '/';
+const on = (p: string) => (path.startsWith(p) ? 'page' : undefined);
 ---
-<div class="split">
-  <Side><slot name="side" slot="extra" /></Side>
-  <main class="split-main">
-    <slot />
-    <footer class="split-foot">
+<header class="site-head">
+  <div class="site-bar">
+    <a class="wordmark" href="/" aria-label="MindPatch, home">
+      {!home && <img src="/images/avatar.jpg" alt="" width="28" height="28" />}
+      <span>MindPatch</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/blog/" aria-current={on('/blog')}>Writing</a>
+      <a href="/rss.xml">RSS</a>
+    </nav>
+  </div>
+</header>
+<main class="site-main">
+  <slot />
+</main>
+<footer class="site-foot">
+  <div class="site-foot-inner">
+    <ul class="foot-links" aria-label="Elsewhere">
+      {SITE.links.map((l) => (
+        <li><a href={l.href} rel={l.label === 'email' ? undefined : 'me noopener'}>{l.name}</a></li>
+      ))}
+    </ul>
+    <p>
       <span>© {new Date().getFullYear()} {SITE.author}</span>
       {post && <a class="to-top" href="#">Back to top <span aria-hidden="true">↑</span></a>}
-    </footer>
-  </main>
-</div>
+    </p>
+  </div>
+</footer>
