@@ -2,24 +2,27 @@
 import { render } from 'astro:content';
 import { Image, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
-import Trace from '../../components/Trace.astro';
+import Shell from '../../components/Shell.astro';
+import PostMeta from '../../components/PostMeta.astro';
 import { SITE } from '../../consts';
-import { getPosts, readingTime, category, formatDot, pad, type Post } from '../../lib/posts';
+import { getPosts, readingTime, type Post } from '../../lib/posts';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
   return posts.map((post, i) => ({
     params: { slug: post.id },
-    props: { post, newer: posts[i - 1], older: posts[i + 1], n: posts.length - i },
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
   }));
 }
 
-interface Props { post: Post; newer?: Post; older?: Post; n: number }
-const { post, newer, older, n } = Astro.props;
+interface Props { post: Post; newer?: Post; older?: Post }
+const { post, newer, older } = Astro.props;
 const { data } = post;
 const { Content, headings } = await render(post);
-const toc = headings.filter((h) => h.depth === 2);
-const minutes = readingTime(post.body);
+// Contents for the sidebar: top-level sections, plus their subsections when
+// a post has only a few top-level ones.
+const h2 = headings.filter((h) => h.depth === 2);
+const toc = headings.filter((h) => h.depth === 2 || (h2.length < 4 && h.depth === 3));
 const url = new URL(`/blog/${post.id}/`, SITE.url).href;
 
 // Social cards want a JPG/PNG around 1200px wide, not the inline webp.
@@ -54,41 +57,38 @@ const jsonLd = {
   jsonLd={jsonLd}
   noindex={data.draft}
 >
-  <article class="post">
-    <header class="post-head">
-      <div class="lbl crumbs"><a href="/blog/">← Writing</a><span>No. {pad(n)}</span>{category(post) && <span class="c">{category(post)}</span>}</div>
-      <h1>{data.title}</h1>
-      <div class="meta">
-        <time datetime={data.pubDate.toISOString()}>{formatDot(data.pubDate)}</time>
-        <span>{minutes} min read</span>
-        {data.updatedDate && <span>Updated <time datetime={data.updatedDate.toISOString()}>{formatDot(data.updatedDate)}</time></span>}
-        {data.ships && <span class="ships">{data.ships}</span>}
-      </div>
-      {data.chain.length > 0 && <div><Trace post={post} layout="row" title="Attack chain" link={false} /></div>}
-    </header>
-    {data.cover && (
-      <figure class="cover">
-        <Image src={data.cover} alt={data.coverAlt ?? ''} loading="eager" fetchpriority="high" />
-      </figure>
+  <Shell>
+    {h2.length >= 2 && (
+      <nav class="toc" slot="side" aria-label="On this page">
+        <p class="toc-label">On this page</p>
+        <ol>{toc.map((h) => <li class={`d${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+      </nav>
     )}
-    <div class:list={['post-body', { 'no-toc': toc.length < 2 }]}>
-      {toc.length >= 2 && (
-        <nav class="toc" aria-label="On this page">
-          <div class="lbl">On this page</div>
-          <ol>{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
-        </nav>
+    <article>
+      <header class="post-head">
+        <a class="back" href="/blog/">← all writing</a>
+        <h1>{data.title}</h1>
+        <PostMeta pubDate={data.pubDate} updatedDate={data.updatedDate} minutes={readingTime(post.body)} />
+        {data.tags.length > 0 && <ul class="tags">{data.tags.map((t) => <li>{t}</li>)}</ul>}
+      </header>
+      {data.cover && (
+        <figure class="cover">
+          <Image src={data.cover} alt={data.coverAlt ?? ''} loading="eager" fetchpriority="high" />
+        </figure>
       )}
       <div class="prose">
         <Content />
       </div>
-    </div>
-  </article>
-  {(newer || older) && (
-    <nav class="pager" aria-label="More posts">
-      {older ? <a class="prev" href={`/blog/${older.id}/`}><span class="lbl">← Older</span><b>{older.data.title}</b></a> : <span class="end lbl">First post</span>}
-      {newer ? <a class="next" href={`/blog/${newer.id}/`}><span class="lbl">Newer →</span><b>{newer.data.title}</b></a> : <span class="end lbl">Latest post</span>}
-    </nav>
-  )}
+    </article>
+    {(newer || older) && (
+      <nav class="post-foot" aria-label="More posts">
+        <div class="pager">
+          {older && <a class="prev" href={`/blog/${older.id}/`}><small>← Older</small>{older.data.title}</a>}
+          {newer && <a class="next" href={`/blog/${newer.id}/`}><small>Newer →</small>{newer.data.title}</a>}
+        </div>
+      </nav>
+    )}
+  </Shell>
 </Base>
 
 <script>
@@ -104,45 +104,37 @@ const jsonLd = {
       theme: 'base',
       flowchart: { useMaxWidth: false },
       sequence: { useMaxWidth: false },
-      fontFamily: "'IBM Plex Mono', ui-monospace, monospace",
+      fontFamily: "'JetBrains Mono', ui-monospace, monospace",
       themeVariables: {
         darkMode: true,
-        fontSize: '14px',
-        background: '#1b1b18',
-        primaryColor: '#23231f',
-        primaryBorderColor: '#4a483f',
-        primaryTextColor: '#ece6d8',
-        lineColor: '#a9a395',
-        secondaryColor: '#23231f',
-        tertiaryColor: '#1b1b18',
-        mainBkg: '#23231f',
-        nodeBorder: '#4a483f',
-        clusterBkg: '#1b1b18',
-        clusterBorder: '#34332d',
-        titleColor: '#ece6d8',
-        edgeLabelBackground: '#141412',
-        actorBkg: '#23231f',
-        actorBorder: '#4a483f',
-        actorTextColor: '#ece6d8',
-        actorLineColor: '#4a483f',
-        signalColor: '#a9a395',
-        signalTextColor: '#ece6d8',
-        labelBoxBkgColor: '#23231f',
-        labelBoxBorderColor: '#4a483f',
-        labelTextColor: '#ece6d8',
-        loopTextColor: '#a9a395',
-        noteBkgColor: '#2a2716',
-        noteTextColor: '#ece6d8',
-        noteBorderColor: '#f2c94c',
-        activationBkgColor: '#34332d',
-        activationBorderColor: '#a9a395',
+        background: '#0d0e12',
+        primaryColor: '#14151b',
+        primaryBorderColor: '#2a2c36',
+        primaryTextColor: '#eceef3',
+        lineColor: '#676b78',
+        secondaryColor: '#14151b',
+        tertiaryColor: '#0d0e12',
+        mainBkg: '#14151b',
+        nodeBorder: '#3a3c48',
+        clusterBkg: '#0d0e12',
+        clusterBorder: '#1a1b22',
+        titleColor: '#eceef3',
+        edgeLabelBackground: '#050507',
+        actorBkg: '#14151b',
+        actorBorder: '#3a3c48',
+        actorTextColor: '#eceef3',
+        signalColor: '#676b78',
+        signalTextColor: '#b6b9c4',
+        noteBkgColor: '#14151b',
+        noteTextColor: '#eceef3',
+        noteBorderColor: '#2a2c36',
       },
     });
     await mermaid.run({ nodes: blocks });
   }
 
   renderMermaid().finally(() => {
-    mediumZoom('.prose img, .cover img', { margin: 24, background: 'rgba(20, 20, 18, .96)' });
+    mediumZoom('.prose img, .cover img', { margin: 24, background: 'rgba(5, 5, 7, .96)' });
   });
 
   // Language label and copy button on every highlighted code block.
@@ -151,9 +143,8 @@ const jsonLd = {
     shell.className = 'code';
     pre.replaceWith(shell);
     const bar = document.createElement('div');
-    bar.className = 'code-h';
+    bar.className = 'code-bar';
     const lang = document.createElement('span');
-    lang.className = 'lbl';
     const name = pre.dataset.language;
     lang.textContent = name && name !== 'plaintext' ? name : 'text';
     const btn = document.createElement('button');
@@ -173,18 +164,18 @@ const jsonLd = {
     shell.append(bar, pre);
   }
 
-  // Mark the section being read in the contents rail.
-  const toc = new Map<string, HTMLAnchorElement>();
-  for (const a of document.querySelectorAll<HTMLAnchorElement>('.toc a')) toc.set(decodeURIComponent(a.hash.slice(1)), a);
-  const heads = [...document.querySelectorAll<HTMLElement>('.prose h2[id]')].filter((h) => toc.has(h.id));
+  // Mark the section being read in the sidebar contents.
+  const links = new Map<string, HTMLAnchorElement>();
+  for (const a of document.querySelectorAll<HTMLAnchorElement>('.toc a')) links.set(decodeURIComponent(a.hash.slice(1)), a);
+  const heads = [...document.querySelectorAll<HTMLElement>('.prose :is(h2, h3)[id]')].filter((h) => links.has(h.id));
   if (heads.length) {
     let ticking = false;
     const mark = () => {
       ticking = false;
       let cur: HTMLElement | undefined;
-      for (const h of heads) if (h.getBoundingClientRect().top < 140) cur = h;
-      for (const a of toc.values()) a.removeAttribute('aria-current');
-      if (cur) toc.get(cur.id)?.setAttribute('aria-current', 'true');
+      for (const h of heads) if (h.getBoundingClientRect().top < 120) cur = h;
+      for (const a of links.values()) a.removeAttribute('aria-current');
+      if (cur) links.get(cur.id)?.setAttribute('aria-current', 'true');
     };
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(mark); } }, { passive: true });
     mark();
