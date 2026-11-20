@@ -237,14 +237,17 @@ p, li { text-wrap: pretty; }
 .foot-links a, .to-top { color: var(--fg-muted); }
 .foot-links a:hover, .to-top:hover { color: var(--fg-strong); }
 
-/* posts: the column stays centered; the contents rail sits in the right margin when there is room */
-.site-main > .post-grid { max-width: none; }
-.post-grid > article { max-width: var(--col); margin-inline: auto; }
+/* posts with contents: on wide screens the post and its contents rail are
+   centered together, and the top bar and footer widen to the same edges, so
+   the page keeps even margins on both sides */
+.site-main > .post-grid { max-width: var(--col); }
 @media (min-width: 1240px) {
-  .post-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, var(--col)) minmax(0, 1fr); column-gap: 3.5rem; }
-  .post-grid > article { grid-column: 2; margin: 0; max-width: none; }
-  .toc-rail { display: block; grid-column: 3; max-width: 15rem; }
-  .toc-inline { display: none; }
+  .has-rail { --wide: calc(var(--col) + 4rem + 14rem); }
+  .has-rail .site-bar, .has-rail .site-foot-inner, .has-rail .site-main > :not(.progress) { max-width: var(--wide); }
+  .has-rail .post-grid { display: grid; grid-template-columns: minmax(0, var(--col)) 14rem; column-gap: 4rem; }
+  .has-rail .toc-rail { display: block; }
+  .has-rail .toc-inline { display: none; }
+  .has-rail .pager { max-width: var(--col); }
 }
 
 /* ---------- writing archive: posts grouped by year ---------- */
