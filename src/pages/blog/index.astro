@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Shell from '../../components/Shell.astro';
 import { SITE } from '../../consts';
 import { getPosts, byYear, formatShort } from '../../lib/posts';
+import Thumb from '../../components/Thumb.astro';
 
 const posts = await getPosts();
 ---
@@ -18,12 +19,15 @@ const posts = await getPosts();
         <h2 class="year-label">{year}</h2>
         <ul class="year-list">
           {list.map((p) => (
-            <li>
-              <a href={`/blog/${p.id}/`}>
-                <span class="title">{p.data.title}</span>
-                <time datetime={p.data.pubDate.toISOString()}>{formatShort(p.data.pubDate)}</time>
-              </a>
-              <p class="desc">{p.data.description}</p>
+            <li class="has-thumb">
+              <Thumb post={p} href={`/blog/${p.id}/`} />
+              <div>
+                <a href={`/blog/${p.id}/`}>
+                  <span class="title">{p.data.title}</span>
+                  <time datetime={p.data.pubDate.toISOString()}>{formatShort(p.data.pubDate)}</time>
+                </a>
+                <p class="desc">{p.data.description}</p>
+              </div>
             </li>
           ))}
         </ul>

@@ -11,6 +11,12 @@ chain:
   - { step: "shared kernel", note: "uevent_helper and kernel exploits" }
   - { step: "host root", note: "Code execution on the host", hot: true }
 ships: 6 escape techniques
+tldr:
+  - "A container is a process on the host's kernel. Namespaces, cgroups, seccomp and capabilities are software boundaries that same kernel enforces."
+  - "A mounted docker.sock, or Docker Desktop's exposed API (CVE-2025-9074), is root on the host."
+  - "Host mounts like /etc or /root, and a writable /sys through uevent_helper, hand over host files and host code execution."
+  - "--privileged, or SYS_PTRACE with --pid=host, lets you mount the host disk or inject shellcode into a host process."
+  - "Any kernel bug or loaded kernel module escapes too: kernel security is container security."
 ---
 
 Containers aren't VMs. This is the fundamental reason Docker escapes exist.

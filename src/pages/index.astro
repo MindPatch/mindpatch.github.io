@@ -2,7 +2,8 @@
 import Base from '../layouts/Base.astro';
 import Shell from '../components/Shell.astro';
 import { SITE } from '../consts';
-import { getPosts, formatDate, category } from '../lib/posts';
+import { getPosts, formatDate, category, readingTime } from '../lib/posts';
+import Thumb from '../components/Thumb.astro';
 
 const posts = await getPosts();
 const latest = posts.slice(0, 5);
@@ -39,11 +40,14 @@ const jsonLd = {
       <ul class="cards">
         {latest.map((p) => (
           <li>
-            <a href={`/blog/${p.id}/`}>
-              <span class="card-meta"><time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>{category(p) && <span class="cat">{category(p)}</span>}</span>
-              <span class="title">{p.data.title}</span>
-              <p class="desc">{p.data.description}</p>
-              {p.data.tags.length > 0 && <ul class="tags">{p.data.tags.map((t) => <li>{t}</li>)}</ul>}
+            <a href={`/blog/${p.id}/`} class="has-thumb">
+              <span class="card-body">
+                <span class="card-meta"><time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>{category(p) && <span class="cat">{category(p)}</span>}<span class="mins">{readingTime(p.body)} min</span></span>
+                <span class="title">{p.data.title}</span>
+                <p class="desc">{p.data.description}</p>
+                {p.data.tags.length > 0 && <ul class="tags">{p.data.tags.map((t) => <li>{t}</li>)}</ul>}
+              </span>
+              <Thumb post={p} />
             </a>
           </li>
         ))}
