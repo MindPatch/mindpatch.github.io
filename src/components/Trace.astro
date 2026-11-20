@@ -2,10 +2,10 @@
 // Numbered attack-chain card. Vertical in the homepage hero, horizontal on posts.
 import { formatMonth, readingTime, type Post } from '../lib/posts';
 interface Props { post: Post; layout?: 'stack' | 'row'; title?: string; link?: boolean }
-const { post, layout = 'stack', title = 'Latest trace', link = true } = Astro.props;
+const { post, layout = 'stack', title = 'Latest post', link = true } = Astro.props;
 const { data } = post;
 const where = [data.tags[0], formatMonth(data.pubDate)].filter(Boolean).join(' · ');
-const ships = data.ships ? `+ ${data.ships}` : `${readingTime(post.body)} min read`;
+const ships = data.ships ?? `${readingTime(post.body)} min read`;
 ---
 <aside class:list={['trace', layout]} aria-label={`${title}: attack chain`}>
   <div class="trace-h"><span class="lbl">{title}</span><span class="lbl">{where}</span></div>
@@ -15,6 +15,6 @@ const ships = data.ships ? `+ ${data.ships}` : `${readingTime(post.body)} min re
     ))}
   </ol>
   {link && (
-    <div class="trace-f"><span class="lbl">{ships}</span><a href={`/blog/${post.id}/`}>Read the analysis <span>→</span></a></div>
+    <div class="trace-f"><span class="lbl">{ships}</span><a href={`/blog/${post.id}/`}>Read post <span>→</span></a></div>
   )}
 </aside>

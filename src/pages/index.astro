@@ -35,7 +35,7 @@ const jsonLd = {
   })),
 };
 ---
-<Base title={SITE.title} description={SITE.blogDescription} jsonLd={jsonLd}>
+<Base title={SITE.title} description={SITE.blogDescription} jsonLd={jsonLd} wordmark={false}>
   <section class="hero">
     <div class="lbl rise d1"><b></b>{SITE.author} · {SITE.role}</div>
     <h1 class="rise d2">
@@ -57,7 +57,7 @@ const jsonLd = {
   </section>
 
   <section id="writing">
-    <div class="sh rise d5"><h2>Writing<span>{pad(posts.length)} {posts.length === 1 ? 'entry' : 'entries'}</span></h2><a class="lbl" href="/blog/">Archive →</a></div>
+    <div class="sh rise d5"><h2>Writing<span>{pad(posts.length)} {posts.length === 1 ? 'post' : 'posts'}</span></h2><a class="lbl" href="/blog/">All posts →</a></div>
     {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
     <ul class="entries">
       {latest.map((p) => <Entry post={p} n={postNumber(p, posts)} />)}

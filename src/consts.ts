@@ -7,13 +7,13 @@ export const SITE = {
   author: 'Khaled Nassar',
   role: 'Security Engineer',
   tagline: 'Sharing his thoughts and stuff.',
-  // Homepage hero. The last line is split so one half is outlined and the
-  // other gets the yellow underline.
+  // Homepage headline. The last line is split so one word is outlined and
+  // the other gets the yellow underline.
   hero: {
-    lines: ['I take apart', 'the packages'],
-    outline: 'you just',
-    underline: 'installed.',
-    bio: 'Notes from <strong>vulnerability research</strong>, <strong>malware analysis</strong> and whatever I\'m building. Each write-up follows the attack end to end and finishes with something you can deploy.',
+    lines: ['Notes on'],
+    outline: 'security',
+    underline: 'research',
+    bio: 'Write-ups on <strong>vulnerability research</strong>, <strong>malware analysis</strong> and <strong>container security</strong>.',
     topics: ['Supply chain', 'Malware', 'Containers', 'Detection'],
   },
   twitter: '@mindpatchsec',
