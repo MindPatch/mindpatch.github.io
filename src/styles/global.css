@@ -250,6 +250,7 @@ main { flex: 1; width: 100%; }
 .mark { display: block; width: 100%; height: auto; margin-top: 48px; user-select: none; }
 .mark text { font: 900 168px var(--sans); font-variation-settings: 'wdth' 125; fill: none; stroke: var(--rule-2); stroke-width: 1.2; transition: stroke .4s; }
 .mark:hover text { stroke: var(--sig); }
+.site-foot .wrap > .colo:first-child { border-top: 0; margin-top: 0; }
 .colo { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 24px 0 max(40px, env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--rule); margin-top: 28px; font: 400 12px/1.5 var(--mono); color: var(--ink-3); }
 .colo a { color: var(--ink-2); transition: color .15s; }
 .colo a:hover { color: var(--sig); }

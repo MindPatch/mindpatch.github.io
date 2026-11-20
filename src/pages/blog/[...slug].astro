@@ -62,7 +62,7 @@ const jsonLd = {
         <time datetime={data.pubDate.toISOString()}>{formatDot(data.pubDate)}</time>
         <span>{minutes} min read</span>
         {data.updatedDate && <span>Updated <time datetime={data.updatedDate.toISOString()}>{formatDot(data.updatedDate)}</time></span>}
-        {data.ships && <span class="ships">+ {data.ships}</span>}
+        {data.ships && <span class="ships">{data.ships}</span>}
       </div>
       {data.tags.length > 0 && <div class="tags rise d3">{data.tags.map((t) => <span>{slugTag(t)}</span>)}</div>}
       {data.chain.length > 0 && <div class="rise d4"><Trace post={post} layout="row" title="Attack chain" link={false} /></div>}
@@ -86,8 +86,8 @@ const jsonLd = {
   </article>
   {(newer || older) && (
     <nav class="pager" aria-label="More posts">
-      {older ? <a class="prev" href={`/blog/${older.id}/`}><span class="lbl">← Older</span><b>{older.data.title}</b></a> : <span class="end lbl">First entry</span>}
-      {newer ? <a class="next" href={`/blog/${newer.id}/`}><span class="lbl">Newer →</span><b>{newer.data.title}</b></a> : <span class="end lbl">Latest entry</span>}
+      {older ? <a class="prev" href={`/blog/${older.id}/`}><span class="lbl">← Older</span><b>{older.data.title}</b></a> : <span class="end lbl">First post</span>}
+      {newer ? <a class="next" href={`/blog/${newer.id}/`}><span class="lbl">Newer →</span><b>{newer.data.title}</b></a> : <span class="end lbl">Latest post</span>}
     </nav>
   )}
 </Base>
