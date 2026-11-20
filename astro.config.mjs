@@ -8,6 +8,12 @@ export default defineConfig({
   integrations: [sitemap()],
   markdown: {
     remarkPlugins: [remarkMermaid],
-    shikiConfig: { theme: 'github-dark', wrap: false },
+    shikiConfig: {
+      theme: 'vesper',
+      wrap: false,
+      // No YARA grammar ships with Shiki: render it as plain text but keep
+      // "yara" as the language so the code block's label says so.
+      langAlias: { yara: 'text' },
+    },
   },
 });

@@ -3,6 +3,14 @@ title: "Docker Escape: Breaking Out of Containers"
 description: "A practical guide to Docker container escape techniques, covering misconfigurations, privileged containers, capability abuse, and kernel exploits. Understanding these attacks is essential for building secure containerized infrastructure."
 pubDate: 2026-01-17
 tags: [Docker, Container Security, Privilege Escalation, Linux, Research]
+category: Containers · Research
+chain:
+  - { step: "container", note: "Just a process on the host's kernel" }
+  - { step: "docker.sock / mounts", note: "The socket or host paths mounted in" }
+  - { step: "--privileged / caps", note: "Privileged mode, SYS_PTRACE and friends" }
+  - { step: "shared kernel", note: "uevent_helper and kernel exploits" }
+  - { step: "host root", note: "Code execution on the host", hot: true }
+ships: 6 escape techniques
 ---
 
 Containers aren't VMs. This is the fundamental reason Docker escapes exist.
