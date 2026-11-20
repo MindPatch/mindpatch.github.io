@@ -20,7 +20,7 @@ interface Props { post: Post; newer?: Post; older?: Post }
 const { post, newer, older } = Astro.props;
 const { data } = post;
 const { Content, headings } = await render(post);
-// Contents for the sidebar: top-level sections, plus their subsections when
+// Contents (collapsible above the post, a side rail on very wide screens): top-level sections, plus their subsections when
 // a post has only a few top-level ones.
 const h2 = headings.filter((h) => h.depth === 2);
 const toc = headings.filter((h) => h.depth === 2 || (h2.length < 4 && h.depth === 3));
@@ -62,38 +62,48 @@ const jsonLd = {
 >
   <Shell>
     <div class="progress" aria-hidden="true"><span></span></div>
-    {h2.length >= 2 && (
-      <nav class="toc" slot="side" aria-label="On this page">
-        <p class="toc-label">On this page</p>
-        <ol>{toc.map((h) => <li class={`d${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
-      </nav>
-    )}
-    <article>
-      <header class="post-head">
-        <a class="back" href="/blog/">← all writing</a>
-        {category(post) && <p class="kicker">{category(post)}</p>}
-        <h1>{data.title}</h1>
-        <PostMeta pubDate={data.pubDate} updatedDate={data.updatedDate} minutes={readingTime(post.body)} />
-        {data.tags.length > 0 && <ul class="tags">{data.tags.map((t) => <li>{t}</li>)}</ul>}
-      </header>
-      <aside class="tldr" aria-labelledby="tldr-label">
-        <div class="tldr-head">
-          <h2 id="tldr-label" class="tldr-label">TL;DR</h2>
-          <a class="tldr-save" href={tldrPath(post)} download={`${post.id}-tldr.png`}>Save as image</a>
+    <div class="post-grid">
+      <article>
+        <header class="post-head">
+          <a class="back" href="/blog/">← All writing</a>
+          {category(post) && <p class="kicker">{category(post)}</p>}
+          <h1>{data.title}</h1>
+          <PostMeta pubDate={data.pubDate} updatedDate={data.updatedDate} minutes={readingTime(post.body)} />
+          {data.tags.length > 0 && <ul class="tags">{data.tags.map((t) => <li>{t}</li>)}</ul>}
+        </header>
+        <figure class="cover" style={`view-transition-name: cover-${post.id}`}>
+          {data.cover
+            ? <Image src={data.cover} alt={data.coverAlt ?? ''} loading="eager" fetchpriority="high" />
+            : <img src={coverPath(post)} alt="" width={CARD_W} height={CARD_H} loading="eager" fetchpriority="high" />}
+        </figure>
+        <aside class="tldr" aria-labelledby="tldr-label">
+          <div class="tldr-head">
+            <h2 id="tldr-label" class="tldr-label">TL;DR</h2>
+            <a class="tldr-save" href={tldrPath(post)} download={`${post.id}-tldr.png`}>Save as image</a>
+          </div>
+          {points.length > 1
+            ? <ul>{points.map((p) => <li>{p}</li>)}</ul>
+            : <p>{points[0]}</p>}
+        </aside>
+        {h2.length >= 2 && (
+          <details class="toc toc-inline">
+            <summary>On this page</summary>
+            <ol>{toc.map((h) => <li class={`d${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+          </details>
+        )}
+        <div class="prose">
+          <Content />
         </div>
-        {points.length > 1
-          ? <ul>{points.map((p) => <li>{p}</li>)}</ul>
-          : <p>{points[0]}</p>}
-      </aside>
-      <figure class="cover" style={`view-transition-name: cover-${post.id}`}>
-        {data.cover
-          ? <Image src={data.cover} alt={data.coverAlt ?? ''} loading="eager" fetchpriority="high" />
-          : <img src={coverPath(post)} alt="" width={CARD_W} height={CARD_H} loading="eager" fetchpriority="high" />}
-      </figure>
-      <div class="prose">
-        <Content />
-      </div>
-    </article>
+      </article>
+      {h2.length >= 2 && (
+        <aside class="toc-rail">
+          <nav class="toc" aria-label="On this page">
+            <p class="toc-label">On this page</p>
+            <ol>{toc.map((h) => <li class={`d${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+          </nav>
+        </aside>
+      )}
+    </div>
     {(newer || older) && (
       <nav class="post-foot" aria-label="More posts">
         <div class="pager">
@@ -215,9 +225,9 @@ const jsonLd = {
     draw();
   }
 
-  // Mark the section being read in the sidebar contents.
+  // Mark the section being read in the side rail contents.
   const links = new Map<string, HTMLAnchorElement>();
-  for (const a of document.querySelectorAll<HTMLAnchorElement>('.toc a')) links.set(decodeURIComponent(a.hash.slice(1)), a);
+  for (const a of document.querySelectorAll<HTMLAnchorElement>('.toc-rail a')) links.set(decodeURIComponent(a.hash.slice(1)), a);
   const heads = [...document.querySelectorAll<HTMLElement>('.prose :is(h2, h3)[id]')].filter((h) => links.has(h.id));
   if (heads.length) {
     let ticking = false;
