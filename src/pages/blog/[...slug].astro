@@ -5,7 +5,8 @@ import Base from '../../layouts/Base.astro';
 import Shell from '../../components/Shell.astro';
 import PostMeta from '../../components/PostMeta.astro';
 import { SITE } from '../../consts';
-import { getPosts, readingTime, category, type Post } from '../../lib/posts';
+import { getPosts, readingTime, category, tldr, type Post } from '../../lib/posts';
+import { coverPath, tldrPath, CARD_W, CARD_H } from '../../lib/cards';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -26,9 +27,11 @@ const toc = headings.filter((h) => h.depth === 2 || (h2.length < 4 && h.depth ==
 const url = new URL(`/blog/${post.id}/`, SITE.url).href;
 
 // Social cards want a JPG/PNG around 1200px wide, not the inline webp.
+// Without a cover, the generated title card is the social image.
 const ogImage = data.cover
   ? (await getImage({ src: data.cover, width: 1200, format: 'jpg' })).src
-  : SITE.ogImage;
+  : coverPath(post);
+const points = tldr(post);
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -58,6 +61,7 @@ const jsonLd = {
   noindex={data.draft}
 >
   <Shell>
+    <div class="progress" aria-hidden="true"><span></span></div>
     {h2.length >= 2 && (
       <nav class="toc" slot="side" aria-label="On this page">
         <p class="toc-label">On this page</p>
@@ -72,11 +76,20 @@ const jsonLd = {
         <PostMeta pubDate={data.pubDate} updatedDate={data.updatedDate} minutes={readingTime(post.body)} />
         {data.tags.length > 0 && <ul class="tags">{data.tags.map((t) => <li>{t}</li>)}</ul>}
       </header>
-      {data.cover && (
-        <figure class="cover">
-          <Image src={data.cover} alt={data.coverAlt ?? ''} loading="eager" fetchpriority="high" />
-        </figure>
-      )}
+      <aside class="tldr" aria-labelledby="tldr-label">
+        <div class="tldr-head">
+          <h2 id="tldr-label" class="tldr-label">TL;DR</h2>
+          <a class="tldr-save" href={tldrPath(post)} download={`${post.id}-tldr.png`}>Save as image</a>
+        </div>
+        {points.length > 1
+          ? <ul>{points.map((p) => <li>{p}</li>)}</ul>
+          : <p>{points[0]}</p>}
+      </aside>
+      <figure class="cover" style={`view-transition-name: cover-${post.id}`}>
+        {data.cover
+          ? <Image src={data.cover} alt={data.coverAlt ?? ''} loading="eager" fetchpriority="high" />
+          : <img src={coverPath(post)} alt="" width={CARD_W} height={CARD_H} loading="eager" fetchpriority="high" />}
+      </figure>
       <div class="prose">
         <Content />
       </div>
@@ -135,7 +148,7 @@ const jsonLd = {
   }
 
   renderMermaid().finally(() => {
-    mediumZoom('.prose img, .cover img', { margin: 24, background: 'rgba(14, 15, 19, .96)' });
+    mediumZoom('.prose img, .cover img:not([src^="/covers/"])', { margin: 24, background: 'rgba(14, 15, 19, .96)' });
   });
 
   // Language label and copy button on every highlighted code block.
@@ -163,6 +176,43 @@ const jsonLd = {
     });
     bar.append(lang, btn);
     shell.append(bar, pre);
+  }
+
+  // Hover a section heading for a link to it; clicking copies the URL.
+  for (const h of document.querySelectorAll<HTMLElement>('.prose :is(h2, h3)[id]')) {
+    const a = document.createElement('a');
+    a.className = 'h-link';
+    a.href = `#${h.id}`;
+    a.setAttribute('aria-label', `Copy link to “${h.textContent}”`);
+    a.textContent = '#';
+    a.addEventListener('click', async (e) => {
+      e.preventDefault();
+      history.replaceState(null, '', a.hash);
+      h.scrollIntoView({ block: 'start' });
+      try {
+        await navigator.clipboard.writeText(location.href);
+        a.dataset.copied = '';
+        setTimeout(() => delete a.dataset.copied, 1400);
+      } catch {}
+    });
+    h.append(a);
+  }
+
+  // Thin reading progress line across the top of the window.
+  const bar = document.querySelector<HTMLElement>('.progress span');
+  const article = document.querySelector<HTMLElement>('article .prose');
+  if (bar && article) {
+    let queued = false;
+    const draw = () => {
+      queued = false;
+      const r = article.getBoundingClientRect();
+      const total = r.height - innerHeight * 0.6;
+      const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 1;
+      bar.style.transform = `scaleX(${p})`;
+    };
+    addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(draw); } }, { passive: true });
+    addEventListener('resize', draw);
+    draw();
   }
 
   // Mark the section being read in the sidebar contents.

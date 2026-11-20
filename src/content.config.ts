@@ -14,6 +14,10 @@ const blog = defineCollection({
       tags: z.array(z.string()).default([]),
       cover: image().optional(),
       coverAlt: z.string().optional(),
+      // Short summary shown as a card at the top of the post and published as
+      // a shareable image. A list of points, or one paragraph. Falls back to
+      // the description.
+      tldr: z.union([z.string(), z.array(z.string()).min(1)]).optional(),
       draft: z.boolean().default(false),
       // Optional label above the title on listings, e.g. "Malware · Supply chain".
       // Falls back to the first two tags.

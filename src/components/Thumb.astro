@@ -1,0 +1,18 @@
+---
+// A post's cover at thumbnail size: its own `cover` when set, otherwise the
+// generated title card. Shares a view-transition name with the post page's
+// cover so it grows into place on navigation.
+import { Image } from 'astro:assets';
+import type { Post } from '../lib/posts';
+import { coverPath, CARD_W, CARD_H } from '../lib/cards';
+
+interface Props { post: Post; href?: string }
+const { post, href } = Astro.props;
+const { cover } = post.data;
+const Tag = href ? 'a' : 'span';
+---
+<Tag class="thumb" href={href} tabindex={href ? -1 : undefined} aria-hidden="true" style={`view-transition-name: cover-${post.id}`}>
+  {cover
+    ? <Image src={cover} alt="" width={480} />
+    : <img src={coverPath(post)} alt="" width={CARD_W} height={CARD_H} loading="lazy" decoding="async" />}
+</Tag>

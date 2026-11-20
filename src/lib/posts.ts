@@ -34,3 +34,13 @@ export function formatShort(d: Date): string {
 export function category(p: Post): string {
   return p.data.category ?? p.data.tags.slice(0, 2).join(' · ');
 }
+
+// The post's TL;DR as a few short points: its `tldr` front matter (a list, or
+// one paragraph), falling back to the description split into sentences.
+export function tldr(p: Post): string[] {
+  const t = p.data.tldr;
+  if (Array.isArray(t) && t.length) return t;
+  const text = (typeof t === 'string' && t.trim()) || p.data.description;
+  return text.match(/[^.!?]+(?:[.!?]+(?=\s|$)|$)/g)?.map((s) => s.trim()).filter(Boolean) ?? [text];
+}
+

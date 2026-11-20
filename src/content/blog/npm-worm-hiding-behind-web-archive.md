@@ -12,6 +12,12 @@ chain:
   - { step: "CHAOS RAT", note: "Remote access on the host", hot: true }
   - { step: "SSH · AUR · npm", note: "Worms onward to the next victim" }
 ships: 2 YARA rules
+tldr:
+  - "An npm account published 25-plus typosquats of @angular/core and @angular/cli, versioned 22.2.1 with the real descriptions, so a lockfile diff looks normal."
+  - "A postinstall hook pulls the dropper through web.archive.org, so a proxy only sees traffic to the Internet Archive."
+  - "The payload is CHAOS RAT, a Go implant that reaches an onion C2 through a local Tor proxy and persists as immutable fake font services."
+  - "A bash worm spreads it over harvested SSH keys and trojanizes the victim's own AUR and npm packages."
+  - "Hunt for the fontrenderd and fontcached units, a Tor listener on 9050 and curl in install hooks. Two YARA rules included."
 artifact:
   label: postinstall script
   code: |-
