@@ -5,7 +5,7 @@ import Base from '../../layouts/Base.astro';
 import Shell from '../../components/Shell.astro';
 import PostMeta from '../../components/PostMeta.astro';
 import { SITE } from '../../consts';
-import { getPosts, readingTime, type Post } from '../../lib/posts';
+import { getPosts, readingTime, category, type Post } from '../../lib/posts';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -67,6 +67,7 @@ const jsonLd = {
     <article>
       <header class="post-head">
         <a class="back" href="/blog/">← all writing</a>
+        {category(post) && <p class="kicker">{category(post)}</p>}
         <h1>{data.title}</h1>
         <PostMeta pubDate={data.pubDate} updatedDate={data.updatedDate} minutes={readingTime(post.body)} />
         {data.tags.length > 0 && <ul class="tags">{data.tags.map((t) => <li>{t}</li>)}</ul>}
@@ -107,34 +108,34 @@ const jsonLd = {
       fontFamily: "'JetBrains Mono', ui-monospace, monospace",
       themeVariables: {
         darkMode: true,
-        background: '#0d0e12',
-        primaryColor: '#14151b',
-        primaryBorderColor: '#2a2c36',
-        primaryTextColor: '#eceef3',
-        lineColor: '#676b78',
-        secondaryColor: '#14151b',
-        tertiaryColor: '#0d0e12',
-        mainBkg: '#14151b',
-        nodeBorder: '#3a3c48',
-        clusterBkg: '#0d0e12',
-        clusterBorder: '#1a1b22',
-        titleColor: '#eceef3',
-        edgeLabelBackground: '#050507',
-        actorBkg: '#14151b',
-        actorBorder: '#3a3c48',
-        actorTextColor: '#eceef3',
-        signalColor: '#676b78',
-        signalTextColor: '#b6b9c4',
-        noteBkgColor: '#14151b',
-        noteTextColor: '#eceef3',
-        noteBorderColor: '#2a2c36',
+        background: '#15161c',
+        primaryColor: '#1b1d24',
+        primaryBorderColor: '#363946',
+        primaryTextColor: '#f4f5f8',
+        lineColor: '#9a9fad',
+        secondaryColor: '#1b1d24',
+        tertiaryColor: '#15161c',
+        mainBkg: '#1b1d24',
+        nodeBorder: '#464a58',
+        clusterBkg: '#15161c',
+        clusterBorder: '#2a2c36',
+        titleColor: '#f4f5f8',
+        edgeLabelBackground: '#0e0f13',
+        actorBkg: '#1b1d24',
+        actorBorder: '#464a58',
+        actorTextColor: '#f4f5f8',
+        signalColor: '#9a9fad',
+        signalTextColor: '#d0d3dc',
+        noteBkgColor: '#1b1d24',
+        noteTextColor: '#f4f5f8',
+        noteBorderColor: '#363946',
       },
     });
     await mermaid.run({ nodes: blocks });
   }
 
   renderMermaid().finally(() => {
-    mediumZoom('.prose img, .cover img', { margin: 24, background: 'rgba(5, 5, 7, .96)' });
+    mediumZoom('.prose img, .cover img', { margin: 24, background: 'rgba(14, 15, 19, .96)' });
   });
 
   // Language label and copy button on every highlighted code block.

@@ -29,3 +29,8 @@ export function byYear(posts: Post[]): [number, Post[]][] {
 export function formatShort(d: Date): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', timeZone: 'UTC' });
 }
+
+// Small label shown above a post's title: its `category`, or its first two tags.
+export function category(p: Post): string {
+  return p.data.category ?? p.data.tags.slice(0, 2).join(' · ');
+}
