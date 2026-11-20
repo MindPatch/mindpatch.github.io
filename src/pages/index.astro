@@ -1,15 +1,20 @@
 ---
 import Base from '../layouts/Base.astro';
 import Entry from '../components/Entry.astro';
-import Trace from '../components/Trace.astro';
+import Featured from '../components/Featured.astro';
 import { SITE } from '../consts';
-import { getPosts, pad, postNumber } from '../lib/posts';
+import { getPosts, formatDot, pad } from '../lib/posts';
 
 const posts = await getPosts();
-const latest = posts.slice(0, 5);
-// The hero shows the newest post that has an attack chain in its front matter.
-const traced = posts.find((p) => p.data.chain.length > 0);
+const [featured, ...rest] = posts;
+const more = rest.slice(0, 5);
 const { hero } = SITE;
+const [first, ...last] = SITE.author.split(' ');
+const facts = [
+  ...hero.facts,
+  { k: 'Write-ups', v: pad(posts.length) },
+  ...(featured ? [{ k: 'Last post', v: formatDot(featured.data.pubDate) }] : []),
+];
 
 const person = {
   '@type': 'Person',
@@ -35,32 +40,30 @@ const jsonLd = {
   })),
 };
 ---
-<Base title={SITE.title} description={SITE.blogDescription} jsonLd={jsonLd} wordmark={false}>
-  <section class="hero">
-    <div class="lbl rise d1"><b></b>{SITE.author} · {SITE.role}</div>
-    <h1 class="rise d2">
-      {hero.lines.map((l) => <span class="l">{l}</span>)}
-      <span class="l"><span class="o">{hero.outline}</span> <span class="y">{hero.underline}</span></span>
-    </h1>
-    <div class:list={['hero-b', { solo: !traced }]}>
-      <div>
-        <p class="bio rise d3" set:html={hero.bio} />
-        <ul class="topics rise d4">{hero.topics.map((t) => <li>{t}</li>)}</ul>
-        <ul class="find rise d5" id="about" aria-label="Elsewhere">
-          {SITE.links.map((l) => (
-            <li><a href={l.href} rel={l.label === 'email' ? undefined : 'me noopener'}><span class="lbl">{l.name}</span><b>{l.handle}</b><i aria-hidden="true">↗</i></a></li>
-          ))}
-        </ul>
-      </div>
-      {traced && <div class="rise d4"><Trace post={traced} /></div>}
+<Base title={SITE.title} description={SITE.blogDescription} jsonLd={jsonLd}>
+  <section class="hero home" id="about">
+    <div>
+      <div class="lbl">{hero.label}</div>
+      <h1><span class="l">{first}</span> <span class="l">{last.join(' ')}</span></h1>
+      <p class="bio">{hero.bio}</p>
+      <ul class="find" aria-label="Elsewhere">
+        {SITE.links.map((l) => (
+          <li><a href={l.href} rel={l.label === 'email' ? undefined : 'me noopener'}>{l.name}</a></li>
+        ))}
+      </ul>
     </div>
+    <aside class="id" aria-label="About">
+      <img src="/images/avatar.jpg" alt="" width="256" height="256" />
+      <dl>{facts.map((f) => <div><dt>{f.k}</dt><dd>{f.v}</dd></div>)}</dl>
+    </aside>
   </section>
 
-  <section id="writing">
-    <div class="sh rise d5"><h2>Writing<span>{pad(posts.length)} {posts.length === 1 ? 'post' : 'posts'}</span></h2><a class="lbl" href="/blog/">All posts →</a></div>
-    {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
-    <ul class="entries">
-      {latest.map((p) => <Entry post={p} n={postNumber(p, posts)} />)}
-    </ul>
-  </section>
+  {featured ? <Featured post={featured} /> : <p class="empty">Nothing here yet.</p>}
+
+  {more.length > 0 && (
+    <section id="writing">
+      <div class="sh"><h2>More writing</h2><a class="lbl" href="/blog/">All posts →</a></div>
+      <ul class="entries">{more.map((p) => <Entry post={p} />)}</ul>
+    </section>
+  )}
 </Base>

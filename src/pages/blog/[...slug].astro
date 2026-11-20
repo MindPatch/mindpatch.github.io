@@ -4,7 +4,7 @@ import { Image, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Trace from '../../components/Trace.astro';
 import { SITE } from '../../consts';
-import { getPosts, readingTime, category, formatDot, pad, slugTag, type Post } from '../../lib/posts';
+import { getPosts, readingTime, category, formatDot, pad, type Post } from '../../lib/posts';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -56,16 +56,15 @@ const jsonLd = {
 >
   <article class="post">
     <header class="post-head">
-      <div class="lbl rise d1 crumbs"><a href="/blog/">← Writing</a><span>No. {pad(n)}</span>{category(post) && <span class="c">{category(post)}</span>}</div>
-      <h1 class="rise d2">{data.title}</h1>
-      <div class="meta rise d3">
+      <div class="lbl crumbs"><a href="/blog/">← Writing</a><span>No. {pad(n)}</span>{category(post) && <span class="c">{category(post)}</span>}</div>
+      <h1>{data.title}</h1>
+      <div class="meta">
         <time datetime={data.pubDate.toISOString()}>{formatDot(data.pubDate)}</time>
         <span>{minutes} min read</span>
         {data.updatedDate && <span>Updated <time datetime={data.updatedDate.toISOString()}>{formatDot(data.updatedDate)}</time></span>}
         {data.ships && <span class="ships">{data.ships}</span>}
       </div>
-      {data.tags.length > 0 && <div class="tags rise d3">{data.tags.map((t) => <span>{slugTag(t)}</span>)}</div>}
-      {data.chain.length > 0 && <div class="rise d4"><Trace post={post} layout="row" title="Attack chain" link={false} /></div>}
+      {data.chain.length > 0 && <div><Trace post={post} layout="row" title="Attack chain" link={false} /></div>}
     </header>
     {data.cover && (
       <figure class="cover">

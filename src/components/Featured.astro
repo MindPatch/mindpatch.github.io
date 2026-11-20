@@ -1,0 +1,28 @@
+---
+// The newest post, big, right under the name on the home page.
+import { Image } from 'astro:assets';
+import { category, formatDot, readingTime, type Post } from '../lib/posts';
+interface Props { post: Post }
+const { post } = Astro.props;
+const { data } = post;
+const href = `/blog/${post.id}/`;
+---
+<article class:list={['feat', { bare: !data.cover && !data.artifact }]}>
+  {data.cover ? (
+    <a class="feat-art" href={href} tabindex="-1" aria-hidden="true"><Image src={data.cover} alt="" /></a>
+  ) : data.artifact && (
+    <a class="feat-art code" href={href} tabindex="-1" aria-hidden="true">
+      <span class="lbl">{data.artifact.label}</span>
+      <pre>{data.artifact.code}</pre>
+    </a>
+  )}
+  <div class="feat-b">
+    <div class="lbl"><span class="new">Latest</span>{category(post)}</div>
+    <h2><a href={href}>{data.title}</a></h2>
+    <p>{data.description}</p>
+    <div class="feat-f">
+      <span class="lbl"><time datetime={data.pubDate.toISOString()}>{formatDot(data.pubDate)}</time> / {readingTime(post.body)} min{data.ships && <> / {data.ships}</>}</span>
+      <a class="btn" href={href}>Read <span>→</span></a>
+    </div>
+  </div>
+</article>

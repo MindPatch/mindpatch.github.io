@@ -1,14 +1,9 @@
 ---
 import { SITE } from '../consts';
-interface Props { wordmark?: boolean }
-const { wordmark = true } = Astro.props;
 ---
 <footer class="site-foot">
-  <div class="wrap">
-    {wordmark && <svg class="mark" viewBox="0 0 1000 150" aria-hidden="true"><text x="0" y="132" textLength="1000" lengthAdjust="spacingAndGlyphs">MINDPATCH</text></svg>}
-    <div class="colo">
-      <span>© {new Date().getFullYear()} {SITE.author}</span>
-      <span><a href="/rss.xml">RSS</a> &nbsp;·&nbsp; <a href="#top">Back to top ↑</a></span>
-    </div>
+  <div class="wrap colo">
+    <span>© {new Date().getFullYear()} {SITE.author}</span>
+    <span><a href="/rss.xml">RSS</a> &nbsp;·&nbsp; <a href="#top">Back to top ↑</a></span>
   </div>
 </footer>

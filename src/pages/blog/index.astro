@@ -2,25 +2,20 @@
 import Base from '../../layouts/Base.astro';
 import Entry from '../../components/Entry.astro';
 import { SITE } from '../../consts';
-import { getPosts, byYear, pad, postNumber } from '../../lib/posts';
+import { getPosts, byYear, pad } from '../../lib/posts';
 
 const posts = await getPosts();
-const tags = [...new Set(posts.flatMap((p) => p.data.tags.map((t) => t.toLowerCase().replace(/\s+/g, '-'))))];
 ---
 <Base title={`Writing — MindPatch`} description={SITE.blogDescription}>
   <section class="hero page">
-    <div class="lbl rise d1"><b></b>{pad(posts.length)} {posts.length === 1 ? 'post' : 'posts'}</div>
-    <h1 class="rise d2"><span class="l"><span class="y">Writing</span></span></h1>
-    <p class="bio rise d3">All posts, newest first.</p>
-    {tags.length > 0 && <div class="tags big rise d4">{tags.map((t) => <span>{t}</span>)}</div>}
+    <div class="lbl">{pad(posts.length)} {posts.length === 1 ? 'post' : 'posts'}, newest first</div>
+    <h1>Writing</h1>
   </section>
   {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
   {byYear(posts).map(([year, list]) => (
     <section class="year">
-      <div class="sh rise d5"><h2>{year}<span>{pad(list.length)} {list.length === 1 ? 'post' : 'posts'}</span></h2></div>
-      <ul class="entries">
-        {list.map((p) => <Entry post={p} n={postNumber(p, posts)} />)}
-      </ul>
+      <div class="sh"><h2>{year}</h2></div>
+      <ul class="entries">{list.map((p) => <Entry post={p} />)}</ul>
     </section>
   ))}
 </Base>
