@@ -1,11 +1,17 @@
 ---
 import Side from './Side.astro';
 import { SITE } from '../consts';
+
+// Long pages (posts) get a way back up from the footer.
+const post = /^\/blog\/[^/]+\/?$/.test(Astro.url.pathname);
 ---
 <div class="split">
   <Side><slot name="side" slot="extra" /></Side>
   <main class="split-main">
     <slot />
-    <footer class="split-foot">© {new Date().getFullYear()} {SITE.author}</footer>
+    <footer class="split-foot">
+      <span>© {new Date().getFullYear()} {SITE.author}</span>
+      {post && <a class="to-top" href="#">Back to top <span aria-hidden="true">↑</span></a>}
+    </footer>
   </main>
 </div>

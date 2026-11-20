@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Shell from '../components/Shell.astro';
 import { SITE } from '../consts';
-import { getPosts, formatDate } from '../lib/posts';
+import { getPosts, formatDate, category } from '../lib/posts';
 
 const posts = await getPosts();
 const latest = posts.slice(0, 5);
@@ -40,7 +40,7 @@ const jsonLd = {
         {latest.map((p) => (
           <li>
             <a href={`/blog/${p.id}/`}>
-              <time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>
+              <span class="card-meta"><time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>{category(p) && <span class="cat">{category(p)}</span>}</span>
               <span class="title">{p.data.title}</span>
               <p class="desc">{p.data.description}</p>
               {p.data.tags.length > 0 && <ul class="tags">{p.data.tags.map((t) => <li>{t}</li>)}</ul>}
