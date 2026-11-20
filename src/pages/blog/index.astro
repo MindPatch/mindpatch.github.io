@@ -1,21 +1,33 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Entry from '../../components/Entry.astro';
+import Shell from '../../components/Shell.astro';
 import { SITE } from '../../consts';
-import { getPosts, byYear, pad } from '../../lib/posts';
+import { getPosts, byYear, formatShort } from '../../lib/posts';
 
 const posts = await getPosts();
 ---
 <Base title={`Writing — MindPatch`} description={SITE.blogDescription}>
-  <section class="hero page">
-    <div class="lbl">{pad(posts.length)} {posts.length === 1 ? 'post' : 'posts'}, newest first</div>
-    <h1>Writing</h1>
-  </section>
-  {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
-  {byYear(posts).map(([year, list]) => (
-    <section class="year">
-      <div class="sh"><h2>{year}</h2></div>
-      <ul class="entries">{list.map((p) => <Entry post={p} />)}</ul>
-    </section>
-  ))}
+  <Shell>
+    <header class="page-head">
+      <h1>Writing</h1>
+      <p>Security research, bug hunting notes and vulnerability writeups.</p>
+    </header>
+    {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
+    {byYear(posts).map(([year, list]) => (
+      <section class="year">
+        <h2 class="year-label">{year}</h2>
+        <ul class="year-list">
+          {list.map((p) => (
+            <li>
+              <a href={`/blog/${p.id}/`}>
+                <span class="title">{p.data.title}</span>
+                <time datetime={p.data.pubDate.toISOString()}>{formatShort(p.data.pubDate)}</time>
+              </a>
+              <p class="desc">{p.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </Shell>
 </Base>

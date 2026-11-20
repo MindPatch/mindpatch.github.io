@@ -1,20 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
-import Entry from '../components/Entry.astro';
-import Featured from '../components/Featured.astro';
+import Shell from '../components/Shell.astro';
 import { SITE } from '../consts';
-import { getPosts, formatDot, pad } from '../lib/posts';
+import { getPosts, formatDate } from '../lib/posts';
 
 const posts = await getPosts();
-const [featured, ...rest] = posts;
-const more = rest.slice(0, 5);
-const { hero } = SITE;
-const [first, ...last] = SITE.author.split(' ');
-const facts = [
-  ...hero.facts,
-  { k: 'Write-ups', v: pad(posts.length) },
-  ...(featured ? [{ k: 'Last post', v: formatDot(featured.data.pubDate) }] : []),
-];
+const latest = posts.slice(0, 5);
 
 const person = {
   '@type': 'Person',
@@ -41,29 +32,23 @@ const jsonLd = {
 };
 ---
 <Base title={SITE.title} description={SITE.blogDescription} jsonLd={jsonLd}>
-  <section class="hero home" id="about">
-    <div>
-      <div class="lbl">{hero.label}</div>
-      <h1><span class="l">{first}</span> <span class="l">{last.join(' ')}</span></h1>
-      <p class="bio">{hero.bio}</p>
-      <ul class="find" aria-label="Elsewhere">
-        {SITE.links.map((l) => (
-          <li><a href={l.href} rel={l.label === 'email' ? undefined : 'me noopener'}>{l.name}</a></li>
+  <Shell>
+    <section id="writing" class="block">
+      <h2 class="block-label">Latest writing</h2>
+      {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
+      <ul class="cards">
+        {latest.map((p) => (
+          <li>
+            <a href={`/blog/${p.id}/`}>
+              <time datetime={p.data.pubDate.toISOString()}>{formatDate(p.data.pubDate)}</time>
+              <span class="title">{p.data.title}</span>
+              <p class="desc">{p.data.description}</p>
+              {p.data.tags.length > 0 && <ul class="tags">{p.data.tags.map((t) => <li>{t}</li>)}</ul>}
+            </a>
+          </li>
         ))}
       </ul>
-    </div>
-    <aside class="id" aria-label="About">
-      <img src="/images/avatar.jpg" alt="" width="256" height="256" />
-      <dl>{facts.map((f) => <div><dt>{f.k}</dt><dd>{f.v}</dd></div>)}</dl>
-    </aside>
-  </section>
-
-  {featured ? <Featured post={featured} /> : <p class="empty">Nothing here yet.</p>}
-
-  {more.length > 0 && (
-    <section id="writing">
-      <div class="sh"><h2>More writing</h2><a class="lbl" href="/blog/">All posts →</a></div>
-      <ul class="entries">{more.map((p) => <Entry post={p} />)}</ul>
+      <a class="more" href="/blog/">All writing <span aria-hidden="true">→</span></a>
     </section>
-  )}
+  </Shell>
 </Base>

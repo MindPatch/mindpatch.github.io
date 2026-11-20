@@ -9,7 +9,7 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkMermaid],
     shikiConfig: {
-      theme: 'vesper',
+      theme: 'github-dark-default',
       wrap: false,
       // No YARA grammar ships with Shiki: render it as plain text but keep
       // "yara" as the language so the code block's label says so.
